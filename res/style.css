@@ -104,3 +104,10 @@
 .summary .missed {
 	font-weight: bold;
 }
+
+
+/* Footer spacing */
+
+.footer {
+	margin-top: 2em;
+}

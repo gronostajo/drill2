@@ -1,0 +1,106 @@
+/*
+ *	Drill 2 styles
+ *	https://github.com/gronostajo/drill2
+ */
+
+
+/* Navbar buttons spacing */
+
+.navbar li.distance {
+	visibility: hidden;
+	width: 8px;
+	height: 1px;
+}
+
+
+/* Collapsing score */
+
+.panel-heading a:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";
+    float: right;
+    color: #888;
+}
+
+.panel-heading a.collapsed:after {
+    content: "\e080";
+}
+
+.panel-heading a {
+	display: block;
+}
+
+
+/* Answer customizations */
+
+.answer {
+	/*
+	 *	Prevents selection on double click. As a desired side effect this will
+	 *	also cause double clicks on labels to select and instantly un-select
+	 *	a checkbox.
+	 */
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-ms-user-select: none;
+}
+
+.answer label {
+	display: block;
+	padding: .8em 8px .8em 28px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+}
+
+.answer label:hover {
+	border-color: #ccc;
+}
+
+
+/* Answer coloring */
+
+.answer.checked-true label {
+	font-weight: bold;
+}
+
+.graded .answer.correct-true label {
+	color: #3c763d;
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+}
+
+.graded .answer.checked-true.correct-false label {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+}
+
+
+/* Summary styles */
+
+.summary {
+	counter-reset: question-counter;
+}
+
+.summary .question p:first-child:before {
+	content: counter(question-counter) '. ';
+	counter-increment: question-counter;
+}
+
+.summary label {
+	font-weight: normal;
+}
+
+.summary .correct {
+	color: #3c763d;
+	font-weight: bold;
+}
+
+.summary .incorrect {
+	color: #888;
+	text-decoration: line-through;
+}
+
+.summary .missed {
+	font-weight: bold;
+}

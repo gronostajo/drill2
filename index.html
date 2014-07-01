@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html ng-app="DrillApp">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Drill 2</title>
+
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="res/style.css">
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+		<![endif]-->
+
+		<!-- Libs -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="res/jquery.cookie-1.4.1.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+		<script src="res/markdown.min.js"></script>
+
+		<!-- Custom code -->
+		<script src="res/script.js"></script>
+		<script src="res/controller.js"></script>
+		<script src="res/localfile.js"></script>
+	</head>
+	<body ng-controller="DrillController as drill">
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="glyphicon glyphicon-wrench"></span>
+							</button>
+							<a href="#" class="navbar-brand">Drill 2</a>
+						</div>
+						<div class="collapse navbar-collapse" id="navbar">
+							<ul class="nav navbar-nav pull-right text-right">
+								<li><button class="btn navbar-btn" ng-click="restart()">Restart test</button></li>
+								<li class="distance"></li>
+								<li><button class="btn navbar-btn" ng-click="reinitialize()">Load questions</button></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<div class="row" ng-hide="isSupported">
+				<div class="col-xs-12 text-center">
+					<div class="jumbotron">
+						<h1>:(</h1>
+						<h3>Sorry, your browser doesn't support required APIs.</h3>
+					</div>
+				</div>
+			</div>
+			<div class="row" ng-show="isSupported">
+				<div class="col-sm-4 col-sm-push-8 col-md-4 col-md-push-8">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseScore">Score: {{stats.pcScore()}}% ({{stats.score}} / {{stats.totalPoints}})</a>
+							</h3>
+						</div>
+						<div id="collapseScore" class="panel-collapse collapse">
+							<table class="table">
+								<tr>
+									<td>Correct:</td>
+									<td><b>{{stats.correct}}</b></td>
+									<td class="text-right"><b>{{stats.pcOfQuestions(stats.correct)}}%</b></td>
+								</tr>
+								<tr>
+									<td>Partially:</td>
+									<td><b>{{stats.partial}}</b></td>
+									<td class="text-right"><b>{{stats.pcOfQuestions(stats.partial)}}%</b></td>
+								</tr>
+								<tr>
+									<td>Incorrect:</td>
+									<td><b>{{stats.incorrect}}</b></td>
+									<td class="text-right"><b>{{stats.pcOfQuestions(stats.incorrect)}}%</b></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<div class="modal fade" id="formatModal" role="dialog" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+								<h4 class="modal-title">Questions database format</h4>
+							</div>
+							<div class="modal-body">
+								<p>You have to load a question database that you want to learn from.</p>
+								<p>The database is a simple text file. Questions are separated with double line breaks. Each question consists of a body (the actual question) and answers. Answers are indicated by subsequent letters and a closing bracket. Correct answers are preceded with three <i>greater than</i> characters.</p>
+								<p>Example:</p>
+								<pre>This is the first question. Which animal is the largest?
+A) Ant &mdash; this answer is incorrect
+>>>B) Male cat &mdash; correct answer
+>>>C) Female cat &mdash; another correct answer
+D) Spider &mdash; incorrect one
+
+Second question. What are you?
+>>>A) A man
+B) A mouse</pre>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-8 col-sm-pull-4 col-md-8 col-md-pull-4 col-lg-7" ng-show="view.isFirst()">
+					<div class="page-header">
+						<h3>
+							Select the question database
+							<small><a href="#" data-toggle="modal" data-target="#formatModal">(need help?)</a></small>
+						</h3>
+					</div>
+					<form>
+						<div class="form-group">
+							<input type="file" id="fileSelector" read-text="onFileSelect($files)">
+						</div>
+						<div class="form-group">
+							<p>{{questions.length}} questions loaded.</p>
+						</div>
+						<div class="form-group" ng-show="questions.length">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" ng-model="config.shuffleQuestions" ng-change="reorderElements()">
+									Shuffle questions
+								</label>
+							</div>
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" ng-model="config.shuffleAnswers" ng-change="reorderElements()">
+									Shuffle answers
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<button type="button" class="btn btn-default btn-lg btn-block" ng-click="nextQuestion(drill)" ng-show="questions.length">Begin test</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="col-sm-8 col-sm-pull-4 col-md-8 col-md-pull-4 col-lg-7" ng-show="view.isQuestion()">
+					<div class="page-header">
+						<h2>Question {{questionIndex}} out of {{questions.length}}</h2>
+					</div>
+					<div id="questionBody"></div>
+					<form ng-submit="nextQuestion(drill)" ng-class="{ graded: view.isGraded() }">
+						<div class="form-group">
+							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
+								<label>
+									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
+									<span>{{answer.body}}</span>
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade(drill)">Check answers</button>
+							<button type="submit" class="btn btn-info btn-lg btn-block" ng-show="view.isGraded()">Next question</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="col-sm-8 col-sm-pull-4 col-md-8 col-md-pull-4 col-lg-7" ng-show="view.isFinal()">
+					<div class="page-header">
+						<h2>The test is over</h2>
+					</div>
+					<p>Here's a wrap-up of your answers:</p>
+					<form class="summary">
+						<div class="question panel panel-default" ng-repeat="question in questions">
+							<div class="panel-body">
+								<p>{{question.body}}</p>
+								<div class="checkbox" ng-repeat="answer in question.answers">
+									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
+										<input type="checkbox" disabled ng-checked="answer.checked">
+										{{answer.body}}
+									</label>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

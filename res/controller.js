@@ -98,6 +98,11 @@
 		$scope.initialize = function () {
 			$scope.softInitialize();
 
+			$scope.fileError = false;
+			$scope.dataString = '';
+
+			$scope.pasteEnabled = false;
+
 			$scope.config = {
 				shuffleQuestions: true,
 				shuffleAnswers: true
@@ -113,12 +118,25 @@
 
 		$scope.reinitialize = function () {
 			$scope.softInitialize();
-			$('#fileSelector').click();
+
+			$scope.fileError = false;
+			$('#fileSelector').val('').attr('type', 'text').attr('type', 'file');
+
+			if ($scope.fileApiSupported) {
+				$('#fileSelector').click();
+			}
+			else {
+				$('#fileContents').focus();
+			}
 		}
 
 		$scope.restart = function () {
 			$scope.softInitialize();
-			$scope.loadDatabase();
+			$scope.loadQuestions();
+		};
+
+		$scope.setPaste = function (state) {
+			$scope.pasteEnabled = !!state;
 		};
 
 		$scope.nextQuestion = function () {
@@ -153,12 +171,12 @@
 
 		$scope.getTextFile = function () {
 			fileReader.readAsText($scope.selectedFile, $scope).then(function(result) {
-				$scope.datastring = result;
-				$scope.loadDatabase();
+				$scope.dataString = result;
+				$scope.loadQuestions();
 			});
 		};
 
-		$scope.loadDatabase = function () {
+		$scope.loadQuestions = function (manual) {
 			$scope.questions = [];
 
 			// load dummy questions
@@ -172,12 +190,13 @@
 			// 	}
 			// }
 
-			var qs = $scope.datastring.split(/(?:\r?\n){2,}/);
+			var qs = $scope.dataString.split(/(?:\r?\n){2,}/);
 			for (var i = 0; i < qs.length; i++) {
 				var question = null;
 
 				var body = [];
 				var answers = 0;
+				var correct = 0;
 
 				var lines = qs[i].split(/(?:\r?\n)/);
 				for (var j = 0; j < lines.length; j++) {
@@ -195,17 +214,25 @@
 							question = new $scope.c.question(body.join('\n\n'));
 						}
 						answers++;
+						if (matched[1]) {
+							correct++;
+						}
 						question.addAnswer(matched[3], matched[1]);
 					}
 				}
 
-				if (answers >= 2) {
+				if (answers >= 2 && correct >= 1) {
 					$scope.questions.push(question);
 				}
 
 			}
 
 			$scope.reorderElements();
+
+			$scope.fileError = !$scope.questions.length;
+			if ($scope.fileError && !manual) {
+				$scope.dataString = '';
+			}
 		};
 
 		$scope.reorderElements = function () {
@@ -230,11 +257,11 @@
 		 *	Initialization
 		 */
 
-		$scope.isSupported = window.File && window.FileList && window.FileReader;
+		$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
 		$scope.initialize();
 	}])
 
-	.directive('readText', function() {
+	.directive('ngReadText', function() {
 		return {
 			link: function($scope, element) {
 				element.bind('change', function(e) {
@@ -244,5 +271,4 @@
 			}
 		};
 	});
-
 })();

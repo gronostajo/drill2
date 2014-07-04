@@ -277,9 +277,9 @@
 				ptsPerQuestion: 1
 			};
 
-			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[0]);
+			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[qs.length - 1]);
 			if (matched) {
-				qs.shift();
+				qs.pop();
 
 				try {
 					var loaded = JSON.parse(matched[1]);

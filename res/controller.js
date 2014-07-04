@@ -24,6 +24,14 @@
 					this.answers.push(answer);
 				}
 
+				this.totalCorrect = function () {
+					var x = 0;
+					for (var i = 0; i < this.answers.length; i++) {
+						if (this.answers[i].correct) x++;
+					}
+					return x;
+				}
+
 				this.correct = function () {
 					var x = 0;
 					for (var i = 0; i < this.answers.length; i++) {
@@ -87,8 +95,56 @@
 				this.isGraded = function () { return this.current == 'graded'; },
 				this.isQuestion = function () { return this.isGraded() || this.isNotGraded(); },
 				this.isFinal = function () { return this.current == 'end'; }
+			},
+
+			perQuestionGrader: function (max, radical) {
+				if (typeof radical == 'undefined') radical = true;
+
+				return {
+					max: max,
+
+					grade: function (question) {
+						ret = {
+							score: 0,
+							total: this.max
+						};
+
+						var correct = question.correct();
+						var incorrect = question.incorrect();
+
+						if (radical && (incorrect || !correct)) {
+							return ret;
+						}
+
+						ret.score = Math.max(max * ((correct - incorrect) / question.totalCorrect()), 0);
+						return ret;
+					}
+				};
+			},
+
+			perAnswerGrader: function (radical) {
+				if (typeof radical == 'undefined') radical = true;
+
+				return {
+					grade: function (question) {
+						ret = {
+							score: 0,
+							total: question.totalCorrect()
+						};
+
+						var correct = question.correct();
+						var incorrect = question.incorrect();
+
+						if (radical && (incorrect || !correct)) {
+							return ret;
+						}
+
+						ret.score = Math.max(correct - incorrect, 0);
+						return ret;
+					}
+				};
 			}
-		}
+		};
 
 
 		/*
@@ -105,13 +161,17 @@
 
 			$scope.config = {
 				shuffleQuestions: true,
-				shuffleAnswers: true
+				shuffleAnswers: true,
+				gradingMethod: 'perQuestion',
+				gradingRadical: '1',
+				gradingPPQ: 1		// points per question
 			};
 		};
 
 		$scope.softInitialize = function () {
 			$scope.questions = [];
 			$scope.questionIndex = 0;
+
 			$scope.stats = new $scope.c.stats();
 			$scope.view = new $scope.c.view();
 		};
@@ -139,6 +199,12 @@
 			$scope.pasteEnabled = !!state;
 		};
 
+		$scope.firstQuestion = function () {
+			$scope.reorderElements();
+			$scope.loadGrader();
+			$scope.nextQuestion();
+		}
+
 		$scope.nextQuestion = function () {
 			$scope.questionIndex++;
 			if ($scope.questionIndex > $scope.questions.length) {
@@ -150,8 +216,6 @@
 
 			var index = $scope.shuffleMap[$scope.questionIndex - 1]
 			$scope.currentQuestion = $scope.questions[index];
-
-			$('#questionBody').html(markdown.toHTML($scope.currentQuestion.body));
 		};
 
 		$scope.grade = function () {
@@ -165,8 +229,11 @@
 			else if (missed) $scope.stats.partial++;
 			else $scope.stats.correct++;
 
-			$scope.stats.totalPoints += correct + missed;
-			if (!incorrect) $scope.stats.score += correct;
+			var grade = $scope.grader.grade($scope.currentQuestion);
+			$scope.currentQuestion.grade = grade;
+
+			$scope.stats.totalPoints += grade.total;
+			$scope.stats.score += grade.score;
 		};
 
 		$scope.getTextFile = function () {
@@ -227,8 +294,6 @@
 
 			}
 
-			$scope.reorderElements();
-
 			$scope.fileError = !$scope.questions.length;
 			if ($scope.fileError && !manual) {
 				$scope.dataString = '';
@@ -252,6 +317,22 @@
 			}
 		}
 
+		$scope.loadGrader = function () {
+			var radical = !!parseInt($scope.config.gradingRadical);
+			var ppq = Math.max(parseInt($scope.config.gradingPPQ), 1);
+
+			switch ($scope.config.gradingMethod) {
+				case 'perAnswer':
+					$scope.grader = new $scope.c.perAnswerGrader(radical);
+					break;
+
+				case 'perQuestion':
+				default:
+					$scope.grader = new $scope.c.perQuestionGrader(ppq, radical);
+					break;
+			}
+		};
+
 
 		/*
 		 *	Initialization
@@ -270,5 +351,20 @@
 				});
 			}
 		};
-	});
+	})
+
+	.filter('decPlaces', function() {
+		return function (x, dec) {
+			var pow = Math.pow(10, dec);
+			return (Math.round(x * pow) / pow)
+		};
+	})
+
+	.filter('markdown', ['$sce', function($sce) {
+		return function(str) {
+			if (!str) return '';
+			var html = markdown.toHTML(str);
+			return $sce.trustAsHtml(html);
+		};
+	}]);
 })();

@@ -14,9 +14,9 @@
 
 		<!-- Libs -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-		<script src="res/jquery.cookie-1.4.1.min.js"></script>
 		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
+		<script src="res/jquery.cookie-1.4.1.min.js"></script>
 		<script src="res/markdown.min.js"></script>
 
 		<!-- Custom code -->
@@ -56,7 +56,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">
-								<a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseScore">Score: {{stats.pcScore()}}% ({{stats.score}} / {{stats.totalPoints}})</a>
+								<a href="#" class="collapsed" data-toggle="collapse" data-target="#collapseScore">Score: {{stats.pcScore()}}% ({{stats.score | decPlaces:2}} / {{stats.totalPoints | decPlaces:2}})</a>
 							</h3>
 						</div>
 						<div id="collapseScore" class="panel-collapse collapse">
@@ -144,22 +144,61 @@ B) A mouse</pre>
 								<button class="btn btn-default" ng-click="reinitialize()">{{ fileApiSupported ? "Choose another file" : "Edit questions" }}</button>
 							</h2>
 						</div>
-						<div class="form-group" ng-show="questions.length">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" ng-model="config.shuffleQuestions" ng-change="reorderElements()">
-									Shuffle questions
-								</label>
+						<div ng-show="questions.length">
+							<div class="form-group panel panel-default panel-compact">
+								<div class="panel-heading">Shuffling</div>
+								<div class="panel-body">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" ng-model="config.shuffleQuestions">
+											Shuffle questions
+										</label>
+									</div>
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" ng-model="config.shuffleAnswers">
+											Shuffle answers
+										</label>
+									</div>
+								</div>
 							</div>
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" ng-model="config.shuffleAnswers" ng-change="reorderElements()">
-									Shuffle answers
-								</label>
+
+							<div class="panel panel-default panel-compact">
+								<div class="panel-heading">Grading</div>
+								<div class="panel-body">
+									<div class="form-group radio">
+										<label>
+											<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perQuestion">
+											<div class="inline-control">
+												<input type="number" min="1" max="10" class="form-control input-xs text-right" ng-model="config.gradingPPQ">
+											</div>
+											points for entire question (fractions allowed)
+										</label>
+									</div>
+									<div class="form-group radio">
+										<label>
+											<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perAnswer">
+											1 point for each correct answer
+										</label>
+									</div>
+									<hr>
+									<div class="form-group radio">
+										<label>
+											<input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="1">
+											One wrong answer zeroes score
+										</label>
+									</div>
+									<div class="form-group radio">
+										<label>
+											<input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="0">
+											Each wrong answer counterbalances correct one
+										</label>
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<button type="button" class="btn btn-default btn-lg btn-block" ng-click="nextQuestion()" ng-show="questions.length">Begin test</button>
+							<button type="button" class="btn btn-default btn-lg btn-block" ng-click="firstQuestion()" ng-show="questions.length">Begin test</button>
 						</div>
 					</form>
 				</div>
@@ -168,7 +207,7 @@ B) A mouse</pre>
 					<div class="page-header">
 						<h2>Question {{questionIndex}} out of {{questions.length}}</h2>
 					</div>
-					<div id="questionBody"></div>
+					<div ng-bind-html="currentQuestion.body | markdown"></div>
 					<form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">
 						<div class="form-group">
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
@@ -194,13 +233,14 @@ B) A mouse</pre>
 					<form class="summary">
 						<div class="question panel panel-default" ng-repeat="question in questions">
 							<div class="panel-body">
-								<p>{{question.body}}</p>
+								<div ng-bind-html="question.body | markdown"></div>
 								<div class="checkbox" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">
 										{{answer.body}}
 									</label>
 								</div>
+								<div class="text-right">Score: {{question.grade.score | decPlaces:2}} / {{question.grade.total | decPlaces:2}}</div>
 							</div>
 						</div>
 					</form>

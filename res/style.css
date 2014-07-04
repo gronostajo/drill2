@@ -31,6 +31,29 @@
 }
 
 
+/* Test options */
+
+.panel-compact .panel-heading {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.panel-compact .panel-body {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.inline-control {
+	display: inline-block;
+	width: 4em;
+}
+
+.input-xs {
+	height: 26px;
+	padding: 0 4px;
+}
+
+
 /* Answer customizations */
 
 .answer {

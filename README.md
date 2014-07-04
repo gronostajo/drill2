@@ -4,7 +4,7 @@ Browser-based multiple choice test learning assistant.
 
 ## What is Drill 2?
 
-Drill 2 is a successor to [Pober's Drill System](https://code.google.com/p/drill/), a program built to assist in learning for multiple choice tests. The idea behind Drill 2 was to keep all advantages of original PBS, while making it compatible with a wide range of devices.
+Drill 2 is a successor to [Pober's Drill System](https://code.google.com/p/drill/), a program built to assist in learning for multiple choice tests. The idea behind Drill 2 was to keep all advantages of original PDS, while making it compatible with a wide range of devices.
 
 ## Main features
 

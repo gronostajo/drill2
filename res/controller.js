@@ -162,9 +162,12 @@
 			$scope.config = {
 				shuffleQuestions: true,
 				shuffleAnswers: true,
+
 				gradingMethod: 'perQuestion',
 				gradingRadical: '1',
-				gradingPPQ: 1		// points per question
+				gradingPPQ: 1,		// points per question
+
+				markdown: false
 			};
 		};
 
@@ -192,7 +195,14 @@
 
 		$scope.restart = function () {
 			$scope.softInitialize();
+
+			// clone config
+			var config = JSON.parse(JSON.stringify($scope.config));
+
 			$scope.loadQuestions();
+
+			// restore config
+			$scope.config = config;
 		};
 
 		$scope.setPaste = function (state) {
@@ -258,6 +268,60 @@
 			// }
 
 			var qs = $scope.dataString.split(/(?:\r?\n){2,}/);
+
+			var options = {
+				format: 'legacy',
+				markdown: false,
+				grading: 'perAnswer',
+				radical: true,
+				ptsPerQuestion: 1
+			};
+
+			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[0]);
+			if (matched) {
+				qs.shift();
+
+				try {
+					var loaded = JSON.parse(matched[1]);
+				} catch (e) {
+					console.error('Invalid <options> object:', matched[1]);
+				}
+
+				for (var key in loaded) {
+					if (loaded.hasOwnProperty(key) && options.hasOwnProperty(key)) {
+						options[key] = loaded[key];
+					}
+				}
+			}
+
+			switch (options.format) {
+				case 'legacy':
+				case '2':
+					$scope.fileFormat = options.format;
+					break;
+
+				default:
+					$scope.fileFormat = 'unknown';
+					break;
+			}
+
+			$scope.config.markdownReady = !!options.markdown;
+			$scope.config.markdown = $scope.config.markdownReady;
+
+			switch (options.grading.toLowerCase()) {
+				case 'perquestion':
+				case 'peranswer':
+					$scope.config.gradingMethod = options.grading;
+					break;
+
+				default:
+					$scope.config.gradingMethod = 'perAnswer';
+					break;
+			}
+
+			$scope.config.gradingRadical = !!options.radical;
+			$scope.config.gradingPPQ = parseInt(options.ptsPerQuestion);
+
 			for (var i = 0; i < qs.length; i++) {
 				var question = null;
 
@@ -321,12 +385,12 @@
 			var radical = !!parseInt($scope.config.gradingRadical);
 			var ppq = Math.max(parseInt($scope.config.gradingPPQ), 1);
 
-			switch ($scope.config.gradingMethod) {
-				case 'perAnswer':
+			switch ($scope.config.gradingMethod.toLowerCase()) {
+				case 'peranswer':
 					$scope.grader = new $scope.c.perAnswerGrader(radical);
 					break;
 
-				case 'perQuestion':
+				case 'perquestion':
 				default:
 					$scope.grader = new $scope.c.perQuestionGrader(ppq, radical);
 					break;
@@ -366,5 +430,12 @@
 			var html = markdown.toHTML(str);
 			return $sce.trustAsHtml(html);
 		};
+	}])
+
+	.filter('maybeMarkdown', ['markdownFilter', '$sce', function(markdownFilter, $sce) {
+		return function(str, $scope) {
+			return $scope.config.markdown ? markdownFilter(str) : $sce.trustAsHtml(str);
+		};
 	}]);
+
 })();

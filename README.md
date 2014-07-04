@@ -49,7 +49,7 @@ Files should be saved with UTF-8 encoding.
 
 Drill 2 introduces `<options>` blocks that can be embedded in question bank files without breaking backward compatibility. `<options>` blocks can be used to preconfigure default options for question bank. (For example set proper grading schema.)
 
-`<options>` block must start from the first line and has to me followed by a double newline. It looks similar to this one:
+`<options>` block must be located after last question and separated with at least one newline.
 
     <options> {
         "format": "2",

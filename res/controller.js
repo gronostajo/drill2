@@ -277,9 +277,9 @@
 				ptsPerQuestion: 1
 			};
 
-			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[0]);
+			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[qs.length - 1]);
 			if (matched) {
-				qs.shift();
+				qs.pop();
 
 				try {
 					var loaded = JSON.parse(matched[1]);
@@ -432,9 +432,18 @@
 		};
 	}])
 
-	.filter('maybeMarkdown', ['markdownFilter', '$sce', function(markdownFilter, $sce) {
+	.filter('paragraphs', ['$sce', function($sce) {
+		return function(str) {
+			if (!str) return '';
+			var lines = str.split(/\s*(\r?\n)(\r?\n\s)*/);
+			var html = '<p>' + lines.join('</p><p>') + '</p>';
+			return $sce.trustAsHtml(html);
+		};
+	}])
+
+	.filter('maybeMarkdown', ['markdownFilter', 'paragraphsFilter', function(markdownFilter, paragraphsFilter) {
 		return function(str, $scope) {
-			return $scope.config.markdown ? markdownFilter(str) : $sce.trustAsHtml(str);
+			return $scope.config.markdown ? markdownFilter(str) : paragraphsFilter(str);
 		};
 	}]);
 

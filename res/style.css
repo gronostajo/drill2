@@ -56,7 +56,7 @@
 
 /* Answer customizations */
 
-.answer {
+.checkbox {
 	/*
 	 *	Prevents selection on double click. As a desired side effect this will
 	 *	also cause double clicks on labels to select and instantly un-select

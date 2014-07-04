@@ -45,6 +45,40 @@ Here's an example of a question file with two questions:
 
 Files should be saved with UTF-8 encoding.
 
+## Options block
+
+Drill 2 introduces `<options>` blocks that can be embedded in question bank files without breaking backward compatibility. `<options>` blocks can be used to preconfigure default options for question bank. (For example set proper grading schema.)
+
+`<options>` block must start from the first line and has to me followed by a double newline. It looks similar to this one:
+
+    <options> {
+        "format": "2",
+		"markdown": true,
+        "grading": "perAnswer",
+        "radical": true,
+        "ptsPerQuestion": 1
+    }
+
+If a property is ommited, default value will be used. Property names are always double-quoted. This is not always the case for property values.
+
+- `format` - Used for specifying file format version. Will be used in the future to detect possibly unsupported features in not-up-to-date instances.
+    - `"legacy"` - means that file was created with PDS in mind (default value)
+    - `"2"` - first version of Drill 2 to support `<options>` blocks
+
+- `markdown` - Can be used to enable Markdown parsing for question bodies. Users can opt out of using Markdown, but they can't opt in if this property is set to false.
+    - `false` - disable Markdown (default value)
+    - `true` - enable Markdown with opt-out possibility
+
+- `grading` - Selects grading rules.
+    - `"perAnswer"` - each correct answer is worth 1 point. Total amount of points that can be scored on a question depends on number of correct answers. (default value)
+    - `"perQuestion"` - each question is worth fixed, configurable amount of points (see *ptsPerQUestion*). Answer's worth of point depends on number of correct answers.
+
+- `radical` - Chooses incorrect answer handling
+    - `true` - any incorrect answer causes question to be graded to 0 points. (default value)
+    - `false` - incorrect answers counterbalance correct answers.
+
+- `ptsPerQuestion` - How many points one question is worth. Applies only if `"grading"` is set to `"perQuestion"`. Accepts numeric values.
+
 ## Bugs?
 
 Please report any bugs using the [issue tracker](https://github.com/gronostajo/drill2/issues).

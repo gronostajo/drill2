@@ -105,7 +105,7 @@
 	counter-reset: question-counter;
 }
 
-.summary .question p:first-child:before {
+.summary .question-body > p:first-child:before {
 	content: counter(question-counter) '. ';
 	counter-increment: question-counter;
 }
@@ -126,6 +126,21 @@
 
 .summary .missed {
 	font-weight: bold;
+}
+
+
+/* Timer */
+
+.timer {
+	left: 50%;
+	width: 4em;
+	margin-left: -2em;
+	border-radius: 0 0 8px 8px;
+	border-width: 0 1px 1px;
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+	line-height: 50px;
 }
 
 

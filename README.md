@@ -58,7 +58,8 @@ Drill 2 introduces `<options>` blocks that can be embedded in question bank file
 		"markdown": true,
         "grading": "perAnswer",
         "radical": true,
-        "ptsPerQuestion": 1
+        "ptsPerQuestion": 1,
+        "timeLimit": 0
     }
 
 If a property is ommited, default value will be used. Property names are always double-quoted. This is not always the case for property values.
@@ -80,6 +81,10 @@ If a property is ommited, default value will be used. Property names are always 
     - `false` - incorrect answers counterbalance correct answers.
 
 - `ptsPerQuestion` - How many points one question is worth. Applies only if `"grading"` is set to `"perQuestion"`. Accepts numeric values.
+
+- `timeLimit` - How many seconds does student have to answer each question. When that time passes, all answers are unchecked and the question is graded instantly.
+    - `0` - time per question isn't limited.
+    - *any other number* - student has that amount of seconds to answer each question.  
 
 ## Bugs?
 

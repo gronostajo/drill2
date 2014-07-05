@@ -25,6 +25,10 @@
 		<script src="res/localfile.js"></script>
 	</head>
 	<body ng-controller="DrillController">
+		<nav class="timer navbar navbar-default navbar-fixed-top" role="navigation" ng-show="config.timeLimitEnabled && view.isQuestion()">
+			{{currentQuestion.timeLeft | minutes}}
+		</nav>
+
 		<nav class="navbar navbar-default navbar-static-top" role="navigation">
 			<div class="container">
 				<div class="row">
@@ -136,7 +140,7 @@ B) A mouse</pre>
 						</div>
 					</div>
 
-					<form ng-show="questions.length">
+					<form name="config_form" ng-show="questions.length">
 						<div class="page-header">
 							<h2>
 								<span title="Detected file format: {{fileFormat}}">{{questions.length}} questions loaded</span>
@@ -177,7 +181,7 @@ B) A mouse</pre>
 										<label>
 											<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perQuestion">
 											<div class="inline-control">
-												<input type="number" min="1" max="10" class="form-control input-xs text-right" ng-model="config.gradingPPQ">
+												<input type="number" min="1" max="10" name="ppq" class="form-control input-xs text-right" ng-model="config.gradingPPQ" ng-disabled="config.gradingMethod != 'perQuestion'">
 											</div>
 											points for entire question (fractions allowed)
 										</label>
@@ -209,9 +213,25 @@ B) A mouse</pre>
 									</div>
 								</div>
 							</div>
+
+							<div class="form-group panel panel-default panel-compact">
+								<div class="panel-heading">Test options</div>
+								<div class="panel-body">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" ng-model="config.timeLimitEnabled">
+											Time limit:
+											<div class="inline-control">
+												<input type="number" min="5" step="5" name="time_limit" class="form-control input-xs text-right" ng-model="config.timeLimitSecs" ng-disabled="!config.timeLimitEnabled">
+											</div>
+											seconds per question
+										</label>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
-							<button type="button" class="btn btn-default btn-lg btn-block" ng-click="firstQuestion()" ng-show="questions.length">Begin test</button>
+							<button type="button" class="btn btn-default btn-lg btn-block" ng-click="firstQuestion()" ng-disabled="config_form.ppq.$invalid || config_form.time_limit.$invalid">Begin test</button>
 						</div>
 					</form>
 				</div>
@@ -251,8 +271,8 @@ B) A mouse</pre>
 					<form class="summary">
 						<div class="question panel panel-default" ng-repeat="question in questions">
 							<div class="panel-body">
-								<div ng-bind-html="question.body | markdown" ng-show="config.markdown"></div>
-								<div>
+								<div class="question-body" ng-bind-html="question.body | markdown" ng-show="config.markdown"></div>
+								<div class="question-body" ng-hide="config.markdown">
 									<p ng-repeat="line in question.body | lines">{{line}}</p>
 								</div>
 								<div class="checkbox" ng-repeat="answer in question.answers">
@@ -261,7 +281,11 @@ B) A mouse</pre>
 										{{answer.body}}
 									</label>
 								</div>
-								<div class="text-right">Score: {{question.grade.score | decPlaces:2}} / {{question.grade.total | decPlaces:2}}</div>
+								<div class="text-right">
+									<span>Score: {{question.grade.score | decPlaces:2}} / {{question.grade.total | decPlaces:2}}</span><br>
+									<span ng-show="question.timeLeft">Time used: {{config.timeLimitSecs - question.timeLeft}} s</span>
+									<span ng-hide="question.timeLeft">Time ran out.</span>
+								</div>
 							</div>
 						</div>
 					</form>

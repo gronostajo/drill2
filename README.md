@@ -19,6 +19,8 @@ One instance of Drill 2 is [publicly available](https://gronostajo.github.io/dri
 
 Feel free to download or fork the source code and make your own changes. Then you can deploy the application for yourself or for wider audience. (Please mind the [license](https://github.com/gronostajo/drill2/blob/master/LICENSE)!)
 
+In order to enable using your Drill 2 instance as offline app, you need to serve `drill2.appcache` with MIME type `text/cache-manifest`.
+
 ## Question banks
 
 Questions are loaded from ordinary text files with human-readable structure. You can load those files from your computer's hard disk or device's memory, or, if your browser doesn't support File API, you can manually paste file contents into Drill 2.

@@ -221,7 +221,12 @@ B) A mouse</pre>
 					<div class="page-header">
 						<h2>Question {{questionIndex}} out of {{questions.length}}</h2>
 					</div>
-					<div ng-bind-html="currentQuestion.body | maybeMarkdown:this"></div>
+					<div>
+						<div ng-bind-html="currentQuestion.body | markdown" ng-show="config.markdown"></div>
+						<div ng-hide="config.markdown">
+							<p ng-repeat="line in currentQuestion.body | lines">{{line}}</p>
+						</div>
+					</div>
 					<form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">
 						<div class="form-group">
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
@@ -247,7 +252,10 @@ B) A mouse</pre>
 					<form class="summary">
 						<div class="question panel panel-default" ng-repeat="question in questions">
 							<div class="panel-body">
-								<div ng-bind-html="question.body | maybeMarkdown:this"></div>
+								<div ng-bind-html="question.body | markdown" ng-show="config.markdown"></div>
+								<div>
+									<p ng-repeat="line in question.body | lines">{{line}}</p>
+								</div>
 								<div class="checkbox" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">

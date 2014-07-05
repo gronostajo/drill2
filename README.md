@@ -19,6 +19,8 @@ One instance of Drill 2 is [publicly available](https://gronostajo.github.io/dri
 
 Feel free to download or fork the source code and make your own changes. Then you can deploy the application for yourself or for wider audience. (Please mind the [license](https://github.com/gronostajo/drill2/blob/master/LICENSE)!)
 
+In order to enable using your Drill 2 instance as offline app, you need to serve `drill2.appcache` with MIME type `text/cache-manifest`.
+
 ## Question banks
 
 Questions are loaded from ordinary text files with human-readable structure. You can load those files from your computer's hard disk or device's memory, or, if your browser doesn't support File API, you can manually paste file contents into Drill 2.
@@ -56,7 +58,8 @@ Drill 2 introduces `<options>` blocks that can be embedded in question bank file
 		"markdown": true,
         "grading": "perAnswer",
         "radical": true,
-        "ptsPerQuestion": 1
+        "ptsPerQuestion": 1,
+        "timeLimit": 0
     }
 
 If a property is ommited, default value will be used. Property names are always double-quoted. This is not always the case for property values.
@@ -78,6 +81,10 @@ If a property is ommited, default value will be used. Property names are always 
     - `false` - incorrect answers counterbalance correct answers.
 
 - `ptsPerQuestion` - How many points one question is worth. Applies only if `"grading"` is set to `"perQuestion"`. Accepts numeric values.
+
+- `timeLimit` - How many seconds does student have to answer each question. When that time passes, all answers are unchecked and the question is graded instantly.
+    - `0` - time per question isn't limited.
+    - *any other number* - student has that amount of seconds to answer each question.  
 
 ## Bugs?
 

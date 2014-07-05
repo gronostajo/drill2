@@ -152,6 +152,8 @@
 		 */
 
 		$scope.initialize = function () {
+			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
+
 			$scope.softInitialize();
 
 			$scope.fileError = false;
@@ -167,11 +169,16 @@
 				gradingRadical: '1',
 				gradingPPQ: 1,		// points per question
 
-				markdown: false
+				markdown: false,
+
+				timeLimitEnabled: false,
+				timeLimitSecs: 90
 			};
 		};
 
 		$scope.softInitialize = function () {
+			$scope.stopTimer();
+
 			$scope.questions = [];
 			$scope.questionIndex = 0;
 
@@ -225,10 +232,18 @@
 			$scope.view.current = 'question';
 
 			var index = $scope.shuffleMap[$scope.questionIndex - 1]
+
 			$scope.currentQuestion = $scope.questions[index];
+
+			if ($scope.config.timeLimitEnabled) {
+				$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
+				$scope.startTimer();
+			}
 		};
 
 		$scope.grade = function () {
+			$scope.stopTimer();
+
 			$scope.view.current = 'graded';
 
 			var correct = $scope.currentQuestion.correct();
@@ -274,7 +289,8 @@
 				markdown: false,
 				grading: 'perAnswer',
 				radical: true,
-				ptsPerQuestion: 1
+				ptsPerQuestion: 1,
+				timeLimit: 0
 			};
 
 			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[qs.length - 1]);
@@ -321,6 +337,16 @@
 
 			$scope.config.gradingRadical = !!options.radical;
 			$scope.config.gradingPPQ = parseInt(options.ptsPerQuestion);
+
+			var secs = (parseInt(options.timeLimit) / 5) * 5;
+			if (!secs) {
+				$scope.config.timeLimitEnabled = false;
+				$scope.config.timeLimitSecs = 60;
+			}
+			else {
+				$scope.config.timeLimitEnabled = true;
+				$scope.config.timeLimitSecs = secs;
+			}
 
 			for (var i = 0; i < qs.length; i++) {
 				var question = null;
@@ -379,7 +405,7 @@
 						? Math.random() : j;
 				}
 			}
-		}
+		};
 
 		$scope.loadGrader = function () {
 			var radical = !!parseInt($scope.config.gradingRadical);
@@ -397,16 +423,36 @@
 			}
 		};
 
+		$scope.startTimer = function () {
+			$scope.stopTimer();
+			$scope.timer = window.setInterval(function () {
+				$scope.$apply($scope.timerTick);
+			}, 1000);
+		};
 
-		/*
-		 *	Initialization
-		 */
+		$scope.stopTimer = function () {
+			if (typeof $scope.timer != 'undefined') {
+				window.clearInterval($scope.timer);
+			}
+		};
 
-		$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
+		$scope.timerTick = function () {
+			$scope.currentQuestion.timeLeft--;
+
+			if ($scope.currentQuestion.timeLeft <= 0) {
+				for (var i = 0; i < $scope.currentQuestion.answers.length; i++) {
+					$scope.currentQuestion.answers[i].checked = false;
+				}
+				$scope.grade();
+				$scope.stopTimer();
+			}
+		};
+
+
 		$scope.initialize();
 	}])
 
-	.directive('ngReadText', function() {
+	.directive('ngReadText', function () {
 		return {
 			link: function($scope, element) {
 				element.bind('change', function(e) {
@@ -417,14 +463,14 @@
 		};
 	})
 
-	.filter('decPlaces', function() {
+	.filter('decPlaces', function () {
 		return function (x, dec) {
 			var pow = Math.pow(10, dec);
 			return (Math.round(x * pow) / pow)
 		};
 	})
 
-	.filter('markdown', ['$sce', function($sce) {
+	.filter('markdown', ['$sce', function ($sce) {
 		return function(str) {
 			if (!str) return '';
 			var html = markdown.toHTML(str);
@@ -432,11 +478,25 @@
 		};
 	}])
 
-	.filter('lines', ['$sce', function($sce) {
+	.filter('lines', ['$sce', function ($sce) {
 		return function(str) {
 			if (!str) return [];
 			return str.split(/\s*(\r?\n)(\r?\n\s)*/);
 		};
-	}]);
+	}])
+
+	.filter('minutes', function () {
+		return function (secs) {
+			secs = parseInt(secs);
+
+			var mins = Math.floor(secs / 60);
+			secs = (secs % 60).toString();
+			while (secs.length < 2) {
+				secs = '0' + secs;
+			}
+
+			return mins + ':' + secs;
+		}
+	});
 
 })();

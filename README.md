@@ -25,7 +25,7 @@ In order to enable using your Drill 2 instance as offline app, you need to serve
 
 Questions are loaded from ordinary text files with human-readable structure. You can load those files from your computer's hard disk or device's memory, or, if your browser doesn't support File API, you can manually paste file contents into Drill 2.
 
-Files you select and data you paste never leave your computer. Nothing is uploaded to remote servers. Drill 2 works completely within your browser. 
+Files you select and data you paste never leave your computer. Nothing is uploaded to remote servers. Drill 2 works completely within your browser.
 
 ## File format
 
@@ -40,7 +40,7 @@ Here's an example of a question file with two questions:
     >>>B) Male cat - correct answer
     >>>C) Female cat - another correct answer
     D) Spider - incorrect one
-    
+
     Second question. What are you?
     >>>A) A man
     B) A mouse
@@ -83,8 +83,12 @@ If a property is ommited, default value will be used. Property names are always 
 - `ptsPerQuestion` - How many points one question is worth. Applies only if `"grading"` is set to `"perQuestion"`. Accepts numeric values.
 
 - `timeLimit` - How many seconds does student have to answer each question. When that time passes, all answers are unchecked and the question is graded instantly.
-    - `0` - time per question isn't limited.
-    - *any other number* - student has that amount of seconds to answer each question.  
+    - `0` - time per question isn't limited. (default value)
+    - *any other number* - student has that amount of seconds to answer each question.
+
+- `repeatIncorrect` - whether questions with incorrect answers should be returned back into the question queue and asked again.
+    - `false` - Just ask every question once. (default value)
+    - `true` - Repeat questions until they are answered correctly.
 
 ## Bugs?
 

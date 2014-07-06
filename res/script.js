@@ -7,19 +7,20 @@
 // Fisher-Yates shuffling algorithm
 // Adapted from: http://bost.ocks.org/mike/shuffle/
 
-function shuffle(obj) {
-	var numToShuffle = obj.length;
+function shuffle(input) {
+	arr = input.slice(0);	// shallow copy
+	var numToShuffle = arr.length;
 
 	while (numToShuffle) {
 		var pick = Math.floor(Math.random() * numToShuffle);
 		numToShuffle--;
 
-		var temp = obj[numToShuffle];
-		obj[numToShuffle] = obj[pick];
-		obj[pick] = temp;
+		var temp = arr[numToShuffle];
+		arr[numToShuffle] = arr[pick];
+		arr[pick] = temp;
 	}
 
-	return obj;
+	return arr;
 }
 
 

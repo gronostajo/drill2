@@ -18,11 +18,12 @@
 			question: function (body) {
 				this.body = body;
 				this.answers = [];
+				this.scoreLog = [];
 
 				this.addAnswer = function (body, correct) {
 					var answer = new $scope.c.answer(body, correct);
 					this.answers.push(answer);
-				}
+				};
 
 				this.totalCorrect = function () {
 					var x = 0;
@@ -30,7 +31,7 @@
 						if (this.answers[i].correct) x++;
 					}
 					return x;
-				}
+				};
 
 				this.correct = function () {
 					var x = 0;
@@ -38,7 +39,7 @@
 						if (this.answers[i].checked && this.answers[i].correct) x++;
 					}
 					return x;
-				}
+				};
 
 				this.incorrect = function () {
 					var x = 0;
@@ -46,7 +47,7 @@
 						if (this.answers[i].checked && !this.answers[i].correct) x++;
 					}
 					return x;
-				}
+				};
 
 				this.missed = function () {
 					var x = 0;
@@ -54,47 +55,62 @@
 						if (!this.answers[i].checked && this.answers[i].correct) x++;
 					}
 					return x;
-				}
+				};
+
+				this.grade = function (grader) {
+					var grade = grader.grade(this);
+					var time = this.hasOwnProperty('timeLeft')
+						? this.timeLeft : 0;
+
+					this.scoreLog.push({
+						score: grade.score,
+						total: grade.total,
+						timeLeft: time
+					});
+
+					return grade;
+				};
 			},
 
 			answer: function (body, correct) {
-				this.body = body,
-				this.correct = !!correct,
-				this.checked = false,
+				this.body = body;
+				this.correct = !!correct;
+				this.checked = false;
 
 				this.reset = function () {
 					this.checked = false;
-				}
+				};
 			},
 
 			stats: function () {
-				this.correct = 0,
-				this.partial = 0,
-				this.incorrect = 0,
-				this.score = 0,
-				this.totalPoints = 0,
+				this.correct = 0;
+				this.partial = 0;
+				this.incorrect = 0;
+				this.score = 0;
+				this.totalPoints = 0;
 
 				this.totalQuestions = function() {
 					return this.correct + this.incorrect + this.partial;
-				},
+				};
+
 				this.pcOfQuestions = function (num) {
 					return (this.totalQuestions())
 						? Math.round(num * 100 / this.totalQuestions())
 						: 0;
-				},
+				};
 
 				this.pcScore = function () {
 					return (this.totalPoints) ? Math.round(this.score * 100 / this.totalPoints) : 0;
-				}
+				};
 			},
 
 			view: function () {
-				this.current = 'first',
-				this.isFirst = function () { return this.current == 'first'; },
-				this.isNotGraded = function () { return this.current == 'question'; },
-				this.isGraded = function () { return this.current == 'graded'; },
-				this.isQuestion = function () { return this.isGraded() || this.isNotGraded(); },
-				this.isFinal = function () { return this.current == 'end'; }
+				this.current = 'first';
+				this.isFirst = function () { return this.current == 'first'; };
+				this.isNotGraded = function () { return this.current == 'question'; };
+				this.isGraded = function () { return this.current == 'graded'; };
+				this.isQuestion = function () { return this.isGraded() || this.isNotGraded(); };
+				this.isFinal = function () { return this.current == 'end'; };
 			},
 
 			perQuestionGrader: function (max, radical) {
@@ -170,22 +186,18 @@
 
 			$scope.config = {
 				shuffleQuestions: true,
-				shuffleAnswers: true,
+				shuffleAnswers: true
 
-				gradingMethod: 'perQuestion',
-				gradingRadical: '1',
-				gradingPPQ: 1,		// points per question
-
-				markdown: false,
-
-				timeLimitEnabled: false,
-				timeLimitSecs: 90
+				// Other config fields are set with default or overriden values
+				// each time questions are loaded, so no need to initialize them
+				// with the app.
 			};
 		};
 
 		$scope.softInitialize = function () {
 			$scope.stopTimer();
 
+			$scope.loadedQuestions = [];
 			$scope.questions = [];
 			$scope.questionIndex = 0;
 
@@ -237,6 +249,7 @@
 
 		$scope.nextQuestion = function () {
 			$scope.questionIndex++;
+
 			if ($scope.questionIndex > $scope.questions.length) {
 				$scope.view.current = 'end';
 				return;
@@ -244,9 +257,11 @@
 
 			$scope.view.current = 'question';
 
-			var index = $scope.shuffleMap[$scope.questionIndex - 1]
+			$scope.currentQuestion = $scope.questions[$scope.questionIndex - 1];
 
-			$scope.currentQuestion = $scope.questions[index];
+			for (var i = 0; i < $scope.currentQuestion.answers.length; i++) {
+				$scope.currentQuestion.answers[i].checked = false;
+			}
 
 			if ($scope.config.timeLimitEnabled) {
 				$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
@@ -263,15 +278,20 @@
 			var incorrect = $scope.currentQuestion.incorrect();
 			var missed = $scope.currentQuestion.missed();
 
-			if (incorrect || !correct) $scope.stats.incorrect++;
-			else if (missed) $scope.stats.partial++;
-			else $scope.stats.correct++;
+			var grade = $scope.currentQuestion.grade($scope.grader);
 
-			var grade = $scope.grader.grade($scope.currentQuestion);
-			$scope.currentQuestion.grade = grade;
+			if ($scope.questionIndex <= $scope.loadedQuestions.length) {
+				if (incorrect || !correct) $scope.stats.incorrect++;
+				else if (missed) $scope.stats.partial++;
+				else $scope.stats.correct++;
 
-			$scope.stats.totalPoints += grade.total;
-			$scope.stats.score += grade.score;
+				$scope.stats.totalPoints += grade.total;
+				$scope.stats.score += grade.score;
+			}
+
+			if ((grade.score < grade.total) && $scope.config.repeatIncorrect) {
+				$scope.questions.push($scope.currentQuestion);
+			}
 		};
 
 		$scope.getTextFile = function () {
@@ -283,17 +303,7 @@
 
 		$scope.loadQuestions = function (manual) {
 			$scope.questions = [];
-
-			// load dummy questions
-			// for (var m = 0; m < $scope.dummyQuestions.length; m++) {
-			// 	var dq = $scope.dummyQuestions[m];
-			// 	var q = new $scope.c.question(dq.body);
-			// 	$scope.questions.push(q);
-
-			// 	for (var n = 0; n < dq.answers.length; n++) {
-			// 		q.addAnswer(dq.answers[n].body, dq.answers[n].correct);
-			// 	}
-			// }
+			$scope.loadedQuestions = [];
 
 			var qs = $scope.dataString.split(/(?:\r?\n){2,}/);
 
@@ -303,7 +313,8 @@
 				grading: 'perAnswer',
 				radical: true,
 				ptsPerQuestion: 1,
-				timeLimit: 0
+				timeLimit: 0,
+				repeatIncorrect: false
 			};
 
 			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[qs.length - 1]);
@@ -361,6 +372,8 @@
 				$scope.config.timeLimitSecs = secs;
 			}
 
+			$scope.config.repeatIncorrect = !!options.repeatIncorrect;
+
 			for (var i = 0; i < qs.length; i++) {
 				var question = null;
 
@@ -392,12 +405,12 @@
 				}
 
 				if (answers >= 2 && correct >= 1) {
-					$scope.questions.push(question);
+					$scope.loadedQuestions.push(question);
 				}
 
 			}
 
-			$scope.fileError = !$scope.questions.length;
+			$scope.fileError = !$scope.loadedQuestions.length;
 			if ($scope.fileError && !manual) {
 				$scope.dataString = '';
 			}
@@ -405,10 +418,10 @@
 
 		$scope.reorderElements = function () {
 			if ($scope.config.shuffleQuestions) {
-				$scope.shuffleMap = shuffle(sequence($scope.questions.length));
+				$scope.questions = shuffle($scope.loadedQuestions);
 			}
 			else {
-				$scope.shuffleMap = sequence($scope.questions.length);
+				$scope.questions = $scope.loadedQuestions.slice(0);	// shallow copy
 			}
 
 			for (var i = 0; i < $scope.questions.length; i++) {
@@ -509,6 +522,47 @@
 			}
 
 			return mins + ':' + secs;
+		}
+	})
+
+	.filter('minsSecs', function () {
+		return function (secs) {
+			var mins = Math.floor(secs / 60);
+			var mstr = (mins > 0) ? mins + 'm ' : '';
+			return mstr + (secs % 60) + 's';
+		}
+	})
+
+	.filter('scoreFormat', ['decPlacesFilter', 'minsSecsFilter', function (decPlacesFilter, minsSecsFilter) {
+		return function (score, limitedTime, timeLimit) {
+			var str = decPlacesFilter(score.score, 2) + ' / '
+				+ decPlacesFilter(score.total, 2) + ' pts';
+			if (limitedTime) {
+				str += ', ' + minsSecsFilter(timeLimit - score.timeLeft);
+			}
+			return str;
+		}
+	}])
+
+	.filter('no', function () {
+		return function (x, capitalized) {
+			return x ? x : (capitalized ? 'No' : 'no');
+		}
+	})
+
+	.filter('averageTime', function () {
+		return function (questions, timeLimit) {
+			var count = 0;
+			var total = 0;
+
+			for (var q = 0; q < questions.length; q++) {
+				count += questions[q].scoreLog.length;
+				for (var s = 0; s < questions[q].scoreLog.length; s++) {
+					total += timeLimit - questions[q].scoreLog[s].timeLeft;
+				}
+			}
+
+			return Math.round(total / count);
 		}
 	});
 

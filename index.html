@@ -49,7 +49,7 @@
 								<li class="distance"></li>
 								<li><button class="btn navbar-btn" ng-click="restart()" ng-disabled="view.isFirst()">Restart test</button></li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="reinitialize()" ng-disabled="view.isFirst() && !questions.length">Load questions</button></li>
+								<li><button class="btn navbar-btn" ng-click="reinitialize()" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
 							</ul>
 						</div>
 					</div>
@@ -68,6 +68,10 @@
 							</h3>
 						</div>
 						<div id="collapseScore" class="panel-collapse collapse">
+							<div class="panel-body" ng-show="questionIndex > loadedQuestions.length">
+								<span ng-show="view.isQuestion()">All questions were already asked once.</span>
+								<span ng-show="view.isFinal()">Presented score doesn't reflect your performance in repeated questions.</span>
+							</div>
 							<table class="table">
 								<tr>
 									<td>Correct:</td>
@@ -118,7 +122,7 @@ B) A mouse</pre>
 				</div>
 
 				<div class="col-sm-8 col-sm-pull-4 col-md-8 col-md-pull-4 col-lg-7" ng-show="view.isFirst()">
-					<div ng-show="!questions.length">
+					<div ng-show="!loadedQuestions.length">
 						<div class="page-header">
 							<h2>
 								Load test questions
@@ -145,10 +149,10 @@ B) A mouse</pre>
 						</div>
 					</div>
 
-					<form name="config_form" ng-show="questions.length">
+					<form name="config_form" ng-show="loadedQuestions.length">
 						<div class="page-header">
 							<h2>
-								<span title="Detected file format: {{fileFormat}}">{{questions.length}} questions loaded</span>
+								<span title="Detected file format: {{fileFormat}}">{{loadedQuestions.length}} questions loaded</span>
 								<button class="btn btn-default" ng-click="reinitialize()">{{ fileApiSupported ? "Choose another file" : "Edit questions" }}</button>
 							</h2>
 						</div>
@@ -232,6 +236,12 @@ B) A mouse</pre>
 											seconds per question
 										</label>
 									</div>
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" ng-model="config.repeatIncorrect">
+											Repeat incorrectly answered questions
+										</label>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -272,9 +282,11 @@ B) A mouse</pre>
 					<div class="page-header">
 						<h2>The test is over</h2>
 					</div>
+					<p ng-show="config.timeLimitEnabled">You had {{config.timeLimitSecs | minsSecs}} to answer each question. Your average answer time was {{ questions | averageTime:config.timeLimitSecs | minsSecs }}.</p>
+					<p ng-show="config.repeatIncorrect">{{questions.length - loadedQuestions.length | no:true}} questions were repeated due to incorrect answers.</p>
 					<p>Here's a wrap-up of your answers:</p>
 					<form class="summary">
-						<div class="question panel panel-default" ng-repeat="question in questions">
+						<div class="question panel panel-default" ng-repeat="question in loadedQuestions">
 							<div class="panel-body">
 								<div class="question-body" ng-bind-html="question.body | markdown" ng-show="config.markdown"></div>
 								<div class="question-body" ng-hide="config.markdown">
@@ -286,11 +298,11 @@ B) A mouse</pre>
 										{{answer.body}}
 									</label>
 								</div>
-								<div class="text-right">
-									<span>Score: {{question.grade.score | decPlaces:2}} / {{question.grade.total | decPlaces:2}}</span><br>
-									<span ng-show="question.timeLeft">Time used: {{config.timeLimitSecs - question.timeLeft}} s</span>
-									<span ng-hide="question.timeLeft">Time ran out.</span>
-								</div>
+								<ol class="pull-right" ng-class="{'one-result': !config.repeatIncorrect}">
+									<li ng-repeat="score in question.scoreLog">
+										{{score | scoreFormat:config.timeLimitEnabled:config.timeLimitSecs}}
+									</li>
+								</ol>
 							</div>
 						</div>
 					</form>

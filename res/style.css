@@ -143,6 +143,10 @@
 	font-weight: bold;
 }
 
+.summary .one-result {
+	list-style-type: none;
+}
+
 
 /* Timer */
 

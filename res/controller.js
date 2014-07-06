@@ -154,6 +154,13 @@
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
 
+			$scope.updateStatus = false;
+			$(window.applicationCache).on('checking downloading noupdate cached updateready', function (event) {
+				$scope.$apply(function () {
+					$scope.updateStatus = event.type.toLowerCase();
+				});
+			});
+
 			$scope.softInitialize();
 
 			$scope.fileError = false;
@@ -210,6 +217,12 @@
 
 			// restore config
 			$scope.config = config;
+		};
+
+		$scope.installUpdate = function () {
+			if (window.confirm('The page will be reloaded to install downloaded updates.')) {
+				window.location.reload();
+			}
 		};
 
 		$scope.setPaste = function (state) {

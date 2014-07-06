@@ -42,6 +42,11 @@
 						</div>
 						<div class="collapse navbar-collapse" id="navbar">
 							<ul class="nav navbar-nav pull-right text-right">
+								<li>
+									<button class="btn btn-default navbar-btn" disabled ng-show="updateStatus == 'downloading'">Downloading update&hellip;</button>
+									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="updateStatus == 'updateready'">Enable downloaded updates</button>
+								</li>
+								<li class="distance"></li>
 								<li><button class="btn navbar-btn" ng-click="restart()" ng-disabled="view.isFirst()">Restart test</button></li>
 								<li class="distance"></li>
 								<li><button class="btn navbar-btn" ng-click="reinitialize()" ng-disabled="view.isFirst() && !questions.length">Load questions</button></li>

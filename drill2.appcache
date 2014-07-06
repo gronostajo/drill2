@@ -1,20 +1,18 @@
 CACHE MANIFEST
 # rev 20140705-1
 CACHE:
-https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js
-https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js.map
-https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
-https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css
-https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/fonts/glyphicons-halflings-regular.svg
-https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/fonts/glyphicons-halflings-regular.ttf
-https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/fonts/glyphicons-halflings-regular.woff
-https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js
-https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js
+//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js
+//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js.map
+//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
+//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css
+//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/fonts/glyphicons-halflings-regular.svg
+//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/fonts/glyphicons-halflings-regular.ttf
+//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/fonts/glyphicons-halflings-regular.woff
+//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js
+//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js
 res/controller.js
 res/jquery.cookie-1.4.1.min.js
 res/localfile.js
 res/markdown.min.js
 res/script.js
 res/style.css
-NETWORK:
-*

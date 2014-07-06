@@ -1,5 +1,6 @@
 CACHE MANIFEST
 # rev 20140706-1
+
 CACHE:
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js.map
@@ -13,3 +14,6 @@ res/localfile.js
 res/markdown.min.js
 res/script.js
 res/style.css
+
+NETWORK:
+*

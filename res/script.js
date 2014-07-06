@@ -67,9 +67,11 @@ $(function() {
 	if (statsPreference == 'expanded') {
 		$('#collapseScore').collapse('show');
 		$.cookie('stats', 'expanded');
+		$('#collapseScoreToggle').removeClass('collapsed');
 	}
 	else {
 		$.cookie('stats', 'collapsed');
+		$('#collapseScoreToggle').addClass('collapsed');
 	}
 
 	// hook collapse and expand events to update cookie

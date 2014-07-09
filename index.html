@@ -267,7 +267,7 @@ B) A mouse</pre>
 						<h2>Question {{questionIndex}} out of {{questions.length}}</h2>
 					</div>
 					<div>
-						<div ng-bind-html="currentQuestion.body | markdown" ng-show="config.markdown"></div>
+						<div ng-bind-html="currentQuestion.body | markdown:this" ng-show="config.markdown"></div>
 						<div ng-hide="config.markdown">
 							<p ng-repeat="line in currentQuestion.body | lines">{{line}}</p>
 						</div>
@@ -299,7 +299,7 @@ B) A mouse</pre>
 					<form class="summary">
 						<div class="question panel panel-default" ng-repeat="question in loadedQuestions">
 							<div class="panel-body">
-								<div class="question-body" ng-bind-html="question.body | markdown" ng-show="config.markdown"></div>
+								<div class="question-body" ng-bind-html="question.body | markdown:this" ng-show="config.markdown"></div>
 								<div class="question-body" ng-hide="config.markdown">
 									<p ng-repeat="line in question.body | lines">{{line}}</p>
 								</div>

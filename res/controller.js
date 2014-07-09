@@ -561,8 +561,8 @@
 	})
 
 	.filter('markdown', ['$sce', function ($sce) {
-		return function(str) {
-			if (!str) return '';
+		return function(str, $scope) {
+			if (!str || !$scope.config.markdown) return '';
 			var html = markdown.toHTML(str);
 			return $sce.trustAsHtml(html);
 		};

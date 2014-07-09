@@ -75,6 +75,7 @@ If a property is ommited, default value will be used. Property names are always 
 - `grading` - Selects grading rules.
     - `"perAnswer"` - each correct answer is worth 1 point. Total amount of points that can be scored on a question depends on number of correct answers. (default value)
     - `"perQuestion"` - each question is worth fixed, configurable amount of points (see *ptsPerQUestion*). Answer's worth of point depends on number of correct answers.
+    - `"custom: <oneliner>"` - provided JavaScript oneliner will be used to grade questions. Oneliner should be based on chained ternary operators and can access four variables: `correct` - no. of checked correct answers, `incorrect` - no. of checked incorrect answers, `missed` - no. of not checked correct answers, `total` - total no. of correct answers.
 
 - `radical` - Chooses incorrect answer handling
     - `true` - any incorrect answer causes question to be graded to 0 points. (default value)

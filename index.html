@@ -18,6 +18,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
 		<script src="res/jquery.cookie-1.4.1.min.js"></script>
 		<script src="res/markdown.min.js"></script>
+		<script src="res/safeeval.min.js"></script>
 
 		<!-- Custom code -->
 		<script src="res/script.js"></script>
@@ -181,33 +182,43 @@ B) A mouse</pre>
 							<div class="panel panel-default panel-compact">
 								<div class="panel-heading">Grading</div>
 								<div class="panel-body">
-									<div class="form-group radio">
-										<label>
-											<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perAnswer">
-											1 point for each correct answer
-										</label>
+									<div>
+										<div class="form-group radio">
+											<label>
+												<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perAnswer">
+												1 point for each correct answer
+											</label>
+										</div>
+										<div class="form-group radio">
+											<label>
+												<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perQuestion">
+												<div class="inline-control">
+													<input type="number" min="1" max="10" name="ppq" class="form-control input-xs text-right" ng-model="config.gradingPPQ" ng-disabled="config.gradingMethod != 'perQuestion'">
+												</div>
+												points for entire question (fractions allowed)
+											</label>
+										</div>
+										<div class="form-group radio" ng-show="config.customGrader">
+											<label title="Grader oneliner: {{config.customGrader}}">
+												<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="custom">
+												Use grading method provided in loaded file
+											</label>
+										</div>
 									</div>
-									<div class="form-group radio">
-										<label>
-											<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perQuestion">
-											<div class="inline-control">
-												<input type="number" min="1" max="10" name="ppq" class="form-control input-xs text-right" ng-model="config.gradingPPQ" ng-disabled="config.gradingMethod != 'perQuestion'">
-											</div>
-											points for entire question (fractions allowed)
-										</label>
-									</div>
-									<hr>
-									<div class="form-group radio">
-										<label>
-											<input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="1">
-											One wrong answer zeroes score
-										</label>
-									</div>
-									<div class="form-group radio">
-										<label>
-											<input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="0">
-											Each wrong answer counterbalances correct one
-										</label>
+									<div ng-hide="config.gradingMethod == 'custom'">
+										<hr>
+										<div class="form-group radio">
+											<label>
+												<input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="1">
+												One wrong answer zeroes score
+											</label>
+										</div>
+										<div class="form-group radio">
+											<label>
+												<input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="0">
+												Each wrong answer counterbalances correct one
+											</label>
+										</div>
 									</div>
 								</div>
 							</div>

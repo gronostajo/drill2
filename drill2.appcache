@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# rev 20140706-1
+# rev 20140709-1
 
 CACHE:
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js
@@ -12,6 +12,7 @@ res/controller.js
 res/jquery.cookie-1.4.1.min.js
 res/localfile.js
 res/markdown.min.js
+res/safeeval.min.js
 res/script.js
 res/style.css
 

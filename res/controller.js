@@ -120,7 +120,7 @@
 					max: max,
 
 					grade: function (question) {
-						ret = {
+						var ret = {
 							score: 0,
 							total: this.max
 						};
@@ -143,7 +143,7 @@
 
 				return {
 					grade: function (question) {
-						ret = {
+						var ret = {
 							score: 0,
 							total: question.totalCorrect()
 						};
@@ -159,6 +159,51 @@
 						return ret;
 					}
 				};
+			},
+
+			oneLinerGrader: function (oneliner) {
+				return {
+					grade: function (question) {
+						var questionInfo = function (id) {
+							switch (id) {
+								case 'correct':
+									return question.correct();
+									break;
+
+								case 'incorrect':
+									return question.incorrect();
+									break;
+
+								case 'missed':
+									return question.missed();
+									break;
+
+								case 'total':
+									return question.totalCorrect();
+									break;
+							}
+						};
+
+						var fakeInfo = function (id) {
+							switch (id) {
+								case 'correct':
+								case 'total':
+									return question.totalCorrect();
+									break;
+
+								case 'incorrect':
+								case 'missed':
+									return 0;
+									break;
+							}
+						};
+
+						return {
+							score: SafeEval(oneliner, questionInfo),
+							total: SafeEval(oneliner, fakeInfo)
+						};
+					}
+				}
 			}
 		};
 
@@ -348,6 +393,7 @@
 			$scope.config.markdownReady = !!options.markdown;
 			$scope.config.markdown = $scope.config.markdownReady;
 
+			$scope.config.customGrader = false;
 			switch (options.grading.toLowerCase()) {
 				case 'perquestion':
 				case 'peranswer':
@@ -355,6 +401,20 @@
 					break;
 
 				default:
+					var matched = /^custom: +(.+)$/.exec(options.grading)
+					if (matched) {
+						try {
+							SafeEval(matched[1], function (id) {
+								return (id == 'total') ? 3 : 1;
+							});
+							$scope.config.gradingMethod = 'custom';
+							$scope.config.customGrader = matched[1];
+							break;
+						}
+						catch (ex) {
+							console.error('Custom grader caused an error when testing.');
+						}
+					}
 					$scope.config.gradingMethod = 'perAnswer';
 					break;
 			}
@@ -440,6 +500,10 @@
 			switch ($scope.config.gradingMethod.toLowerCase()) {
 				case 'peranswer':
 					$scope.grader = new $scope.c.perAnswerGrader(radical);
+					break;
+
+				case 'custom':
+					$scope.grader = new $scope.c.oneLinerGrader($scope.config.customGrader);
 					break;
 
 				case 'perquestion':

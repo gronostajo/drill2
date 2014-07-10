@@ -91,6 +91,11 @@ If a property is ommited, default value will be used. Property names are always 
     - `false` - Just ask every question once. (default value)
     - `true` - Repeat questions until they are answered correctly.
 
+- `explain` - whether explainations should be shown automatically if they are available.
+    - `"summary"` - explainations are shown only on the summary screen.
+    - `"optional"` - wait until user clicks the button. (default value)
+    - `"always"` - show explainations immediately when checking answers.
+
 ## Bugs?
 
 Please report any bugs using the [issue tracker](https://github.com/gronostajo/drill2/issues).

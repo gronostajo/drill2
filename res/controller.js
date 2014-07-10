@@ -15,13 +15,15 @@
 		 */
 
 		$scope.c = {
-			question: function (body) {
+			question: function (body, id) {
 				this.body = body;
+				this.id = id;
+				this.explaination = false;
 				this.answers = [];
 				this.scoreLog = [];
 
-				this.addAnswer = function (body, correct) {
-					var answer = new $scope.c.answer(body, correct);
+				this.addAnswer = function (body, correct, id) {
+					var answer = new $scope.c.answer(body, correct, id);
 					this.answers.push(answer);
 				};
 
@@ -70,15 +72,40 @@
 
 					return grade;
 				};
+
+				this.loadExplaination = function (expl) {
+					if (expl.hasOwnProperty(this.id)) {
+						if (expl[this.id].hasOwnProperty('general')) {
+							this.explaination = expl[this.id].general;
+							this.hasExplainations = true;
+						}
+						if (expl[this.id].hasOwnProperty('answers')) {
+							for (var a = 0; a < this.answers.length; a++) {
+								this.answers[a].loadExplaination(expl[this.id].answers);
+								if (this.answers[a].explaination) {
+									this.hasExplainations = true;
+								}
+							}
+						}
+					}
+				};
 			},
 
-			answer: function (body, correct) {
+			answer: function (body, correct, id) {
 				this.body = body;
+				this.id = id;
+				this.explaination = false;
 				this.correct = !!correct;
 				this.checked = false;
 
 				this.reset = function () {
 					this.checked = false;
+				};
+
+				this.loadExplaination = function (expl) {
+					if (expl.hasOwnProperty(this.id)) {
+						this.explaination = expl[this.id];
+					}
 				};
 			},
 
@@ -180,6 +207,10 @@
 
 								case 'total':
 									return question.totalCorrect();
+									break;
+
+								default:
+									return 0;
 									break;
 							}
 						};
@@ -294,6 +325,7 @@
 
 		$scope.nextQuestion = function () {
 			$scope.questionIndex++;
+			$scope.config.showExplainations = ($scope.config.explain == 'always');
 
 			if ($scope.questionIndex > $scope.questions.length) {
 				$scope.view.current = 'end';
@@ -359,8 +391,10 @@
 				radical: true,
 				ptsPerQuestion: 1,
 				timeLimit: 0,
-				repeatIncorrect: false
+				repeatIncorrect: false,
+				explain: 'optional'
 			};
+			var expl = false;
 
 			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[qs.length - 1]);
 			if (matched) {
@@ -373,7 +407,10 @@
 				}
 
 				for (var key in loaded) {
-					if (loaded.hasOwnProperty(key) && options.hasOwnProperty(key)) {
+					if (key == 'explainations') {
+						expl = loaded[key];
+					}
+					else if (options.hasOwnProperty(key)) {
 						options[key] = loaded[key];
 					}
 				}
@@ -401,7 +438,7 @@
 					break;
 
 				default:
-					var matched = /^custom: +(.+)$/.exec(options.grading)
+					var matched = /^custom: *(.+)$/.exec(options.grading)
 					if (matched) {
 						try {
 							SafeEval(matched[1], function (id) {
@@ -434,18 +471,34 @@
 
 			$scope.config.repeatIncorrect = !!options.repeatIncorrect;
 
+			if (expl && /summary|optional|always/i.exec(options.explain)) {
+				$scope.config.explain = options.explain.toLowerCase();
+			}
+			else if (expl) {
+				$scope.config.explain = 'optional';
+			}
+			$scope.config.showExplainations = ($scope.config.explain == 'always');
+
 			for (var i = 0; i < qs.length; i++) {
 				var question = null;
 
 				var body = [];
 				var answers = 0;
 				var correct = 0;
+				var id = false;
 
 				var lines = qs[i].split(/(?:\r?\n)/);
 				for (var j = 0; j < lines.length; j++) {
 					var matched = /^\s*(>+)?([A-Z])\)\s*(.+)$/i.exec(lines[j]);
 
 					if (!matched && !answers) {
+						if (!body.length) {
+							var matchedId = /^\[#(\d+)\]\s*(.+)$/.exec(lines[j]);
+							if (matchedId) {
+								id = matchedId[1];
+								lines[j] = matchedId[2];
+							}
+						}
 						body.push(lines[j]);
 					}
 					else if (!matched && answers) {
@@ -454,13 +507,13 @@
 
 					else {
 						if (question == null) {
-							question = new $scope.c.question(body.join('\n\n'));
+							question = new $scope.c.question(body.join('\n\n'), id);
 						}
 						answers++;
 						if (matched[1]) {
 							correct++;
 						}
-						question.addAnswer(matched[3], matched[1]);
+						question.addAnswer(matched[3], matched[1], matched[2]);
 					}
 				}
 
@@ -468,6 +521,16 @@
 					$scope.loadedQuestions.push(question);
 				}
 
+			}
+
+			$scope.explainationsAvailable = false;
+			if (expl) {
+				for (var q = 0; q < $scope.loadedQuestions.length; q++) {
+					$scope.loadedQuestions[q].loadExplaination(expl);
+					if ($scope.loadedQuestions[q].hasExplainations) {
+						$scope.explainationsAvailable = true;
+					}
+				}
 			}
 
 			$scope.fileError = !$scope.loadedQuestions.length;
@@ -538,6 +601,13 @@
 			}
 		};
 
+		$scope.showAllExplainations = function () {
+			for (var q = 0; q < $scope.questions.length; q++) {
+				$scope.questions[q].explain = true;
+			}
+			$scope.explainationsAvailable = false;
+		};
+
 
 		$scope.initialize();
 	}])
@@ -561,8 +631,8 @@
 	})
 
 	.filter('markdown', ['$sce', function ($sce) {
-		return function(str) {
-			if (!str) return '';
+		return function(str, $scope) {
+			if (!str || !$scope.config.markdown) return '';
 			var html = markdown.toHTML(str);
 			return $sce.trustAsHtml(html);
 		};

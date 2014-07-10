@@ -223,13 +223,25 @@ B) A mouse</pre>
 								</div>
 							</div>
 
-							<div class="form-group panel panel-default panel-compact" ng-show="config.markdownReady">
-								<div class="panel-heading">Markdown</div>
+							<div class="panel panel-default panel-compact" ng-show="explainationsAvailable">
+								<div class="panel-heading">Explainations</div>
 								<div class="panel-body">
-									<div class="checkbox">
+									<div class="form-group radio">
 										<label>
-											<input type="checkbox" ng-model="config.markdown">
-											Enable Markdown formatting
+											<input type="radio" name="explain" ng-model="config.explain" value="summary">
+											Only in summary
+										</label>
+									</div>
+									<div class="form-group radio">
+										<label>
+											<input type="radio" name="explain" ng-model="config.explain" value="optional">
+											Optional between questions
+										</label>
+									</div>
+									<div class="form-group radio">
+										<label>
+											<input type="radio" name="explain" ng-model="config.explain" value="always">
+											Always show between questions
 										</label>
 									</div>
 								</div>
@@ -256,6 +268,18 @@ B) A mouse</pre>
 									</div>
 								</div>
 							</div>
+
+							<div class="form-group panel panel-default panel-compact" ng-show="config.markdownReady">
+								<div class="panel-heading">Features</div>
+								<div class="panel-body">
+									<div class="checkbox">
+										<label>
+											<input type="checkbox" ng-model="config.markdown">
+											Enable Markdown formatting
+										</label>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="form-group">
 							<button type="button" class="btn btn-default btn-lg btn-block" ng-click="firstQuestion()" ng-disabled="config_form.ppq.$invalid || config_form.time_limit.$invalid">Begin test</button>
@@ -265,15 +289,15 @@ B) A mouse</pre>
 
 				<div class="col-sm-8 col-sm-pull-4 col-md-8 col-md-pull-4 col-lg-7" ng-show="view.isQuestion()">
 					<div class="page-header">
-						<h2>Question {{questionIndex}} out of {{questions.length}}</h2>
-					</div>
-					<div>
-						<div ng-bind-html="currentQuestion.body | markdown" ng-show="config.markdown"></div>
-						<div ng-hide="config.markdown">
-							<p ng-repeat="line in currentQuestion.body | lines">{{line}}</p>
-						</div>
+						<h2 title="{{currentQuestion.id != false ? currentQuestion.id : 'No ID'}}">Question {{questionIndex}} out of {{questions.length}}</h2>
 					</div>
 					<form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">
+						<div>
+							<div ng-bind-html="currentQuestion.body | markdown:this" ng-show="config.markdown"></div>
+							<div ng-hide="config.markdown">
+								<p ng-repeat="line in currentQuestion.body | lines">{{line}}</p>
+							</div>
+						</div>
 						<div class="form-group">
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
 								<label>
@@ -282,9 +306,20 @@ B) A mouse</pre>
 								</label>
 							</div>
 						</div>
+						<div ng-show="view.isGraded() && config.showExplainations && currentQuestion.hasExplainations">
+							<h3>Explainations:</h3>
+							<p ng-show="currentQuestion.explaination">{{currentQuestion.explaination}}</p>
+							<ul>
+								<li ng-repeat="answer in currentQuestion.answers" ng-show="answer.explaination">
+									<i>{{answer.body}}:</i><br>
+									<span>{{answer.explaination}}</span>
+								</li>
+							</ul>
+						</div>
 						<div class="form-group">
 							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade()">Check answers</button>
 							<button type="submit" class="btn btn-info btn-lg btn-block" ng-show="view.isGraded() && questionIndex < questions.length">Next question</button>
+							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isGraded() && currentQuestion.hasExplainations && !config.showExplainations && config.explain != 'summary'" ng-click="config.showExplainations = true">Explain answers</button>
 							<button type="submit" class="btn btn-success btn-lg btn-block" ng-show="view.isGraded() && questionIndex >= questions.length">End test</button>
 						</div>
 					</form>
@@ -296,18 +331,20 @@ B) A mouse</pre>
 					</div>
 					<p ng-show="config.timeLimitEnabled">You had {{config.timeLimitSecs | minsSecs}} to answer each question. Your average answer time was {{ questions | averageTime:config.timeLimitSecs | minsSecs }}.</p>
 					<p ng-show="config.repeatIncorrect">{{questions.length - loadedQuestions.length | no:true}} questions were repeated due to incorrect answers.</p>
-					<p>Here's a wrap-up of your answers:</p>
+					<p>Here's a wrap-up of your answers. <a href="#" ng-show="explainationsAvailable" ng-click="showAllExplainations()">Click here to reveal all explainations.</a></p>
 					<form class="summary">
 						<div class="question panel panel-default" ng-repeat="question in loadedQuestions">
 							<div class="panel-body">
-								<div class="question-body" ng-bind-html="question.body | markdown" ng-show="config.markdown"></div>
+								<div class="question-body" ng-bind-html="question.body | markdown:this" ng-show="config.markdown"></div>
 								<div class="question-body" ng-hide="config.markdown">
 									<p ng-repeat="line in question.body | lines">{{line}}</p>
 								</div>
+								<p ng-show="question.explain && question.explaination">{{question.explaination}}</p>
 								<div class="checkbox" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">
-										{{answer.body}}
+										<span>{{answer.body}}</span>
+										<p ng-show="question.explain && answer.explaination">{{answer.explaination}}</p>
 									</label>
 								</div>
 								<ol class="pull-right" ng-class="{'one-result': !config.repeatIncorrect}">
@@ -315,6 +352,7 @@ B) A mouse</pre>
 										{{score | scoreFormat:config.timeLimitEnabled:config.timeLimitSecs}}
 									</li>
 								</ol>
+								<button type="button" class="btn btn-default" ng-show="question.hasExplainations && !question.explain" ng-click="question.explain = true">Explain answers</button>
 							</div>
 						</div>
 					</form>

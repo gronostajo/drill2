@@ -129,17 +129,17 @@
 	font-weight: normal;
 }
 
-.summary .correct {
+.summary .correct span {
 	color: #3c763d;
 	font-weight: bold;
 }
 
-.summary .incorrect {
+.summary .incorrect span {
 	color: #888;
 	text-decoration: line-through;
 }
 
-.summary .missed {
+.summary .missed span {
 	font-weight: bold;
 }
 

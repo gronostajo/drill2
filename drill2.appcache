@@ -3,7 +3,6 @@ CACHE MANIFEST
 
 CACHE:
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js
-//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js.map
 //ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js
 //cdn.mathjax.org/mathjax/2.3-latest/config/Safe.js
 //cdn.mathjax.org/mathjax/2.3-latest/config/TeX-AMS-MML_HTMLorMML.js

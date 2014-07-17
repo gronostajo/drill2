@@ -8,7 +8,7 @@
 
 	var app = angular.module('DrillApp', [])
 
-	.controller('DrillController', ['$scope', 'fileReader', function($scope, fileReader) {
+	.controller('DrillController', ['$scope', '$timeout', 'fileReader', function($scope, $timeout, fileReader) {
 
 		/*
 		 *	Constructors
@@ -268,6 +268,14 @@
 				// each time questions are loaded, so no need to initialize them
 				// with the app.
 			};
+
+			$scope.$watch('view.current', function () {
+				if ($scope.config.mathjax && ($scope.view.current == 'end')) {
+					$timeout(function () {
+						MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'finalView']);
+					});
+				}
+			});
 		};
 
 		$scope.softInitialize = function () {
@@ -344,6 +352,12 @@
 				$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
 				$scope.startTimer();
 			}
+
+			if ($scope.config.mathjax) {
+				$timeout(function () {
+					MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
+				});
+			}
 		};
 
 		$scope.grade = function () {
@@ -387,6 +401,7 @@
 			var options = {
 				format: 'legacy',
 				markdown: false,
+				mathjax: false,
 				grading: 'perAnswer',
 				radical: true,
 				ptsPerQuestion: 1,
@@ -419,6 +434,7 @@
 			switch (options.format) {
 				case 'legacy':
 				case '2':
+				case '2.1':
 					$scope.fileFormat = options.format;
 					break;
 
@@ -429,6 +445,9 @@
 
 			$scope.config.markdownReady = !!options.markdown;
 			$scope.config.markdown = $scope.config.markdownReady;
+
+			$scope.config.mathjaxReady = !!options.mathjax;
+			$scope.config.mathjax = $scope.config.mathjaxReady;
 
 			$scope.config.customGrader = false;
 			switch (options.grading.toLowerCase()) {

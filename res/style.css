@@ -48,13 +48,17 @@
 
 /* Test options */
 
-.panel-compact .panel-heading {
+.panel-compact .panel-heading, .panel-compact-notop .panel-heading {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
 .panel-compact .panel-body {
 	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.panel-compact-notop .panel-body {
 	padding-bottom: 0;
 }
 

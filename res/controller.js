@@ -247,7 +247,7 @@
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
 
 			$scope.updateStatus = false;
-			$(window.applicationCache).on('checking downloading noupdate cached updateready', function (event) {
+			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
 				$scope.$apply(function () {
 					$scope.updateStatus = event.type.toLowerCase();
 				});

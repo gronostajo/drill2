@@ -13,6 +13,7 @@ Drill 2 is a successor to [Pober's Drill System](https://code.google.com/p/drill
 - **Low footprint.** Drill 2 doesn't require Java VM or any additional software, except for a web browser.
 - **Markdown support.** You can apply basic text formatting to your questions. Image embedding is supported too.
 - **Explainations.** Sometimes questions need explainations why some answers are correct and other ones aren't, now you can add them.
+- **Neat formulas.** You can use LaTeX to render fancy math formulas in user's browser.
 
 ## How do I use it?
 

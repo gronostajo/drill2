@@ -593,7 +593,7 @@
 
 				question.body = question.body.replace(regex, function (match, group1, group2) {
 					var group = group1 || group2;
-					var escaped = group.replace(/[\\`*_{}\[\]()#+-.!]/g, function (token) {
+					var escaped = group.replace(/[\\`*_{}\[\]()#+\-.!]/g, function (token) {
 						return '\\' + token;
 					});
 					var delim = match.substr(0, 2);

@@ -333,6 +333,7 @@
 
 		$scope.firstQuestion = function () {
 			$scope.reorderElements();
+			$scope.escapeQuestions();
 			$scope.loadGrader();
 			$scope.nextQuestion();
 		}
@@ -578,6 +579,26 @@
 					q.answers[j].sortingKey = ($scope.config.shuffleAnswers)
 						? Math.random() : j;
 				}
+			}
+		};
+
+		$scope.escapeQuestions = function () {
+			if (!$scope.config.mathjaxReady || !$scope.config.markdown) {
+				return;
+			}
+
+			for (var q = 0; q < $scope.questions.length; q++) {
+				var question = $scope.questions[q];
+				var regex = /\$\$(.+)\$\$|\^\^(.+)\^\^/g;
+
+				question.body = question.body.replace(regex, function (match, group1, group2) {
+					var group = group1 || group2;
+					var escaped = group.replace(/[\\`*_{}\[\]()#+-.!]/g, function (token) {
+						return '\\' + token;
+					});
+					var delim = match.substr(0, 2);
+					return delim + escaped + delim;
+				});
 			}
 		};
 

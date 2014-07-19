@@ -253,6 +253,12 @@
 				});
 			});
 
+			$('#manualInput').keydown(function (e) {
+				if (e.ctrlKey && e.keyCode == 13) {
+					$('#confirmManualInput').click();
+				}
+			});
+
 			$scope.softInitialize();
 
 			$scope.fileError = false;

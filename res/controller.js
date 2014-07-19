@@ -301,11 +301,11 @@
 			$scope.fileError = false;
 			$('#fileSelector').val('').attr('type', 'text').attr('type', 'file');
 
-			if ($scope.fileApiSupported) {
-				$('#fileSelector').click();
+			if ($scope.pasteEnabled || !$scope.fileApiSupported) {
+				$('#manualInput').focus();
 			}
 			else {
-				$('#fileContents').focus();
+				$('#fileSelector').click();
 			}
 		}
 

@@ -680,7 +680,7 @@
 
 	.filter('doubleNewlines', function () {
 		return function (str) {
-			return str.replace('\n', '\n\n');
+			return str ? str.replace('\n', '\n\n') : '';
 		}
 	})
 

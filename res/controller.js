@@ -27,6 +27,10 @@
 					this.answers.push(answer);
 				};
 
+				this.appendToLastAnswer = function (line) {
+					this.answers[this.answers.length-1].append(line);
+				}
+
 				this.totalCorrect = function () {
 					var x = 0;
 					for (var i = 0; i < this.answers.length; i++) {
@@ -92,15 +96,15 @@
 			},
 
 			answer: function (body, correct, id) {
-				this.body = body;
+				this.body = body.trim();
 				this.id = id;
 				this.explaination = false;
 				this.correct = !!correct;
 				this.checked = false;
 
-				this.reset = function () {
-					this.checked = false;
-				};
+				this.append = function (line) {
+					this.body += '\n\n' + line.trim();
+				}
 
 				this.loadExplaination = function (expl) {
 					if (expl.hasOwnProperty(this.id)) {
@@ -528,7 +532,7 @@
 						body.push(lines[j]);
 					}
 					else if (!matched && answers) {
-						continue;
+						question.appendToLastAnswer(lines[j]);
 					}
 
 					else {

@@ -320,7 +320,7 @@ B) A mouse</pre>
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
 								<label>
 									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
-									<span>{{answer.body}}</span>
+									<p ng-repeat="line in answer.body | lines">{{line}}</p>
 								</label>
 							</div>
 						</div>

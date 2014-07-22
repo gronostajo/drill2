@@ -79,18 +79,8 @@
 
 				this.loadExplaination = function (expl) {
 					if (expl.hasOwnProperty(this.id)) {
-						if (expl[this.id].hasOwnProperty('general')) {
-							this.explaination = expl[this.id].general;
-							this.hasExplainations = true;
-						}
-						if (expl[this.id].hasOwnProperty('answers')) {
-							for (var a = 0; a < this.answers.length; a++) {
-								this.answers[a].loadExplaination(expl[this.id].answers);
-								if (this.answers[a].explaination) {
-									this.hasExplainations = true;
-								}
-							}
-						}
+						this.explaination = expl[this.id];
+						this.hasExplainations = true;
 					}
 				};
 			},
@@ -98,19 +88,12 @@
 			answer: function (body, correct, id) {
 				this.body = body.trim();
 				this.id = id;
-				this.explaination = false;
 				this.correct = !!correct;
 				this.checked = false;
 
 				this.append = function (line) {
 					this.body += '\n\n' + line.trim();
 				}
-
-				this.loadExplaination = function (expl) {
-					if (expl.hasOwnProperty(this.id)) {
-						this.explaination = expl[this.id];
-					}
-				};
 			},
 
 			stats: function () {

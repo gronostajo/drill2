@@ -325,14 +325,7 @@ B) A mouse</pre>
 							</div>
 						</div>
 						<div ng-show="view.isGraded() && config.showExplainations && currentQuestion.hasExplainations">
-							<h3>Explainations:</h3>
 							<p ng-show="currentQuestion.explaination">{{currentQuestion.explaination}}</p>
-							<ul>
-								<li ng-repeat="answer in currentQuestion.answers" ng-show="answer.explaination">
-									<i>{{answer.body}}:</i><br>
-									<span>{{answer.explaination}}</span>
-								</li>
-							</ul>
 						</div>
 						<div class="form-group">
 							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade()">Check answers</button>
@@ -357,14 +350,13 @@ B) A mouse</pre>
 								<div class="question-body" ng-hide="config.markdown">
 									<p ng-repeat="line in question.body | lines">{{line}}</p>
 								</div>
-								<p ng-show="question.explain && question.explaination">{{question.explaination}}</p>
 								<div class="checkbox" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">
 										<span>{{answer.body}}</span>
-										<p ng-show="question.explain && answer.explaination">{{answer.explaination}}</p>
 									</label>
 								</div>
+								<p ng-show="question.explain && question.explaination">{{question.explaination}}</p>
 								<ol class="pull-right" ng-class="{'one-result': !config.repeatIncorrect}">
 									<li ng-repeat="score in question.scoreLog">
 										{{score | scoreFormat:config.timeLimitEnabled:config.timeLimitSecs}}

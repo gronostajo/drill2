@@ -674,7 +674,7 @@
 	.filter('lines', ['$sce', function ($sce) {
 		return function(str) {
 			if (!str) return [];
-			return str.split(/\s*(\r?\n)(\r?\n\s)*/);
+			return str.split(/\s*(?:\r?\n)(?:\r?\n\s)*/);
 		};
 	}])
 

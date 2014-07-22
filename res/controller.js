@@ -678,6 +678,12 @@
 		};
 	}])
 
+	.filter('doubleNewlines', function () {
+		return function (str) {
+			return str.replace('\n', '\n\n');
+		}
+	})
+
 	.filter('minutes', function () {
 		return function (secs) {
 			secs = parseInt(secs);

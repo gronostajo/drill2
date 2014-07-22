@@ -325,7 +325,10 @@ B) A mouse</pre>
 							</div>
 						</div>
 						<div ng-show="view.isGraded() && config.showExplainations && currentQuestion.hasExplainations">
-							<p ng-show="currentQuestion.explaination">{{currentQuestion.explaination}}</p>
+							<div ng-bind-html="currentQuestion.explaination | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
+							<div ng-hide="config.markdown">
+								<p ng-repeat="line in currentQuestion.explaination | lines">{{line}}</p>
+							</div>
 						</div>
 						<div class="form-group">
 							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade()">Check answers</button>
@@ -356,7 +359,12 @@ B) A mouse</pre>
 										<span>{{answer.body}}</span>
 									</label>
 								</div>
-								<p ng-show="question.explain && question.explaination">{{question.explaination}}</p>
+								<div ng-show="question.explain && question.explaination">
+									<div ng-bind-html="question.explaination | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
+									<div ng-hide="config.markdown">
+										<p ng-repeat="line in question.explaination | lines">{{line}}</p>
+									</div>
+								</div>
 								<ol class="pull-right" ng-class="{'one-result': !config.repeatIncorrect}">
 									<li ng-repeat="score in question.scoreLog">
 										{{score | scoreFormat:config.timeLimitEnabled:config.timeLimitSecs}}

@@ -506,7 +506,7 @@
 
 					if (!matched && !answers) {
 						if (!body.length) {
-							var matchedId = /^\[#(\d+)\]\s*(.+)$/.exec(lines[j]);
+							var matchedId = /^\[#([a-zA-Z\d\-+_]+)\]\s*(.+)$/.exec(lines[j]);
 							if (matchedId) {
 								id = matchedId[1];
 								lines[j] = matchedId[2];

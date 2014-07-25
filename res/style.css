@@ -137,22 +137,31 @@
 	font-weight: normal;
 }
 
-.summary .correct span {
+.summary .correct span, .summary .correct p {
 	color: #3c763d;
 	font-weight: bold;
 }
 
-.summary .incorrect span {
+.summary .incorrect span, .summary .incorrect p {
 	color: #888;
 	text-decoration: line-through;
 }
 
-.summary .missed span {
+.summary .missed span, .summary .missed p {
 	font-weight: bold;
 }
 
 .summary .one-result {
 	list-style-type: none;
+}
+
+.answer .id {
+	display: inline-block;
+	float: left;
+}
+
+.answer.explained p + p {
+	margin-left: 1.5em;
 }
 
 

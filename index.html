@@ -321,8 +321,10 @@ B) A mouse</pre>
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
 								<label>
 									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
-									<span class="id"  ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
-									<p ng-repeat="line in answer.body | lines">{{line}}</p>
+									<div class="content">
+										<span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
+										<p ng-repeat="line in answer.body | lines">{{line}}</p>
+									</div>
 								</label>
 							</div>
 						</div>
@@ -358,8 +360,10 @@ B) A mouse</pre>
 								<div class="checkbox answer explained" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">
-										<span class="id">{{answer.id}})&nbsp;</span>
-										<p ng-repeat="line in answer.body | doubleNewlines | lines">{{line}}</p>
+										<div class="content">
+											<span class="id">{{answer.id}})&nbsp;</span>
+											<p ng-repeat="line in answer.body | doubleNewlines | lines">{{line}}</p>
+										</div>
 									</label>
 								</div>
 								<div ng-show="question.explain && question.explanation">

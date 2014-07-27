@@ -234,8 +234,8 @@ B) A mouse</pre>
 								</div>
 							</div>
 
-							<div class="panel panel-default panel-compact" ng-show="explainationsAvailable">
-								<div class="panel-heading">Explainations</div>
+							<div class="panel panel-default panel-compact" ng-show="explanationsAvailable">
+								<div class="panel-heading">Explanations</div>
 								<div class="panel-body">
 									<div class="form-group radio">
 										<label>
@@ -317,24 +317,24 @@ B) A mouse</pre>
 							</div>
 						</div>
 						<div class="form-group">
-							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplainations && currentQuestion.hasExplainations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
+							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
 								<label>
 									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
-									<span class="id"  ng-show="view.isGraded() && config.showExplainations && currentQuestion.hasExplainations">{{answer.id}})&nbsp;</span>
+									<span class="id"  ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
 									<p ng-repeat="line in answer.body | lines">{{line}}</p>
 								</label>
 							</div>
 						</div>
-						<div ng-show="view.isGraded() && config.showExplainations && currentQuestion.hasExplainations">
-							<div ng-bind-html="currentQuestion.explaination | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
+						<div ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">
+							<div ng-bind-html="currentQuestion.explanation | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
 							<div ng-hide="config.markdown">
-								<p ng-repeat="line in currentQuestion.explaination | lines">{{line}}</p>
+								<p ng-repeat="line in currentQuestion.explanation | lines">{{line}}</p>
 							</div>
 						</div>
 						<div class="form-group">
 							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade()">Check answers</button>
 							<button type="submit" class="btn btn-info btn-lg btn-block" ng-show="view.isGraded() && questionIndex < questions.length">Next question</button>
-							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isGraded() && currentQuestion.hasExplainations && !config.showExplainations && config.explain != 'summary'" ng-click="config.showExplainations = true">Explain answers</button>
+							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isGraded() && currentQuestion.hasExplanations && !config.showExplanations && config.explain != 'summary'" ng-click="config.showExplanations = true">Explain answers</button>
 							<button type="submit" class="btn btn-success btn-lg btn-block" ng-show="view.isGraded() && questionIndex >= questions.length">End test</button>
 						</div>
 					</form>
@@ -346,7 +346,7 @@ B) A mouse</pre>
 					</div>
 					<p ng-show="config.timeLimitEnabled">You had {{config.timeLimitSecs | minsSecs}} to answer each question. Your average answer time was {{ questions | averageTime:config.timeLimitSecs | minsSecs }}.</p>
 					<p ng-show="config.repeatIncorrect">{{questions.length - loadedQuestions.length | no:true}} questions were repeated due to incorrect answers.</p>
-					<p>Here's a wrap-up of your answers. <a href="#" ng-show="explainationsAvailable" ng-click="showAllExplainations()">Click here to reveal all explainations.</a></p>
+					<p>Here's a wrap-up of your answers. <a href="#" ng-show="explanationsAvailable" ng-click="showAllExplanations()">Click here to reveal all explanations.</a></p>
 					<form class="summary">
 						<div class="question panel panel-default" ng-repeat="question in loadedQuestions">
 							<div class="panel-body">
@@ -361,10 +361,10 @@ B) A mouse</pre>
 										<p ng-repeat="line in answer.body | doubleNewlines | lines">{{line}}</p>
 									</label>
 								</div>
-								<div ng-show="question.explain && question.explaination">
-									<div ng-bind-html="question.explaination | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
+								<div ng-show="question.explain && question.explanation">
+									<div ng-bind-html="question.explanation | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
 									<div ng-hide="config.markdown">
-										<p ng-repeat="line in question.explaination | lines">{{line}}</p>
+										<p ng-repeat="line in question.explanation | lines">{{line}}</p>
 									</div>
 								</div>
 								<ol class="pull-right" ng-class="{'one-result': !config.repeatIncorrect}">
@@ -372,7 +372,7 @@ B) A mouse</pre>
 										{{score | scoreFormat:config.timeLimitEnabled:config.timeLimitSecs}}
 									</li>
 								</ol>
-								<button type="button" class="btn btn-default" ng-show="question.hasExplainations && !question.explain" ng-click="question.explain = true">Explain answers</button>
+								<button type="button" class="btn btn-default" ng-show="question.hasExplanations && !question.explain" ng-click="question.explain = true">Explain answers</button>
 							</div>
 						</div>
 					</form>

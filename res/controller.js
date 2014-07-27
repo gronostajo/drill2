@@ -18,7 +18,7 @@
 			question: function (body, id) {
 				this.body = body;
 				this.id = id;
-				this.explaination = false;
+				this.explanation = false;
 				this.answers = [];
 				this.scoreLog = [];
 
@@ -77,10 +77,10 @@
 					return grade;
 				};
 
-				this.loadExplaination = function (expl) {
+				this.loadExplanation = function (expl) {
 					if (expl.hasOwnProperty(this.id)) {
-						this.explaination = expl[this.id];
-						this.hasExplainations = true;
+						this.explanation = expl[this.id];
+						this.hasExplanations = true;
 					}
 				};
 			},
@@ -327,7 +327,7 @@
 
 		$scope.nextQuestion = function () {
 			$scope.questionIndex++;
-			$scope.config.showExplainations = ($scope.config.explain == 'always');
+			$scope.config.showExplanations = ($scope.config.explain == 'always');
 
 			if ($scope.questionIndex > $scope.questions.length) {
 				$scope.view.current = 'end';
@@ -416,7 +416,7 @@
 				}
 
 				for (var key in loaded) {
-					if (key == 'explainations') {
+					if (key == 'explanations') {
 						expl = loaded[key];
 					}
 					else if (options.hasOwnProperty(key)) {
@@ -490,7 +490,7 @@
 			else if (expl) {
 				$scope.config.explain = 'optional';
 			}
-			$scope.config.showExplainations = ($scope.config.explain == 'always');
+			$scope.config.showExplanations = ($scope.config.explain == 'always');
 
 			for (var i = 0; i < qs.length; i++) {
 				var question = null;
@@ -536,12 +536,12 @@
 
 			}
 
-			$scope.explainationsAvailable = false;
+			$scope.explanationsAvailable = false;
 			if (expl) {
 				for (var q = 0; q < $scope.loadedQuestions.length; q++) {
-					$scope.loadedQuestions[q].loadExplaination(expl);
-					if ($scope.loadedQuestions[q].hasExplainations) {
-						$scope.explainationsAvailable = true;
+					$scope.loadedQuestions[q].loadExplanation(expl);
+					if ($scope.loadedQuestions[q].hasExplanations) {
+						$scope.explanationsAvailable = true;
 					}
 				}
 			}
@@ -634,11 +634,11 @@
 			}
 		};
 
-		$scope.showAllExplainations = function () {
+		$scope.showAllExplanations = function () {
 			for (var q = 0; q < $scope.questions.length; q++) {
 				$scope.questions[q].explain = true;
 			}
-			$scope.explainationsAvailable = false;
+			$scope.explanationsAvailable = false;
 		};
 
 

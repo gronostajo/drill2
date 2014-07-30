@@ -180,8 +180,17 @@
 }
 
 
-/* Footer spacing */
+/* Footer */
 
 .footer {
 	margin-top: 2em;
+}
+
+.footer .separator {
+	padding: 0 4px;
+}
+
+.footer .separator:before {
+	content: '//';
+	letter-spacing: -1px;
 }

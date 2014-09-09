@@ -308,6 +308,16 @@
 			$scope.config = config;
 		};
 
+		$scope.confirmRestart = function (func) {
+			var confirmed = $scope.view.isQuestion()
+				? confirm('This will interrupt the test in progress.\nAre you sure?')
+				: true;
+
+			if (confirmed) {
+				$scope[func]();
+			}
+		}
+
 		$scope.installUpdate = function () {
 			if (window.confirm('The page will be reloaded to install downloaded updates.')) {
 				window.location.reload();

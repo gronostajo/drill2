@@ -578,14 +578,19 @@
 				var question = $scope.questions[q];
 				var regex = /\$\$(.+)\$\$|\^\^(.+)\^\^/g;
 
-				question.body = question.body.replace(regex, function (match, group1, group2) {
+				var escape_func = function (match, group1, group2) {
 					var group = group1 || group2;
 					var escaped = group.replace(/[\\`*_{}\[\]()#+\-.!]/g, function (token) {
 						return '\\' + token;
 					});
 					var delim = match.substr(0, 2);
 					return delim + escaped + delim;
-				});
+				};
+
+				question.body = question.body.replace(regex, escape_func);
+				if (question.explanation) {
+					question.explanation = question.explanation.replace(regex, escape_func);
+				}
 			}
 		};
 

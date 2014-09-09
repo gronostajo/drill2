@@ -60,9 +60,9 @@
 									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="updateStatus == 'updateready'">Enable downloaded updates</button>
 								</li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="restart()" ng-disabled="view.isFirst()">Restart test</button></li>
+								<li><button class="btn navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="reinitialize()" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
+								<li><button class="btn navbar-btn" ng-click="confirmRestart('reinitialize')" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
 							</ul>
 						</div>
 					</div>

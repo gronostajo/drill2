@@ -314,7 +314,7 @@ B) A mouse</pre>
 						<div>
 							<div ng-bind-html="currentQuestion.body | markdown:this" ng-show="config.markdown"></div>
 							<div ng-hide="config.markdown">
-								<p ng-repeat="line in currentQuestion.body | lines">{{line}}</p>
+								<p ng-repeat="line in currentQuestion.body | lines track by $index">{{line}}</p>
 							</div>
 						</div>
 						<div class="form-group">
@@ -323,7 +323,7 @@ B) A mouse</pre>
 									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
 									<div class="content">
 										<span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
-										<p ng-repeat="line in answer.body | lines">{{line}}</p>
+										<p ng-repeat="line in answer.body | lines track by $index">{{line}}</p>
 									</div>
 								</label>
 							</div>
@@ -331,7 +331,7 @@ B) A mouse</pre>
 						<div ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">
 							<div ng-bind-html="currentQuestion.explanation | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
 							<div ng-hide="config.markdown">
-								<p ng-repeat="line in currentQuestion.explanation | lines">{{line}}</p>
+								<p ng-repeat="line in currentQuestion.explanation | lines track by $index">{{line}}</p>
 							</div>
 						</div>
 						<div class="form-group">
@@ -355,21 +355,21 @@ B) A mouse</pre>
 							<div class="panel-body">
 								<div class="question-body" ng-bind-html="question.body | markdown:this" ng-show="config.markdown"></div>
 								<div class="question-body" ng-hide="config.markdown">
-									<p ng-repeat="line in question.body | lines">{{line}}</p>
+									<p ng-repeat="line in question.body | lines track by $index">{{line}}</p>
 								</div>
 								<div class="checkbox answer explained" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">
 										<div class="content">
 											<span class="id">{{answer.id}})&nbsp;</span>
-											<p ng-repeat="line in answer.body | doubleNewlines | lines">{{line}}</p>
+											<p ng-repeat="line in answer.body | doubleNewlines | lines track by $index">{{line}}</p>
 										</div>
 									</label>
 								</div>
 								<div ng-show="question.explain && question.explanation">
 									<div ng-bind-html="question.explanation | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
 									<div ng-hide="config.markdown">
-										<p ng-repeat="line in question.explanation | lines">{{line}}</p>
+										<p ng-repeat="line in question.explanation | lines track by $index">{{line}}</p>
 									</div>
 								</div>
 								<ol class="pull-right" ng-class="{'one-result': !config.repeatIncorrect}">

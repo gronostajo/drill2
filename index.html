@@ -204,9 +204,9 @@ B) A mouse</pre>
 										<div class="form-group radio">
 											<label>
 												<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perQuestion">
-												<div class="inline-control">
+												<span class="inline-control">
 													<input type="number" min="1" max="10" name="ppq" class="form-control input-xs text-right" ng-model="config.gradingPPQ" ng-disabled="config.gradingMethod != 'perQuestion'">
-												</div>
+												</span>
 												points for entire question (fractions allowed)
 											</label>
 										</div>
@@ -266,9 +266,9 @@ B) A mouse</pre>
 										<label>
 											<input type="checkbox" ng-model="config.timeLimitEnabled">
 											Time limit:
-											<div class="inline-control">
+											<span class="inline-control">
 												<input type="number" min="5" step="5" name="time_limit" class="form-control input-xs text-right" ng-model="config.timeLimitSecs" ng-disabled="!config.timeLimitEnabled">
-											</div>
+											</span>
 											seconds per question
 										</label>
 									</div>
@@ -321,10 +321,10 @@ B) A mouse</pre>
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
 								<label>
 									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
-									<div class="content">
+									<span class="content">
 										<span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
-										<p ng-repeat="line in answer.body | lines track by $index">{{line}}</p>
-									</div>
+										<span class="p" ng-repeat="line in answer.body | lines track by $index">{{line}}</span>
+									</span>
 								</label>
 							</div>
 						</div>
@@ -360,10 +360,10 @@ B) A mouse</pre>
 								<div class="checkbox answer explained" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">
-										<div class="content">
+										<span class="content">
 											<span class="id">{{answer.id}})&nbsp;</span>
-											<p ng-repeat="line in answer.body | doubleNewlines | lines track by $index">{{line}}</p>
-										</div>
+											<span class="p" ng-repeat="line in answer.body | doubleNewlines | lines track by $index">{{line}}</span>
+										</span>
 									</label>
 								</div>
 								<div ng-show="question.explain && question.explanation">

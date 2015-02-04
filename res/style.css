@@ -23,13 +23,13 @@
 	content: '';
 	width: 0;
 	height: 0;
-	border-style: solid;
-	border-color: transparent;
 
-	border-top-color: #888;
-	border-width: 9px 9px 0 9px;
-	border-radius: 2px;
-	top: 5px;
+    border: 9px solid transparent;
+    border-top-color: #888;
+    border-bottom-width: 0;
+    border-radius: 2px;
+
+    top: 5px;
 	right: -5px;
 }
 
@@ -98,7 +98,11 @@
 	border-color: #ccc;
 }
 
-.answer p:last-of-type {
+.answer .p {
+    margin: 0 0 10px;
+}
+
+.answer .p:last-of-type {
 	margin-bottom: 0;
 }
 

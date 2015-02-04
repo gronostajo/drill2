@@ -45,6 +45,20 @@ function bootstrapBreakpoint() {
 }
 
 
+
+// Scroll to top with animation
+// Based on: http://stackoverflow.com/a/1145297/1937994
+
+function scrollToTop(callback) {
+    if ($('html').css('scrollTop') == 0 || $('body').css('scrollTop') == 0) {
+        if (callback) callback();
+    }
+    else {
+        $('html, body').animate({ scrollTop: 0 }, 'fast', callback);
+    }
+}
+
+
 // on DOM ready
 
 $(function() {

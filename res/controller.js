@@ -335,7 +335,7 @@
 			$scope.escapeQuestions();
 			$scope.loadGrader();
 			$scope.nextQuestion();
-		}
+		};
 
 		$scope.nextQuestion = function () {
 			$scope.questionIndex++;
@@ -354,10 +354,12 @@
 				$scope.currentQuestion.answers[i].checked = false;
 			}
 
-			if ($scope.config.timeLimitEnabled) {
-				$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
-				$scope.startTimer();
-			}
+			scrollToTop(function() {
+                if ($scope.config.timeLimitEnabled) {
+                    $scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
+                    $scope.startTimer();
+                }
+            });
 
 			if ($scope.config.mathjax) {
 				$timeout(function () {

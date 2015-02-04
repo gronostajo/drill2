@@ -30,11 +30,12 @@
 		<script src="res/jquery.cookie-1.4.1.min.js"></script>
 		<script src="res/markdown.min.js"></script>
 		<script src="res/safeeval.min.js"></script>
+		<script src="res/angular-file-upload-3.0.1/angular-file-upload-shim.min.js"></script>
+		<script src="res/angular-file-upload-3.0.1/angular-file-upload.min.js"></script>
 
 		<!-- Custom code -->
 		<script src="res/script.js"></script>
 		<script src="res/controller.js"></script>
-		<script src="res/localfile.js"></script>
 
 	</head>
 	<body ng-controller="DrillController">
@@ -145,7 +146,7 @@ B) A mouse</pre>
 						</div>
 						<div class="alert alert-danger" role="alert" ng-show="fileError">This file doesn't contain any valid questions.</div>
 						<div ng-show="fileApiSupported">
-							<p><input type="file" id="fileSelector" ng-read-text="onFileSelect($files)"></p>
+							<p><input type="file" ng-file-select ng-model="selectedFiles" ng-file-change="loadTextFile(selectedFiles[0], $files)" accept="text/plain"></p>
 							<p ng-hide="pasteEnabled">You can also <a href="#" ng-click="setPaste(true)">enter questions manually</a> if you prefer to.</p>
 						</div>
 						<div ng-show="pasteEnabled || !fileApiSupported">

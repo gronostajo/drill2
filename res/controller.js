@@ -6,9 +6,9 @@
 
 (function() {
 
-	var app = angular.module('DrillApp', [])
+	var app = angular.module('DrillApp', ['ngFileUpload'])
 
-	.controller('DrillController', ['$scope', '$timeout', 'fileReader', function($scope, $timeout, fileReader) {
+	.controller('DrillController', ['$scope', '$timeout', function($scope, $timeout) {
 
 		/*
 		 *	Constructors
@@ -29,7 +29,7 @@
 
 				this.appendToLastAnswer = function (line) {
 					this.answers[this.answers.length-1].append(line);
-				}
+				};
 
 				this.totalCorrect = function () {
 					var x = 0;
@@ -235,7 +235,7 @@
 
 			$scope.updateStatus = false;
 			//noinspection JSUnresolvedVariable
-            $(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
+			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
 				$scope.$apply(function () {
 					$scope.updateStatus = event.type.toLowerCase();
 				});
@@ -266,11 +266,12 @@
 			$scope.$watch('view.current', function () {
 				if ($scope.config.mathjax && ($scope.view.current == 'end')) {
 					$timeout(function () {
-                        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-                        MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'finalView']);
+						//noinspection JSUnresolvedVariable,JSUnresolvedFunction
+						MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'finalView']);
 					});
 				}
 			});
+
 		};
 
 		$scope.softInitialize = function () {
@@ -318,7 +319,7 @@
 			if (confirmed) {
 				$scope[func]();
 			}
-		}
+		};
 
 		$scope.installUpdate = function () {
 			if (window.confirm('The page will be reloaded to install downloaded updates.')) {
@@ -355,16 +356,16 @@
 			}
 
 			scrollToTop(function() {
-                if ($scope.config.timeLimitEnabled) {
-                    $scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
-                    $scope.startTimer();
-                }
-            });
+				if ($scope.config.timeLimitEnabled) {
+					$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
+					$scope.startTimer();
+				}
+			});
 
 			if ($scope.config.mathjax) {
 				$timeout(function () {
-                    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-                    MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
+					//noinspection JSUnresolvedVariable,JSUnresolvedFunction
+					MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
 				});
 			}
 		};
@@ -394,11 +395,21 @@
 			}
 		};
 
-		$scope.getTextFile = function () {
-			fileReader.readAsText($scope.selectedFile, $scope).then(function(result) {
-				$scope.dataString = result;
-				$scope.loadQuestions();
-			});
+		$scope.loadTextFile = function (file) {
+			if (file != null) {
+				if ($scope.fileApiSupported) {
+					$timeout(function() {
+						var fileReader = new FileReader();
+						fileReader.readAsText(file);
+						fileReader.onload = function(e) {
+							$timeout(function() {
+								$scope.dataString = e.target.result;
+								$scope.loadQuestions();
+							});
+						}
+					});
+				}
+			}
 		};
 
 		$scope.loadQuestions = function (manual) {
@@ -421,7 +432,7 @@
 			var expl = false;
 
 			//noinspection JSDuplicatedDeclaration
-            var matched = /<options>\s*(\{(?:.|\n|\r)*})\s*/i.exec(qs[qs.length - 1]);
+			var matched = /<options>\s*(\{(?:.|\n|\r)*})\s*/i.exec(qs[qs.length - 1]);
 			if (matched) {
 				qs.pop();
 
@@ -467,8 +478,8 @@
 					break;
 
 				default:
-                    //noinspection JSDuplicatedDeclaration
-                    var matched = /^custom: *(.+)$/.exec(options.grading)
+					//noinspection JSDuplicatedDeclaration
+					var matched = /^custom: *(.+)$/.exec(options.grading)
 					if (matched) {
 						try {
 							SafeEval(matched[1], function (id) {
@@ -520,7 +531,7 @@
 				var lines = qs[i].split(/(?:\r?\n)/);
 				for (var j = 0; j < lines.length; j++) {
 					//noinspection JSDuplicatedDeclaration
-                    var matched = /^\s*(>+)?([A-Z])\)\s*(.+)$/i.exec(lines[j]);
+					var matched = /^\s*(>+)?([A-Z])\)\s*(.+)$/i.exec(lines[j]);
 
 					if (!matched && !answers) {
 						if (!body.length) {
@@ -668,17 +679,6 @@
 		$scope.initialize();
 	}])
 
-	.directive('ngReadText', function () {
-		return {
-			link: function($scope, element) {
-				element.bind('change', function(e) {
-					$scope.selectedFile = (e.srcElement || e.target).files[0];
-					$scope.getTextFile();
-				});
-			}
-		};
-	})
-
 	.filter('decPlaces', function () {
 		return function (x, dec) {
 			var pow = Math.pow(10, dec);
@@ -690,7 +690,7 @@
 		return function(str, $scope) {
 			if (!str || !$scope.config.markdown) return '';
 			//noinspection JSUnresolvedVariable
-            var html = markdown.toHTML(str);
+			var html = markdown.toHTML(str);
 			return $sce.trustAsHtml(html);
 		};
 	}])

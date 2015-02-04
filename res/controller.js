@@ -234,7 +234,8 @@
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
 
 			$scope.updateStatus = false;
-			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
+			//noinspection JSUnresolvedVariable
+            $(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
 				$scope.$apply(function () {
 					$scope.updateStatus = event.type.toLowerCase();
 				});
@@ -265,7 +266,8 @@
 			$scope.$watch('view.current', function () {
 				if ($scope.config.mathjax && ($scope.view.current == 'end')) {
 					$timeout(function () {
-						MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'finalView']);
+                        //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+                        MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'finalView']);
 					});
 				}
 			});
@@ -359,7 +361,8 @@
 
 			if ($scope.config.mathjax) {
 				$timeout(function () {
-					MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
+                    //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+                    MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
 				});
 			}
 		};
@@ -415,7 +418,8 @@
 			};
 			var expl = false;
 
-			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[qs.length - 1]);
+			//noinspection JSDuplicatedDeclaration
+            var matched = /<options>\s*(\{(?:.|\n|\r)*})\s*/i.exec(qs[qs.length - 1]);
 			if (matched) {
 				qs.pop();
 
@@ -461,7 +465,8 @@
 					break;
 
 				default:
-					var matched = /^custom: *(.+)$/.exec(options.grading)
+                    //noinspection JSDuplicatedDeclaration
+                    var matched = /^custom: *(.+)$/.exec(options.grading)
 					if (matched) {
 						try {
 							SafeEval(matched[1], function (id) {
@@ -512,11 +517,12 @@
 
 				var lines = qs[i].split(/(?:\r?\n)/);
 				for (var j = 0; j < lines.length; j++) {
-					var matched = /^\s*(>+)?([A-Z])\)\s*(.+)$/i.exec(lines[j]);
+					//noinspection JSDuplicatedDeclaration
+                    var matched = /^\s*(>+)?([A-Z])\)\s*(.+)$/i.exec(lines[j]);
 
 					if (!matched && !answers) {
 						if (!body.length) {
-							var matchedId = /^\[#([a-zA-Z\d\-+_]+)\]\s*(.+)$/.exec(lines[j]);
+							var matchedId = /^\[#([a-zA-Z\d\-+_]+)]\s*(.+)$/.exec(lines[j]);
 							if (matchedId) {
 								id = matchedId[1];
 								lines[j] = matchedId[2];
@@ -681,7 +687,8 @@
 	.filter('markdown', ['$sce', function ($sce) {
 		return function(str, $scope) {
 			if (!str || !$scope.config.markdown) return '';
-			var html = markdown.toHTML(str);
+			//noinspection JSUnresolvedVariable
+            var html = markdown.toHTML(str);
 			return $sce.trustAsHtml(html);
 		};
 	}])

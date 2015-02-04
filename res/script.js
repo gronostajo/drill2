@@ -8,7 +8,7 @@
 // Adapted from: http://bost.ocks.org/mike/shuffle/
 
 function shuffle(input) {
-	arr = input.slice(0);	// shallow copy
+	var arr = input.slice(0);	// shallow copy
 	var numToShuffle = arr.length;
 
 	while (numToShuffle) {
@@ -21,15 +21,6 @@ function shuffle(input) {
 	}
 
 	return arr;
-}
-
-
-// Simple integer sequence starting from 0
-
-function sequence(max) {
-	var seq = [];
-	for (var i = 0; i < max; i++) seq.push(i);
-	return seq;
 }
 
 
@@ -50,7 +41,7 @@ function bootstrapBreakpoint() {
 			el.remove();
 			return envVal
 		}
-	};
+	}
 }
 
 
@@ -65,8 +56,10 @@ $(function() {
 		statsPreference = (initialBreakpoint == 'xs') ? 'collapsed' : 'expanded';
 	}
 
-	if (statsPreference == 'expanded') {
-		$('#collapseScore').collapse('show');
+    var $collapseScore = $('#collapseScore');
+
+    if (statsPreference == 'expanded') {
+		$collapseScore.collapse('show');
 		$.cookie('stats', 'expanded');
 		$('#collapseScoreToggle').removeClass('collapsed');
 	}
@@ -76,10 +69,11 @@ $(function() {
 	}
 
 	// hook collapse and expand events to update cookie
-	$('#collapseScore').on('show.bs.collapse', function () {
-		$.cookie('stats', 'expanded');
-	});
-	$('#collapseScore').on('hide.bs.collapse', function () {
-		$.cookie('stats', 'collapsed');
-	});
+	$collapseScore
+        .on('show.bs.collapse', function () {
+		    $.cookie('stats', 'expanded');
+	    })
+        .on('hide.bs.collapse', function () {
+		    $.cookie('stats', 'collapsed');
+	    });
 });

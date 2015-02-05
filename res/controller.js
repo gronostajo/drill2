@@ -690,10 +690,36 @@
 		return function(str, $scope) {
 			if (!str || !$scope.config.markdown) return '';
 
+			//noinspection JSUnresolvedVariable
 			var parser = new commonmark.Parser();
+			//noinspection JSUnresolvedVariable
 			var renderer = new commonmark.HtmlRenderer();
 
 			var ast = parser.parse(str);
+
+			// fixes double newlines in code
+			var fix = function (node) {
+				if (node._type === 'CodeBlock') {
+					// fix double newlines
+					var str = node._literal;
+					if (node._isFenced) str = str.substring(1, str.length - 1);  // fenced code blocks have additional newlines on ends
+
+					var split = str.split('\n');
+					var wanted = [];
+
+					for (var i = 0; i < split.length; i += 2) {
+						wanted.push(split[i]);
+					}
+
+					node._literal = wanted.join('\n');
+				}
+				else {
+					if (node._firstChild) fix(node._firstChild);
+					if (node._next) fix(node._next);
+				}
+			};
+
+			fix(ast);
 			var html = renderer.render(ast);
 
 			return $sce.trustAsHtml(html);

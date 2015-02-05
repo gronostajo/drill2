@@ -28,13 +28,14 @@
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
 		<script src="//cdn.mathjax.org/mathjax/2.3-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe"></script>
 		<script src="res/jquery.cookie-1.4.1.min.js"></script>
-		<script src="res/markdown.min.js"></script>
 		<script src="res/safeeval.min.js"></script>
+		<script src="res/angular-file-upload-3.0.1/angular-file-upload-shim.min.js"></script>
+		<script src="res/angular-file-upload-3.0.1/angular-file-upload.min.js"></script>
+		<script src="res/commonmark.js-0.17.1/commonmark.min.js"></script>
 
 		<!-- Custom code -->
 		<script src="res/script.js"></script>
 		<script src="res/controller.js"></script>
-		<script src="res/localfile.js"></script>
 
 	</head>
 	<body ng-controller="DrillController">
@@ -145,7 +146,7 @@ B) A mouse</pre>
 						</div>
 						<div class="alert alert-danger" role="alert" ng-show="fileError">This file doesn't contain any valid questions.</div>
 						<div ng-show="fileApiSupported">
-							<p><input type="file" id="fileSelector" ng-read-text="onFileSelect($files)"></p>
+							<p><input type="file" id="fileSelector" ng-file-select ng-model="selectedFiles" ng-file-change="loadTextFile(selectedFiles[0], $files)" accept="text/plain"></p>
 							<p ng-hide="pasteEnabled">You can also <a href="#" ng-click="setPaste(true)">enter questions manually</a> if you prefer to.</p>
 						</div>
 						<div ng-show="pasteEnabled || !fileApiSupported">
@@ -204,9 +205,9 @@ B) A mouse</pre>
 										<div class="form-group radio">
 											<label>
 												<input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perQuestion">
-												<div class="inline-control">
+												<span class="inline-control">
 													<input type="number" min="1" max="10" name="ppq" class="form-control input-xs text-right" ng-model="config.gradingPPQ" ng-disabled="config.gradingMethod != 'perQuestion'">
-												</div>
+												</span>
 												points for entire question (fractions allowed)
 											</label>
 										</div>
@@ -266,9 +267,9 @@ B) A mouse</pre>
 										<label>
 											<input type="checkbox" ng-model="config.timeLimitEnabled">
 											Time limit:
-											<div class="inline-control">
+											<span class="inline-control">
 												<input type="number" min="5" step="5" name="time_limit" class="form-control input-xs text-right" ng-model="config.timeLimitSecs" ng-disabled="!config.timeLimitEnabled">
-											</div>
+											</span>
 											seconds per question
 										</label>
 									</div>
@@ -321,10 +322,10 @@ B) A mouse</pre>
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
 								<label>
 									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
-									<div class="content">
+									<span class="content">
 										<span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
-										<p ng-repeat="line in answer.body | lines track by $index">{{line}}</p>
-									</div>
+										<span class="p" ng-repeat="line in answer.body | lines track by $index">{{line}}</span>
+									</span>
 								</label>
 							</div>
 						</div>
@@ -360,10 +361,10 @@ B) A mouse</pre>
 								<div class="checkbox answer explained" ng-repeat="answer in question.answers">
 									<label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
 										<input type="checkbox" disabled ng-checked="answer.checked">
-										<div class="content">
+										<span class="content">
 											<span class="id">{{answer.id}})&nbsp;</span>
-											<p ng-repeat="line in answer.body | doubleNewlines | lines track by $index">{{line}}</p>
-										</div>
+											<span class="p" ng-repeat="line in answer.body | doubleNewlines | lines track by $index">{{line}}</span>
+										</span>
 									</label>
 								</div>
 								<div ng-show="question.explain && question.explanation">

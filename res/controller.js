@@ -6,9 +6,9 @@
 
 (function() {
 
-	var app = angular.module('DrillApp', [])
+	var app = angular.module('DrillApp', ['ngFileUpload'])
 
-	.controller('DrillController', ['$scope', '$timeout', 'fileReader', function($scope, $timeout, fileReader) {
+	.controller('DrillController', ['$scope', '$timeout', function($scope, $timeout) {
 
 		/*
 		 *	Constructors
@@ -29,7 +29,7 @@
 
 				this.appendToLastAnswer = function (line) {
 					this.answers[this.answers.length-1].append(line);
-				}
+				};
 
 				this.totalCorrect = function () {
 					var x = 0;
@@ -234,11 +234,13 @@
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
 
 			$scope.updateStatus = false;
+			//noinspection JSUnresolvedVariable
 			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
 				$scope.$apply(function () {
 					$scope.updateStatus = event.type.toLowerCase();
 				});
 			});
+
 
 			$('#manualInput').keydown(function (e) {
 				if (e.ctrlKey && e.keyCode == 13) {
@@ -265,10 +267,21 @@
 			$scope.$watch('view.current', function () {
 				if ($scope.config.mathjax && ($scope.view.current == 'end')) {
 					$timeout(function () {
+						//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 						MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'finalView']);
 					});
 				}
+
+				// apply/remove onbeforeunload event
+				var wnd = $(window);
+				wnd.off('beforeunload');
+				if ($scope.view.isQuestion()) {
+					wnd.on('beforeunload', function (event) {
+						return 'Closing this page will interrupt the test.\nAre you sure?';
+					});
+				}
 			});
+
 		};
 
 		$scope.softInitialize = function () {
@@ -316,7 +329,7 @@
 			if (confirmed) {
 				$scope[func]();
 			}
-		}
+		};
 
 		$scope.installUpdate = function () {
 			if (window.confirm('The page will be reloaded to install downloaded updates.')) {
@@ -333,7 +346,7 @@
 			$scope.escapeQuestions();
 			$scope.loadGrader();
 			$scope.nextQuestion();
-		}
+		};
 
 		$scope.nextQuestion = function () {
 			$scope.questionIndex++;
@@ -352,13 +365,16 @@
 				$scope.currentQuestion.answers[i].checked = false;
 			}
 
-			if ($scope.config.timeLimitEnabled) {
-				$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
-				$scope.startTimer();
-			}
+			scrollToTop(function() {
+				if ($scope.config.timeLimitEnabled) {
+					$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
+					$scope.startTimer();
+				}
+			});
 
 			if ($scope.config.mathjax) {
 				$timeout(function () {
+					//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 					MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
 				});
 			}
@@ -389,11 +405,21 @@
 			}
 		};
 
-		$scope.getTextFile = function () {
-			fileReader.readAsText($scope.selectedFile, $scope).then(function(result) {
-				$scope.dataString = result;
-				$scope.loadQuestions();
-			});
+		$scope.loadTextFile = function (file) {
+			if (file != null) {
+				if ($scope.fileApiSupported) {
+					$timeout(function() {
+						var fileReader = new FileReader();
+						fileReader.readAsText(file);
+						fileReader.onload = function(e) {
+							$timeout(function() {
+								$scope.dataString = e.target.result;
+								$scope.loadQuestions();
+							});
+						}
+					});
+				}
+			}
 		};
 
 		$scope.loadQuestions = function (manual) {
@@ -415,7 +441,8 @@
 			};
 			var expl = false;
 
-			var matched = /<options>\s*(\{(?:.|\n|\r)*\})\s*/i.exec(qs[qs.length - 1]);
+			//noinspection JSDuplicatedDeclaration
+			var matched = /<options>\s*(\{(?:.|\n|\r)*})\s*/i.exec(qs[qs.length - 1]);
 			if (matched) {
 				qs.pop();
 
@@ -461,6 +488,7 @@
 					break;
 
 				default:
+					//noinspection JSDuplicatedDeclaration
 					var matched = /^custom: *(.+)$/.exec(options.grading)
 					if (matched) {
 						try {
@@ -512,11 +540,12 @@
 
 				var lines = qs[i].split(/(?:\r?\n)/);
 				for (var j = 0; j < lines.length; j++) {
+					//noinspection JSDuplicatedDeclaration
 					var matched = /^\s*(>+)?([A-Z])\)\s*(.+)$/i.exec(lines[j]);
 
 					if (!matched && !answers) {
 						if (!body.length) {
-							var matchedId = /^\[#([a-zA-Z\d\-+_]+)\]\s*(.+)$/.exec(lines[j]);
+							var matchedId = /^\[#([a-zA-Z\d\-+_]+)]\s*(.+)$/.exec(lines[j]);
 							if (matchedId) {
 								id = matchedId[1];
 								lines[j] = matchedId[2];
@@ -660,17 +689,6 @@
 		$scope.initialize();
 	}])
 
-	.directive('ngReadText', function () {
-		return {
-			link: function($scope, element) {
-				element.bind('change', function(e) {
-					$scope.selectedFile = (e.srcElement || e.target).files[0];
-					$scope.getTextFile();
-				});
-			}
-		};
-	})
-
 	.filter('decPlaces', function () {
 		return function (x, dec) {
 			var pow = Math.pow(10, dec);
@@ -681,7 +699,39 @@
 	.filter('markdown', ['$sce', function ($sce) {
 		return function(str, $scope) {
 			if (!str || !$scope.config.markdown) return '';
-			var html = markdown.toHTML(str);
+
+			//noinspection JSUnresolvedVariable
+			var parser = new commonmark.Parser();
+			//noinspection JSUnresolvedVariable
+			var renderer = new commonmark.HtmlRenderer();
+
+			var ast = parser.parse(str);
+
+			// fixes double newlines in code
+			var fix = function (node) {
+				if (node._type === 'CodeBlock') {
+					// fix double newlines
+					var str = node._literal;
+					if (node._isFenced) str = str.substring(1, str.length - 1);  // fenced code blocks have additional newlines on ends
+
+					var split = str.split('\n');
+					var wanted = [];
+
+					for (var i = 0; i < split.length; i += 2) {
+						wanted.push(split[i]);
+					}
+
+					node._literal = wanted.join('\n');
+				}
+				else {
+					if (node._firstChild) fix(node._firstChild);
+					if (node._next) fix(node._next);
+				}
+			};
+
+			fix(ast);
+			var html = renderer.render(ast);
+
 			return $sce.trustAsHtml(html);
 		};
 	}])

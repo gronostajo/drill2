@@ -163,6 +163,12 @@
 	list-style-type: none;
 }
 
+.summary .answer label {
+	border: none;
+	padding-top: .6em;
+	padding-bottom: .6em;
+}
+
 .answer .id {
 	display: inline-block;
 	float: left;

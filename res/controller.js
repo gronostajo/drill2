@@ -689,8 +689,13 @@
 	.filter('markdown', ['$sce', function ($sce) {
 		return function(str, $scope) {
 			if (!str || !$scope.config.markdown) return '';
-			//noinspection JSUnresolvedVariable
-			var html = markdown.toHTML(str);
+
+			var parser = new commonmark.Parser();
+			var renderer = new commonmark.HtmlRenderer();
+
+			var ast = parser.parse(str);
+			var html = renderer.render(ast);
+
 			return $sce.trustAsHtml(html);
 		};
 	}])

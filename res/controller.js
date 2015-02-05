@@ -241,6 +241,7 @@
 				});
 			});
 
+
 			$('#manualInput').keydown(function (e) {
 				if (e.ctrlKey && e.keyCode == 13) {
 					$('#confirmManualInput').click();
@@ -268,6 +269,15 @@
 					$timeout(function () {
 						//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 						MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'finalView']);
+					});
+				}
+
+				// apply/remove onbeforeunload event
+				var wnd = $(window);
+				wnd.off('beforeunload');
+				if ($scope.view.isQuestion()) {
+					wnd.on('beforeunload', function (event) {
+						return 'Closing this page will interrupt the test.\nAre you sure?';
 					});
 				}
 			});

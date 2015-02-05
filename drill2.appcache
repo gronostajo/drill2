@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# rev 20150205-1
+# rev 20150205-2
 
 CACHE:
 //ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js
@@ -26,7 +26,7 @@ res/angular-file-upload-3.0.1/angular-file-upload-shim.min.js
 res/angular-file-upload-3.0.1/angular-file-upload.min.js
 res/angular-file-upload-3.0.1/FileAPI.flash.swf
 res/angular-file-upload-3.0.1/FileAPI.min.js
-res/markdown.min.js
+res/commonmark.js-0.17.1/commonmark.min.js
 res/safeeval.min.js
 res/script.js
 res/style.css

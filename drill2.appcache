@@ -1,11 +1,11 @@
 CACHE MANIFEST
-# rev 20150207-1
+# rev 20150208-1Ą
 
 CACHE:
-//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css
-//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js
+res/bootstrap-3.2.0/css/bootstrap.min.css
+res/bootstrap-3.2.0/js/bootstrap.min.js
 
-//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js
+res/html5shiv.min.js
 
 res/angular-1.2.18.min.js
 

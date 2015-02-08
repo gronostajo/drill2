@@ -107,12 +107,14 @@
 					return this.correct + this.incorrect + this.partial;
 				};
 
+				//noinspection JSUnusedGlobalSymbols
 				this.pcOfQuestions = function (num) {
 					return (this.totalQuestions())
 						? Math.round(num * 100 / this.totalQuestions())
 						: 0;
 				};
 
+				//noinspection JSUnusedGlobalSymbols
 				this.pcScore = function () {
 					return (this.totalPoints) ? Math.round(this.score * 100 / this.totalPoints) : 0;
 				};
@@ -276,10 +278,15 @@
 				var wnd = $(window);
 				wnd.off('beforeunload');
 				if ($scope.view.isQuestion()) {
-					wnd.on('beforeunload', function (event) {
+					wnd.on('beforeunload', function () {
 						return 'Closing this page will interrupt the test.\nAre you sure?';
 					});
 				}
+			});
+
+			// load preferred stylesheet
+			angular.element(document).ready(function () {
+				$.alternate('-');
 			});
 
 		};
@@ -299,15 +306,16 @@
 			$scope.softInitialize();
 
 			$scope.fileError = false;
-			$('#fileSelector').val('').attr('type', 'text').attr('type', 'file');
+			var $selector = $('#fileSelector');
+			$selector.val('').attr('type', 'text').attr('type', 'file');
 
 			if ($scope.pasteEnabled || !$scope.fileApiSupported) {
 				$('#manualInput').focus();
 			}
 			else {
-				$('#fileSelector').click();
+				$selector.click();
 			}
-		}
+		};
 
 		$scope.restart = function () {
 			$scope.softInitialize();
@@ -335,6 +343,11 @@
 			if (window.confirm('The page will be reloaded to install downloaded updates.')) {
 				window.location.reload();
 			}
+		};
+
+		$scope.switchTheme = function () {
+			var switchTo = $.alternate()[1];
+			$.alternate(switchTo);
 		};
 
 		$scope.setPaste = function (state) {
@@ -491,7 +504,7 @@
 
 				default:
 					//noinspection JSDuplicatedDeclaration
-					var matched = /^custom: *(.+)$/.exec(options.grading)
+					var matched = /^custom: *(.+)$/.exec(options.grading);
 					if (matched) {
 						try {
 							SafeEval(matched[1], function (id) {
@@ -738,12 +751,12 @@
 		};
 	}])
 
-	.filter('lines', ['$sce', function ($sce) {
+	.filter('lines', function () {
 		return function(str) {
 			if (!str) return [];
 			return str.split(/\s*(?:\r?\n)(?:\r?\n\s)*/);
 		};
-	}])
+	})
 
 	.filter('doubleNewlines', function () {
 		return function (str) {

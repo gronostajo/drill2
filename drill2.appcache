@@ -1,11 +1,13 @@
 CACHE MANIFEST
-# rev 20150207-1
+# rev 20150208-2
 
 CACHE:
-//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css
-//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js
+res/bootstrap-3.3.2/css/bootstrap.min.css
+res/bootstrap-3.3.2/css/bootstrap-cyborg.min.css
+res/bootstrap-3.3.2/fonts/glyphicons-halflings-regular.woff
+res/bootstrap-3.3.2/js/bootstrap.min.js
 
-//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js
+res/html5shiv.min.js
 
 res/angular-1.2.18.min.js
 
@@ -19,6 +21,7 @@ res/commonmark.js-0.17.1/commonmark.min.js
 res/controller.js
 
 res/jquery-1.11.2.min.js
+res/jquery.alternate.js
 res/jquery.cookie-1.4.1.min.js
 
 res/MathJax-2.5.0/config/Safe.js
@@ -54,6 +57,7 @@ res/safeeval.min.js
 res/script.js
 
 res/style.css
+res/style-dark.css
 
 NETWORK:
 *

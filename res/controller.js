@@ -366,10 +366,12 @@
 			}
 
 			scrollToTop(function() {
-				if ($scope.config.timeLimitEnabled) {
-					$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
-					$scope.startTimer();
-				}
+				$scope.$apply(function () {
+					if ($scope.config.timeLimitEnabled) {
+						$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
+						$scope.startTimer();
+					}
+				});
 			});
 
 			if ($scope.config.mathjax) {
@@ -751,6 +753,7 @@
 
 	.filter('minutes', function () {
 		return function (secs) {
+			if (typeof(secs) == 'undefined') return '';
 			secs = parseInt(secs);
 
 			var mins = Math.floor(secs / 60);

@@ -284,6 +284,11 @@
 				}
 			});
 
+			// load preferred stylesheet
+			angular.element(document).ready(function () {
+				$.alternate('-');
+			});
+
 		};
 
 		$scope.softInitialize = function () {
@@ -338,6 +343,11 @@
 			if (window.confirm('The page will be reloaded to install downloaded updates.')) {
 				window.location.reload();
 			}
+		};
+
+		$scope.switchTheme = function () {
+			var switchTo = $.alternate()[1];
+			$.alternate(switchTo);
 		};
 
 		$scope.setPaste = function (state) {

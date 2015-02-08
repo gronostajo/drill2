@@ -6,8 +6,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Drill 2</title>
 
-		<link rel="stylesheet" href="res/bootstrap-3.3.2/css/bootstrap.min.css">
-		<link rel="stylesheet" href="res/style.css">
+		<link rel="stylesheet" href="res/bootstrap-3.3.2/css/bootstrap.min.css" title="Light">
+		<link rel="stylesheet" href="res/style.css" title="Light">
+
+		<link rel="alternate stylesheet" href="res/bootstrap-3.3.2/css/bootstrap-cyborg.min.css" title="Dark">
+		<link rel="alternate stylesheet" href="res/style-dark.css" title="Dark">
 
 		<!--[if lt IE 9]>
 			<script src="res/html5shiv.min.js"></script>
@@ -25,16 +28,20 @@
 
 		<!-- Libs -->
 		<script src="res/jquery-1.11.2.min.js"></script>
-		<script src="res/bootstrap-3.3.2/js/bootstrap.min.js"></script>
-		<script src="res/angular-1.2.18.min.js"></script>
-		<script src="res/MathJax-2.5.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe"></script>
 		<script src="res/jquery.cookie-1.4.1.min.js"></script>
-		<script src="res/safeeval.min.js"></script>
+		<script src="res/jquery.alternate.js"></script>
+
+		<script src="res/bootstrap-3.3.2/js/bootstrap.min.js"></script>
+
+		<script src="res/angular-1.2.18.min.js"></script>
 		<script src="res/angular-file-upload-3.0.1/angular-file-upload-shim.min.js"></script>
 		<script src="res/angular-file-upload-3.0.1/angular-file-upload.min.js"></script>
-		<script src="res/commonmark.js-0.17.1/commonmark.min.js"></script>
 
-		<!-- Custom code -->
+		<script src="res/commonmark.js-0.17.1/commonmark.min.js"></script>
+		<script src="res/MathJax-2.5.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe"></script>
+		<script src="res/safeeval.min.js"></script>
+
+		<!-- App-specific code -->
 		<script src="res/script.js"></script>
 		<script src="res/controller.js"></script>
 
@@ -61,6 +68,8 @@
 									<button class="btn btn-default navbar-btn" disabled ng-show="updateStatus == 'downloading'">Downloading update&hellip;</button>
 									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="updateStatus == 'updateready'">Enable downloaded updates</button>
 								</li>
+								<li class="distance"></li>
+								<li><button class="btn navbar-btn" ng-click="switchTheme()" ><i class="glyphicon glyphicon-adjust"></i></button></li>
 								<li class="distance"></li>
 								<li><button class="btn navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
 								<li class="distance"></li>

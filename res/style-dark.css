@@ -1,0 +1,29 @@
+/*
+ *	Drill 2 dark theme mod
+ *	https://github.com/gronostajo/drill2
+ */
+
+@import url('style.css');
+
+.graded .answer.correct-true label {
+	color: #5cb65d;
+	background-color: #1f4018;
+	border-color: #165906;
+}
+
+.graded .answer.checked-true.correct-false label {
+	color: #c95452;
+	background-color: #421e1e;
+	border-color: #541c11;
+
+}
+
+.summary .correct span, .summary .correct p {
+	color: #5cb65d;
+	font-weight: bold;
+}
+
+.summary .incorrect span, .summary .incorrect p {
+	color: #c95452;
+	text-decoration: line-through;
+}

@@ -6,9 +6,9 @@
 
 (function() {
 
-	var app = angular.module('DrillApp', ['ngFileUpload'])
+	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
 
-	.controller('DrillController', ['$scope', '$timeout', function($scope, $timeout) {
+	drillApp.controller('DrillController', ['$scope', '$timeout', function($scope, $timeout) {
 
 		/*
 		 *	Constructors
@@ -702,16 +702,16 @@
 
 
 		$scope.initialize();
-	}])
+	}]);
 
-	.filter('decPlaces', function () {
+	drillApp.filter('decPlaces', function () {
 		return function (x, dec) {
 			var pow = Math.pow(10, dec);
 			return (Math.round(x * pow) / pow)
 		};
-	})
+	});
 
-	.filter('markdown', ['$sce', function ($sce) {
+	drillApp.filter('markdown', ['$sce', function ($sce) {
 		return function(str, $scope) {
 			if (!str || !$scope.config.markdown) return '';
 
@@ -749,22 +749,22 @@
 
 			return $sce.trustAsHtml(html);
 		};
-	}])
+	}]);
 
-	.filter('lines', function () {
+	drillApp.filter('lines', function () {
 		return function(str) {
 			if (!str) return [];
 			return str.split(/\s*(?:\r?\n)(?:\r?\n\s)*/);
 		};
-	})
+	});
 
-	.filter('doubleNewlines', function () {
+	drillApp.filter('doubleNewlines', function () {
 		return function (str) {
 			return str ? str.replace(/\n+/g, '\n\n') : '';
 		}
-	})
+	});
 
-	.filter('minutes', function () {
+	drillApp.filter('minutes', function () {
 		return function (secs) {
 			if (typeof(secs) == 'undefined') return '';
 			secs = parseInt(secs);
@@ -777,17 +777,17 @@
 
 			return mins + ':' + secs;
 		}
-	})
+	});
 
-	.filter('minsSecs', function () {
+	drillApp.filter('minsSecs', function () {
 		return function (secs) {
 			var mins = Math.floor(secs / 60);
 			var mstr = (mins > 0) ? mins + 'm ' : '';
 			return mstr + (secs % 60) + 's';
 		}
-	})
+	});
 
-	.filter('scoreFormat', ['decPlacesFilter', 'minsSecsFilter', function (decPlacesFilter, minsSecsFilter) {
+	drillApp.filter('scoreFormat', ['decPlacesFilter', 'minsSecsFilter', function (decPlacesFilter, minsSecsFilter) {
 		return function (score, limitedTime, timeLimit) {
 			var str = decPlacesFilter(score.score, 2) + ' / '
 				+ decPlacesFilter(score.total, 2) + ' pts';
@@ -796,15 +796,15 @@
 			}
 			return str;
 		}
-	}])
+	}]);
 
-	.filter('no', function () {
+	drillApp.filter('no', function () {
 		return function (x, capitalized) {
 			return x ? x : (capitalized ? 'No' : 'no');
 		}
-	})
+	});
 
-	.filter('averageTime', function () {
+	drillApp.filter('averageTime', function () {
 		return function (questions, timeLimit) {
 			var count = 0;
 			var total = 0;

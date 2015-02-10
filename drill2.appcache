@@ -51,7 +51,7 @@ res/MathJax-2.5.0/jax/output/HTML-CSS/fonts/TeX/fontdata.js
 res/MathJax-2.5.0/jax/output/HTML-CSS/jax.js
 res/MathJax-2.5.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 
-res/safeeval.min.js
+res/safeeval.js
 
 res/controller.js
 res/filters.js

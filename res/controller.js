@@ -8,7 +8,7 @@
 
 	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
 
-	drillApp.controller('DrillController', ['$scope', '$timeout', function($scope, $timeout) {
+	drillApp.controller('DrillController', ['$scope', '$timeout', 'SafeEval', function($scope, $timeout, SafeEval) {
 
 		/*
 		 *	Constructors
@@ -219,8 +219,8 @@
 						};
 
 						return {
-							score: SafeEval(oneliner, questionInfo),
-							total: SafeEval(oneliner, fakeInfo)
+							score: SafeEval.eval(oneliner, questionInfo),
+							total: SafeEval.eval(oneliner, fakeInfo)
 						};
 					}
 				}
@@ -507,7 +507,7 @@
 					var matched = /^custom: *(.+)$/.exec(options.grading);
 					if (matched) {
 						try {
-							SafeEval(matched[1], function (id) {
+							SafeEval.eval(matched[1], function (id) {
 								return (id == 'total') ? 3 : 1;
 							});
 							$scope.config.gradingMethod = 'custom';

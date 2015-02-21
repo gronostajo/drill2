@@ -8,7 +8,7 @@
 
 	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
 
-	drillApp.controller('DrillController', ['$scope', '$timeout', 'SafeEval', function($scope, $timeout, SafeEval) {
+	drillApp.controller('DrillController', function($scope, $timeout, SafeEval, GraderFactory) {
 
 		/*
 		 *	Constructors
@@ -64,7 +64,7 @@
 				};
 
 				this.grade = function (grader) {
-					var grade = grader.grade(this);
+					var grade = grader(this);
 					var time = this.hasOwnProperty('timeLeft')
 						? this.timeLeft : 0;
 
@@ -127,104 +127,8 @@
 				this.isGraded = function () { return this.current == 'graded'; };
 				this.isQuestion = function () { return this.isGraded() || this.isNotGraded(); };
 				this.isFinal = function () { return this.current == 'end'; };
-			},
-
-			perQuestionGrader: function (max, radical) {
-				if (typeof radical == 'undefined') radical = true;
-
-				return {
-					max: max,
-
-					grade: function (question) {
-						var ret = {
-							score: 0,
-							total: this.max
-						};
-
-						var correct = question.correct();
-						var incorrect = question.incorrect();
-
-						if (radical && (incorrect || !correct)) {
-							return ret;
-						}
-
-						ret.score = Math.max(max * ((correct - incorrect) / question.totalCorrect()), 0);
-						return ret;
-					}
-				};
-			},
-
-			perAnswerGrader: function (radical) {
-				if (typeof radical == 'undefined') radical = true;
-
-				return {
-					grade: function (question) {
-						var ret = {
-							score: 0,
-							total: question.totalCorrect()
-						};
-
-						var correct = question.correct();
-						var incorrect = question.incorrect();
-
-						if (radical && (incorrect || !correct)) {
-							return ret;
-						}
-
-						ret.score = Math.max(correct - incorrect, 0);
-						return ret;
-					}
-				};
-			},
-
-			oneLinerGrader: function (oneliner) {
-				return {
-					grade: function (question) {
-						var questionInfo = function (id) {
-							switch (id) {
-								case 'correct':
-									return question.correct();
-									break;
-
-								case 'incorrect':
-									return question.incorrect();
-									break;
-
-								case 'missed':
-									return question.missed();
-									break;
-
-								case 'total':
-									return question.totalCorrect();
-									break;
-
-								default:
-									return 0;
-									break;
-							}
-						};
-
-						var fakeInfo = function (id) {
-							switch (id) {
-								case 'correct':
-								case 'total':
-									return question.totalCorrect();
-									break;
-
-								case 'incorrect':
-								case 'missed':
-									return 0;
-									break;
-							}
-						};
-
-						return {
-							score: SafeEval.eval(oneliner, questionInfo),
-							total: SafeEval.eval(oneliner, fakeInfo)
-						};
-					}
-				}
 			}
+
 		};
 
 
@@ -654,16 +558,16 @@
 
 			switch ($scope.config.gradingMethod.toLowerCase()) {
 				case 'peranswer':
-					$scope.grader = new $scope.c.perAnswerGrader(radical);
+					$scope.grader = GraderFactory.createPerAnswerGrader(radical);
 					break;
 
 				case 'custom':
-					$scope.grader = new $scope.c.oneLinerGrader($scope.config.customGrader);
+					$scope.grader = GraderFactory.createOneLinerGrader($scope.config.customGrader);
 					break;
 
 				case 'perquestion':
 				default:
-					$scope.grader = new $scope.c.perQuestionGrader(ppq, radical);
+					$scope.grader = GraderFactory.createPerQuestionGrader(ppq, radical);
 					break;
 			}
 		};
@@ -702,6 +606,6 @@
 
 
 		$scope.initialize();
-	}]);
+	});
 
 })();

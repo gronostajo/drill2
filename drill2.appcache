@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# rev 20150210-1
+# rev 20150221-1
 
 CACHE:
 res/bootstrap-3.3.2/css/bootstrap.min.css
@@ -51,6 +51,7 @@ res/MathJax-2.5.0/jax/output/HTML-CSS/fonts/TeX/fontdata.js
 res/MathJax-2.5.0/jax/output/HTML-CSS/jax.js
 res/MathJax-2.5.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 
+res/GraderFactory.js
 res/safeeval.js
 
 res/controller.js

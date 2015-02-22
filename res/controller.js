@@ -6,231 +6,10 @@
 
 (function() {
 
-	var app = angular.module('DrillApp', ['ngFileUpload'])
-
-	.controller('DrillController', ['$scope', '$timeout', function($scope, $timeout) {
-
-		/*
-		 *	Constructors
-		 */
-
-		$scope.c = {
-			question: function (body, id) {
-				this.body = body;
-				this.id = id;
-				this.explanation = false;
-				this.answers = [];
-				this.scoreLog = [];
-
-				this.addAnswer = function (body, correct, id) {
-					var answer = new $scope.c.answer(body, correct, id);
-					this.answers.push(answer);
-				};
-
-				this.appendToLastAnswer = function (line) {
-					this.answers[this.answers.length-1].append(line);
-				};
-
-				this.totalCorrect = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.correct = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (this.answers[i].checked && this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.incorrect = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (this.answers[i].checked && !this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.missed = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (!this.answers[i].checked && this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.grade = function (grader) {
-					var grade = grader.grade(this);
-					var time = this.hasOwnProperty('timeLeft')
-						? this.timeLeft : 0;
-
-					this.scoreLog.push({
-						score: grade.score,
-						total: grade.total,
-						timeLeft: time
-					});
-
-					return grade;
-				};
-
-				this.loadExplanation = function (expl) {
-					if (expl.hasOwnProperty(this.id)) {
-						this.explanation = expl[this.id];
-						this.hasExplanations = true;
-					}
-				};
-			},
-
-			answer: function (body, correct, id) {
-				this.body = body.trim();
-				this.id = id;
-				this.correct = !!correct;
-				this.checked = false;
-
-				this.append = function (line) {
-					this.body += '\n\n' + line.trim();
-				}
-			},
-
-			stats: function () {
-				this.correct = 0;
-				this.partial = 0;
-				this.incorrect = 0;
-				this.score = 0;
-				this.totalPoints = 0;
-
-				this.totalQuestions = function() {
-					return this.correct + this.incorrect + this.partial;
-				};
-
-				//noinspection JSUnusedGlobalSymbols
-				this.pcOfQuestions = function (num) {
-					return (this.totalQuestions())
-						? Math.round(num * 100 / this.totalQuestions())
-						: 0;
-				};
-
-				//noinspection JSUnusedGlobalSymbols
-				this.pcScore = function () {
-					return (this.totalPoints) ? Math.round(this.score * 100 / this.totalPoints) : 0;
-				};
-			},
-
-			view: function () {
-				this.current = 'first';
-				this.isFirst = function () { return this.current == 'first'; };
-				this.isNotGraded = function () { return this.current == 'question'; };
-				this.isGraded = function () { return this.current == 'graded'; };
-				this.isQuestion = function () { return this.isGraded() || this.isNotGraded(); };
-				this.isFinal = function () { return this.current == 'end'; };
-			},
-
-			perQuestionGrader: function (max, radical) {
-				if (typeof radical == 'undefined') radical = true;
-
-				return {
-					max: max,
-
-					grade: function (question) {
-						var ret = {
-							score: 0,
-							total: this.max
-						};
-
-						var correct = question.correct();
-						var incorrect = question.incorrect();
-
-						if (radical && (incorrect || !correct)) {
-							return ret;
-						}
-
-						ret.score = Math.max(max * ((correct - incorrect) / question.totalCorrect()), 0);
-						return ret;
-					}
-				};
-			},
-
-			perAnswerGrader: function (radical) {
-				if (typeof radical == 'undefined') radical = true;
-
-				return {
-					grade: function (question) {
-						var ret = {
-							score: 0,
-							total: question.totalCorrect()
-						};
-
-						var correct = question.correct();
-						var incorrect = question.incorrect();
-
-						if (radical && (incorrect || !correct)) {
-							return ret;
-						}
-
-						ret.score = Math.max(correct - incorrect, 0);
-						return ret;
-					}
-				};
-			},
-
-			oneLinerGrader: function (oneliner) {
-				return {
-					grade: function (question) {
-						var questionInfo = function (id) {
-							switch (id) {
-								case 'correct':
-									return question.correct();
-									break;
-
-								case 'incorrect':
-									return question.incorrect();
-									break;
-
-								case 'missed':
-									return question.missed();
-									break;
-
-								case 'total':
-									return question.totalCorrect();
-									break;
-
-								default:
-									return 0;
-									break;
-							}
-						};
-
-						var fakeInfo = function (id) {
-							switch (id) {
-								case 'correct':
-								case 'total':
-									return question.totalCorrect();
-									break;
-
-								case 'incorrect':
-								case 'missed':
-									return 0;
-									break;
-							}
-						};
-
-						return {
-							score: SafeEval(oneliner, questionInfo),
-							total: SafeEval(oneliner, fakeInfo)
-						};
-					}
-				}
-			}
-		};
+	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
 
 
-		/*
-		 *	Logic
-		 */
+	drillApp.controller('DrillController', function($scope, $timeout, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -298,8 +77,8 @@
 			$scope.questions = [];
 			$scope.questionIndex = 0;
 
-			$scope.stats = new $scope.c.stats();
-			$scope.view = new $scope.c.view();
+			$scope.stats = StatsFactory.createStats();
+			$scope.view = ViewFactory.createView();
 		};
 
 		$scope.reinitialize = function () {
@@ -496,30 +275,29 @@
 			$scope.config.mathjax = $scope.config.mathjaxReady;
 
 			$scope.config.customGrader = false;
-			switch (options.grading.toLowerCase()) {
-				case 'perquestion':
-				case 'peranswer':
-					$scope.config.gradingMethod = options.grading;
-					break;
 
-				default:
-					//noinspection JSDuplicatedDeclaration
-					var matched = /^custom: *(.+)$/.exec(options.grading);
-					if (matched) {
-						try {
-							SafeEval(matched[1], function (id) {
-								return (id == 'total') ? 3 : 1;
-							});
-							$scope.config.gradingMethod = 'custom';
-							$scope.config.customGrader = matched[1];
-							break;
-						}
-						catch (ex) {
-							console.error('Custom grader caused an error when testing.');
-						}
+			if ((options.grading == 'perQuestion') || (options.grading == 'perAnswer')) {
+				// for built-in graders, just accept them
+				$scope.config.gradingMethod = options.grading;
+			}
+			else {
+				//noinspection JSDuplicatedDeclaration
+				var matched = /^custom: *(.+)$/.exec(options.grading);
+				if (matched) {
+					try {
+						SafeEvalService.eval(matched[1], function (id) {
+							return (id == 'total') ? 3 : 1;
+						});
+						$scope.config.gradingMethod = 'custom';
+						$scope.config.customGrader = matched[1];
 					}
+					catch (ex) {
+						console.error('Custom grader caused an error when testing.');
+					}
+				}
+				else {
 					$scope.config.gradingMethod = 'perAnswer';
-					break;
+				}
 			}
 
 			$scope.config.gradingRadical = !!options.radical;
@@ -574,7 +352,7 @@
 
 					else {
 						if (question == null) {
-							question = new $scope.c.question(body.join('\n\n'), id);
+							question = QuestionFactory.createQuestion(body.join('\n\n'), id);
 						}
 						answers++;
 						if (matched[1]) {
@@ -654,16 +432,16 @@
 
 			switch ($scope.config.gradingMethod.toLowerCase()) {
 				case 'peranswer':
-					$scope.grader = new $scope.c.perAnswerGrader(radical);
+					$scope.grader = GraderFactory.createPerAnswerGrader(radical);
 					break;
 
 				case 'custom':
-					$scope.grader = new $scope.c.oneLinerGrader($scope.config.customGrader);
+					$scope.grader = GraderFactory.createOneLinerGrader($scope.config.customGrader);
 					break;
 
 				case 'perquestion':
 				default:
-					$scope.grader = new $scope.c.perQuestionGrader(ppq, radical);
+					$scope.grader = GraderFactory.createPerQuestionGrader(ppq, radical);
 					break;
 			}
 		};
@@ -702,122 +480,6 @@
 
 
 		$scope.initialize();
-	}])
-
-	.filter('decPlaces', function () {
-		return function (x, dec) {
-			var pow = Math.pow(10, dec);
-			return (Math.round(x * pow) / pow)
-		};
-	})
-
-	.filter('markdown', ['$sce', function ($sce) {
-		return function(str, $scope) {
-			if (!str || !$scope.config.markdown) return '';
-
-			//noinspection JSUnresolvedVariable
-			var parser = new commonmark.Parser();
-			//noinspection JSUnresolvedVariable
-			var renderer = new commonmark.HtmlRenderer();
-
-			var ast = parser.parse(str);
-
-			// fixes double newlines in code
-			var fix = function (node) {
-				if (node._type === 'CodeBlock') {
-					// fix double newlines
-					var str = node._literal;
-					if (node._isFenced) str = str.substring(1, str.length - 1);  // fenced code blocks have additional newlines on ends
-
-					var split = str.split('\n');
-					var wanted = [];
-
-					for (var i = 0; i < split.length; i += 2) {
-						wanted.push(split[i]);
-					}
-
-					node._literal = wanted.join('\n');
-				}
-				else {
-					if (node._firstChild) fix(node._firstChild);
-					if (node._next) fix(node._next);
-				}
-			};
-
-			fix(ast);
-			var html = renderer.render(ast);
-
-			return $sce.trustAsHtml(html);
-		};
-	}])
-
-	.filter('lines', function () {
-		return function(str) {
-			if (!str) return [];
-			return str.split(/\s*(?:\r?\n)(?:\r?\n\s)*/);
-		};
-	})
-
-	.filter('doubleNewlines', function () {
-		return function (str) {
-			return str ? str.replace(/\n+/g, '\n\n') : '';
-		}
-	})
-
-	.filter('minutes', function () {
-		return function (secs) {
-			if (typeof(secs) == 'undefined') return '';
-			secs = parseInt(secs);
-
-			var mins = Math.floor(secs / 60);
-			secs = (secs % 60).toString();
-			while (secs.length < 2) {
-				secs = '0' + secs;
-			}
-
-			return mins + ':' + secs;
-		}
-	})
-
-	.filter('minsSecs', function () {
-		return function (secs) {
-			var mins = Math.floor(secs / 60);
-			var mstr = (mins > 0) ? mins + 'm ' : '';
-			return mstr + (secs % 60) + 's';
-		}
-	})
-
-	.filter('scoreFormat', ['decPlacesFilter', 'minsSecsFilter', function (decPlacesFilter, minsSecsFilter) {
-		return function (score, limitedTime, timeLimit) {
-			var str = decPlacesFilter(score.score, 2) + ' / '
-				+ decPlacesFilter(score.total, 2) + ' pts';
-			if (limitedTime) {
-				str += ', ' + minsSecsFilter(timeLimit - score.timeLeft);
-			}
-			return str;
-		}
-	}])
-
-	.filter('no', function () {
-		return function (x, capitalized) {
-			return x ? x : (capitalized ? 'No' : 'no');
-		}
-	})
-
-	.filter('averageTime', function () {
-		return function (questions, timeLimit) {
-			var count = 0;
-			var total = 0;
-
-			for (var q = 0; q < questions.length; q++) {
-				count += questions[q].scoreLog.length;
-				for (var s = 0; s < questions[q].scoreLog.length; s++) {
-					total += timeLimit - questions[q].scoreLog[s].timeLeft;
-				}
-			}
-
-			return Math.round(total / count);
-		}
 	});
 
 })();

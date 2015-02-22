@@ -52,7 +52,7 @@ res/MathJax-2.5.0/jax/output/HTML-CSS/jax.js
 res/MathJax-2.5.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 
 res/GraderFactory.js
-res/safeeval.js
+res/SafeEvalService.js
 
 res/controller.js
 res/filters.js

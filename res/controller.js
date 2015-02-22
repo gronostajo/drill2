@@ -9,7 +9,7 @@
 	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
 
 
-	drillApp.controller('DrillController', function($scope, $timeout, SafeEval, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory) {
+	drillApp.controller('DrillController', function($scope, $timeout, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -275,30 +275,29 @@
 			$scope.config.mathjax = $scope.config.mathjaxReady;
 
 			$scope.config.customGrader = false;
-			switch (options.grading.toLowerCase()) {
-				case 'perquestion':
-				case 'peranswer':
-					$scope.config.gradingMethod = options.grading;
-					break;
 
-				default:
-					//noinspection JSDuplicatedDeclaration
-					var matched = /^custom: *(.+)$/.exec(options.grading);
-					if (matched) {
-						try {
-							SafeEval.eval(matched[1], function (id) {
-								return (id == 'total') ? 3 : 1;
-							});
-							$scope.config.gradingMethod = 'custom';
-							$scope.config.customGrader = matched[1];
-							break;
-						}
-						catch (ex) {
-							console.error('Custom grader caused an error when testing.');
-						}
+			if ((options.grading == 'perQuestion') || (options.grading == 'perAnswer')) {
+				// for built-in graders, just accept them
+				$scope.config.gradingMethod = options.grading;
+			}
+			else {
+				//noinspection JSDuplicatedDeclaration
+				var matched = /^custom: *(.+)$/.exec(options.grading);
+				if (matched) {
+					try {
+						SafeEvalService.eval(matched[1], function (id) {
+							return (id == 'total') ? 3 : 1;
+						});
+						$scope.config.gradingMethod = 'custom';
+						$scope.config.customGrader = matched[1];
 					}
+					catch (ex) {
+						console.error('Custom grader caused an error when testing.');
+					}
+				}
+				else {
 					$scope.config.gradingMethod = 'perAnswer';
-					break;
+				}
 			}
 
 			$scope.config.gradingRadical = !!options.radical;

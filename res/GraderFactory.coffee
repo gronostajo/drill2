@@ -1,7 +1,7 @@
 app = angular.module 'DrillApp'
 
 
-app.factory 'GraderFactory', ->
+app.factory 'GraderFactory', (SafeEvalService) ->
 
   createPerQuestionGrader: (max, radical = true) ->
     (question) ->
@@ -52,5 +52,5 @@ app.factory 'GraderFactory', ->
           else
             0
 
-      score: SafeEval(oneliner, questionInfo)
-      total: SafeEval(oneliner, fakeInfo)
+      score: SafeEvalService.eval(oneliner, questionInfo)
+      total: SafeEvalService.eval(oneliner, fakeInfo)

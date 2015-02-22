@@ -56,6 +56,7 @@ res/safeeval.js
 
 res/controller.js
 res/filters.js
+res/providers.js
 res/script.js
 
 res/style.css

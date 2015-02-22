@@ -8,133 +8,8 @@
 
 	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
 
-	drillApp.controller('DrillController', function($scope, $timeout, SafeEval, GraderFactory) {
 
-		/*
-		 *	Constructors
-		 */
-
-		$scope.c = {
-			question: function (body, id) {
-				this.body = body;
-				this.id = id;
-				this.explanation = false;
-				this.answers = [];
-				this.scoreLog = [];
-
-				this.addAnswer = function (body, correct, id) {
-					var answer = new $scope.c.answer(body, correct, id);
-					this.answers.push(answer);
-				};
-
-				this.appendToLastAnswer = function (line) {
-					this.answers[this.answers.length-1].append(line);
-				};
-
-				this.totalCorrect = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.correct = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (this.answers[i].checked && this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.incorrect = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (this.answers[i].checked && !this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.missed = function () {
-					var x = 0;
-					for (var i = 0; i < this.answers.length; i++) {
-						if (!this.answers[i].checked && this.answers[i].correct) x++;
-					}
-					return x;
-				};
-
-				this.grade = function (grader) {
-					var grade = grader(this);
-					var time = this.hasOwnProperty('timeLeft')
-						? this.timeLeft : 0;
-
-					this.scoreLog.push({
-						score: grade.score,
-						total: grade.total,
-						timeLeft: time
-					});
-
-					return grade;
-				};
-
-				this.loadExplanation = function (expl) {
-					if (expl.hasOwnProperty(this.id)) {
-						this.explanation = expl[this.id];
-						this.hasExplanations = true;
-					}
-				};
-			},
-
-			answer: function (body, correct, id) {
-				this.body = body.trim();
-				this.id = id;
-				this.correct = !!correct;
-				this.checked = false;
-
-				this.append = function (line) {
-					this.body += '\n\n' + line.trim();
-				}
-			},
-
-			stats: function () {
-				this.correct = 0;
-				this.partial = 0;
-				this.incorrect = 0;
-				this.score = 0;
-				this.totalPoints = 0;
-
-				this.totalQuestions = function() {
-					return this.correct + this.incorrect + this.partial;
-				};
-
-				//noinspection JSUnusedGlobalSymbols
-				this.pcOfQuestions = function (num) {
-					return (this.totalQuestions())
-						? Math.round(num * 100 / this.totalQuestions())
-						: 0;
-				};
-
-				//noinspection JSUnusedGlobalSymbols
-				this.pcScore = function () {
-					return (this.totalPoints) ? Math.round(this.score * 100 / this.totalPoints) : 0;
-				};
-			},
-
-			view: function () {
-				this.current = 'first';
-				this.isFirst = function () { return this.current == 'first'; };
-				this.isNotGraded = function () { return this.current == 'question'; };
-				this.isGraded = function () { return this.current == 'graded'; };
-				this.isQuestion = function () { return this.isGraded() || this.isNotGraded(); };
-				this.isFinal = function () { return this.current == 'end'; };
-			}
-
-		};
-
-
-		/*
-		 *	Logic
-		 */
+	drillApp.controller('DrillController', function($scope, $timeout, SafeEval, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -202,8 +77,8 @@
 			$scope.questions = [];
 			$scope.questionIndex = 0;
 
-			$scope.stats = new $scope.c.stats();
-			$scope.view = new $scope.c.view();
+			$scope.stats = StatsFactory.createStats();
+			$scope.view = ViewFactory.createView();
 		};
 
 		$scope.reinitialize = function () {
@@ -478,7 +353,7 @@
 
 					else {
 						if (question == null) {
-							question = new $scope.c.question(body.join('\n\n'), id);
+							question = QuestionFactory.createQuestion(body.join('\n\n'), id);
 						}
 						answers++;
 						if (matched[1]) {

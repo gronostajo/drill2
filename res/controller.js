@@ -323,6 +323,7 @@
 			}
 			$scope.config.showExplanations = ($scope.config.explain == 'always');
 
+			var rejected = 0;
 			for (var i = 0; i < qs.length; i++) {
 				var question = null;
 
@@ -334,7 +335,7 @@
 				var lines = qs[i].split(/(?:\r?\n)/);
 				for (var j = 0; j < lines.length; j++) {
 					//noinspection JSDuplicatedDeclaration
-					var matched = /^\s*(>+)?([A-Z])\)\s*(.+)$/i.exec(lines[j]);
+					var matched = /^\s*(>+)?\s*([A-Z])\)\s*(.+)$/i.exec(lines[j]);
 
 					if (!matched && !answers) {
 						if (!body.length) {
@@ -365,7 +366,14 @@
 				if (answers >= 2 && correct >= 1) {
 					$scope.loadedQuestions.push(question);
 				}
+				else if (question) {
+					console.error('Rejected question with ' + answers + ' answers total, ' + correct + ' correct. Requirement not satisfied: 2 total, 1 correct.', question);
+					rejected++;
+				}
+			}
 
+			if (rejected) {
+				console.info(rejected + ' questions rejected.');
 			}
 
 			$scope.explanationsAvailable = false;

@@ -8,6 +8,7 @@ app.factory 'QuestionFactory', (AnswerFactory) ->
       @body = body
       @id = id
       @explanation = false
+      @url = false
       @answers = []
       @scoreLog = []
 
@@ -57,6 +58,10 @@ app.factory 'QuestionFactory', (AnswerFactory) ->
         if expl.hasOwnProperty @id
           @explanation = expl[@id]
           @hasExplanations = true
+
+      @loadUrl = (urls) ->
+        if urls.hasOwnProperty @id
+          @url = urls[@id]
 
       return
 

@@ -325,7 +325,10 @@ B) A mouse</pre>
 
 				<div class="col-sm-8 col-sm-pull-4 col-md-8 col-md-pull-4 col-lg-7" ng-show="view.isQuestion()" id="questionView">
 					<div class="page-header">
-						<h2 title="{{currentQuestion.id != false ? currentQuestion.id : 'No ID'}}">Question {{questionIndex}} out of {{questions.length}}</h2>
+						<h2 title="{{currentQuestion.id != false ? currentQuestion.id : 'No ID'}}">
+							Question {{questionIndex}} out of {{questions.length}}
+							<a ng-href="{{ currentQuestion.url }}" ng-show="currentQuestion.url" class="btn btn-xs btn-default" target="_blank">Show in the database</a>
+						</h2>
 					</div>
 					<form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">
 						<div>

@@ -234,6 +234,7 @@
 				explain: 'optional'
 			};
 			var expl = false;
+			var urls = false;
 
 			//noinspection JSDuplicatedDeclaration
 			var matched = /<options>\s*(\{(?:.|\n|\r)*})\s*/i.exec(qs[qs.length - 1]);
@@ -249,6 +250,9 @@
 				for (var key in loaded) {
 					if (key == 'explanations') {
 						expl = loaded[key];
+					}
+					else if (key == 'urls') {
+						urls = loaded[key]
 					}
 					else if (options.hasOwnProperty(key)) {
 						options[key] = loaded[key];
@@ -383,6 +387,12 @@
 					if ($scope.loadedQuestions[q].hasExplanations) {
 						$scope.explanationsAvailable = true;
 					}
+				}
+			}
+
+			if (urls) {
+				for (var q = 0; q < $scope.loadedQuestions.length; q++) {
+					$scope.loadedQuestions[q].loadUrl(urls);
 				}
 			}
 

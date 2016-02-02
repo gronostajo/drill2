@@ -11,7 +11,8 @@
 		<!-- bower:js -->
 		<!-- endinject -->
 
-		<!-- MathJax config -->
+		<!-- MathJax has to be included manually due to that fancy GET-like configuration -->
+		<script src="lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe"></script>
 		<script type="text/x-mathjax-config">
 			MathJax.Hub.Config({
 				tex2jax: {
@@ -24,7 +25,7 @@
 		<!-- inject:js -->
 		<!-- endinject -->
 
-		<link rel="stylesheet" href="partials/style.css" title="Light">
+		<link rel="stylesheet" href="view/style.css" title="Light">
 		<!-- FIXME dark theme <link rel="alternate stylesheet" href="partials/style-dark.css" title="Dark">-->
 	</head>
 	<body ng-controller="DrillController">

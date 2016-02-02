@@ -52,17 +52,17 @@ gulp.task 'scripts', (done) ->
 
 
 
-### Partials ###
+### View ###
 
 gulp.task 'html', ->
-  gulp.src(['src/*.html', 'src/partials/**/*.html'], base: 'src')
+  gulp.src(['src/*.html', 'src/view/**/*.html'], base: 'src')
   .pipe(gulp.dest deployPath)
 
 gulp.task 'css', ->
-  gulp.src('src/partials/**/*.css', base: 'src')
+  gulp.src('src/view/**/*.css', base: 'src')
   .pipe(gulp.dest deployPath)
 
-gulp.task 'partials', (done) ->
+gulp.task 'view', (done) ->
   runSequence 'html', 'css', done
 
 
@@ -73,9 +73,12 @@ gulp.task 'bower', ->
   gulp.src(bowerFiles(), base: 'bower_components')
   .pipe(gulp.dest("#{deployPath}/lib"))
 
-gulp.task 'inject', ['partials'], ->
+gulp.task 'inject', ['view'], ->
+  bowerFilesToInject = bowerFiles()                         # MathJax requires crazy inclusion args,
+  bowerFilesToInject.push '!bower_components/MathJax/**/*'  # we're doing that manually.
+
   gulp.src("#{deployPath}/*.html")
-  .pipe $.inject gulp.src(bowerFiles(), read: false),
+  .pipe $.inject gulp.src(bowerFilesToInject, read: false),
     name: 'bower'
     addRootSlash: no
     ignorePath: '/bower_components/'
@@ -135,7 +138,7 @@ gulp.task 'lint', ['lint-gulpfile', 'lint-coffee'], ->
 ### Large tasks ###
 
 gulp.task 'build', (done) ->
-  runSequence 'lint', 'clean', 'partials', 'scripts', 'dependencies', 'appcache', done
+  runSequence 'lint', 'clean', 'view', 'scripts', 'dependencies', 'appcache', done
 
 gulp.task 'build-dev', ['lint'], (done) ->
   runSequence 'build', 'dev', done

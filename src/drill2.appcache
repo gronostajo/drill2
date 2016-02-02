@@ -1,70 +1,91 @@
 CACHE MANIFEST
 
 CACHE:
-res/bootstrap-3.3.2/css/bootstrap.min.css
-res/bootstrap-3.3.2/css/bootstrap-cyborg.min.css
-res/bootstrap-3.3.2/fonts/glyphicons-halflings-regular.woff
-res/bootstrap-3.3.2/js/bootstrap.min.js
+lib/bootstrap/dist/css/bootstrap.min.css
+#lib/bootstrap/dist/css/bootstrap-cyborg.min.css FIXME dark theme
+lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
+lib/bootstrap/dist/js/bootstrap.min.js
 
-res/html5shiv.min.js
+lib/angular/angular.min.js
 
-res/angular-1.2.18.min.js
+lib/ng-file-upload/angular-file-upload-shim.min.js
+lib/ng-file-upload/angular-file-upload.min.js
+lib/ng-file-upload/FileAPI.flash.swf
+lib/ng-file-upload/FileAPI.min.js
 
-res/angular-file-upload-3.0.1/angular-file-upload-shim.min.js
-res/angular-file-upload-3.0.1/angular-file-upload.min.js
-res/angular-file-upload-3.0.1/FileAPI.flash.swf
-res/angular-file-upload-3.0.1/FileAPI.min.js
+lib/commonmark/dist/commonmark.min.js
 
-res/commonmark.js-0.17.1/commonmark.min.js
+lib/jquery/dist/jquery.min.js
+lib/jquery-cookie/jquery.cookie.js
 
-res/jquery-1.11.2.min.js
-res/jquery.alternate.js
-res/jquery.cookie-1.4.1.min.js
+# To cache MathJax you have to hardcode its version
+lib/MathJax/config/Safe.js?rev=2.6.0
+lib/MathJax/config/TeX-AMS-MML_HTMLorMML.js?rev=2.6.0
+lib/MathJax/extensions/MathMenu.js?rev=2.6.0
+lib/MathJax/extensions/MathZoom.js?rev=2.6.0
+lib/MathJax/extensions/Safe.js?rev=2.6.0
 
-res/MathJax-2.5.0/config/Safe.js
-res/MathJax-2.5.0/config/TeX-AMS-MML_HTMLorMML.js
-res/MathJax-2.5.0/extensions/Safe.js
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Bold.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Bold.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Math-BoldItalic.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Math-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Bold.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Italic.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Script-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff?rev=2.6.0
+lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Typewriter-Regular.woff?rev=2.6.0
 
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Bold.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Bold.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Math-BoldItalic.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Math-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Bold.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Italic.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Script-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff
-res/MathJax-2.5.0/fonts/HTML-CSS/TeX/woff/MathJax_Typewriter-Regular.woff
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/fontdata.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Arrows.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/BBBold.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/BoxDrawing.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/CombDiacritMarks.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Dingbats.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/EnclosedAlphanum.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/GeneralPunctuation.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/GeometricShapes.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/GreekAndCoptic.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Latin1Supplement.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/LatinExtendedA.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/LetterlikeSymbols.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Main.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MathOperators.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MiscMathSymbolsB.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MiscSymbols.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MiscTechnical.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/PUA.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/SpacingModLetters.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/fonts/TeX/AMS/Regular/SuppMathOperators.js?rev=2.6.0
+lib/MathJax/jax/output/HTML-CSS/jax.js?rev=2.6.0
 
-res/MathJax-2.5.0/jax/output/HTML-CSS/fonts/TeX/fontdata.js
-res/MathJax-2.5.0/jax/output/HTML-CSS/jax.js
-res/MathJax-2.5.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
+lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 
-res/AnswerFactory.js
-res/GraderFactory.js
-res/QuestionFactory.js
-res/SafeEvalService.js
-res/StatsFactory.js
-res/ViewFactory.js
+app/jquery.alternate.js
 
-res/controller.js
-res/filters.js
-res/script.js
+app/AnswerFactory.js
+app/GraderFactory.js
+app/QuestionFactory.js
+app/SafeEvalService.js
+app/StatsFactory.js
+app/ViewFactory.js
 
-res/style.css
-res/style-dark.css
+app/__util.js
+app/_main.js
+app/filters.js
+
+view/style.css
+view/style-dark.css
 
 NETWORK:
 *
-
-

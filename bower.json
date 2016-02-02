@@ -9,29 +9,108 @@
     "tests"
   ],
   "dependencies": {
-    "MathJax": "~2.6.0",
+    "MathJax": "2.6.0",
     "angular": "~1.4.9",
     "bootstrap": "~3.3.2",
     "commonmark": "~0.24.0",
     "jquery-cookie": "~1.4.1",
-    "jquery": "2.2.0",
+    "jquery": "~2.2.0",
     "ng-file-upload": "3.3.4"
   },
   "resolutions": {
-      "angular": "~1.4.9",
-    "jquery": "2.2.0"
+    "angular": "~1.4.9",
+    "jquery": "~2.2.0"
   },
   "overrides": {
+    "angular": {
+      "main": [
+        "./angular.min.js"
+      ]
+    },
     "bootstrap": {
       "main": [
         "./dist/css/bootstrap.min.css",
-        "./dist/css/bootstrap.css.map",
         "./dist/js/bootstrap.min.js",
         "./dist/fonts/glyphicons-halflings-regular.eot",
         "./dist/fonts/glyphicons-halflings-regular.svg",
         "./dist/fonts/glyphicons-halflings-regular.ttf",
         "./dist/fonts/glyphicons-halflings-regular.woff",
         "./dist/fonts/glyphicons-halflings-regular.woff2"
+      ]
+    },
+    "commonmark": {
+      "main": [
+        "./dist/commonmark.min.js"
+      ]
+    },
+    "jquery": {
+      "main": [
+        "./dist/jquery.min.js"
+      ]
+    },
+    "jquery-cookie": {
+      "main": [
+        "./jquery.cookie.js"
+      ]
+    },
+    "MathJax": {
+      "main": [
+        "./config/Safe.js",
+        "./config/TeX-AMS-MML_HTMLorMML.js",
+        "./extensions/MathMenu.js",
+        "./extensions/MathZoom.js",
+        "./extensions/Safe.js",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Bold.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Bold.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Fraktur-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Main-Bold.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Main-Italic.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Main-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Math-BoldItalic.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Math-Italic.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Math-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Bold.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Italic.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_SansSerif-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Script-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Size1-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Size2-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Size3-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Size4-Regular.woff",
+        "./fonts/HTML-CSS/TeX/woff/MathJax_Typewriter-Regular.woff",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Arrows.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/BBBold.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/BoxDrawing.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/CombDiacritMarks.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Dingbats.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/EnclosedAlphanum.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/GeneralPunctuation.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/GeometricShapes.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/GreekAndCoptic.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Latin1Supplement.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/LatinExtendedA.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/LetterlikeSymbols.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/Main.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MathOperators.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MiscMathSymbolsB.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MiscSymbols.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/MiscTechnical.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/PUA.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/SpacingModLetters.js",
+        "./jax/output/HTML-CSS/fonts/TeX/AMS/Regular/SuppMathOperators.js",
+        "./jax/output/HTML-CSS/fonts/TeX/fontdata.js",
+        "./jax/output/HTML-CSS/jax.js",
+        "./MathJax.js"
+      ]
+    },
+    "ng-file-upload": {
+      "main": [
+        "./angular-file-upload-shim.min.js",
+        "./angular-file-upload.min.js",
+        "./FileAPI.flash.swf",
+        "./FileAPI.min.js"
       ]
     }
   }

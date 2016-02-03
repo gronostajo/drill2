@@ -51,8 +51,19 @@
 		<script src="res/StatsFactory.js"></script>
 		<script src="res/ViewFactory.js"></script>
 
+		<style>
+			.fallback-topbar {
+				padding: 10px 20px;
+				text-align: center;
+				background-color: #ddd;
+			}
+		</style>
 	</head>
 	<body ng-controller="DrillController">
+		<div href="old" class="fallback-topbar">
+			This is the stable release. You can <a href="..">switch to alpha</a>.
+		</div>
+
 		<nav class="timer navbar navbar-default navbar-fixed-top" role="navigation" ng-show="config.timeLimitEnabled && view.isQuestion()">
 			{{currentQuestion.timeLeft | minutes}}
 		</nav>

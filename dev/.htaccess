@@ -1,2 +1,1 @@
-AddType text/cache-manifest .appcache
 RedirectMatch 404 drill2.appcache

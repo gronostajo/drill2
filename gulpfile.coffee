@@ -74,8 +74,11 @@ gulp.task 'bower', ->
   .pipe(gulp.dest("#{deployPath}/lib"))
 
 gulp.task 'inject', ['view'], ->
-  bowerFilesToInject = bowerFiles()                         # MathJax requires crazy inclusion args,
-  bowerFilesToInject.push '!bower_components/MathJax/**/*'  # we're doing that manually.
+  bowerFilesToInject = bowerFiles()
+  bowerFilesToInject.push '!bower_components/MathJax/**/*'  # MathJax requires crazy inclusion args,
+                                                            #  we're doing that manually.
+  bowerFilesToInject.push '!bower_components/bootstrap/**/*.css'    # Included manually for theme switcher
+  bowerFilesToInject.push '!bower_components/bootswatch/**/*.css'   # Included manually for theme switcher
 
   gulp.src("#{deployPath}/*.html")
   .pipe $.inject gulp.src(bowerFilesToInject, read: false),

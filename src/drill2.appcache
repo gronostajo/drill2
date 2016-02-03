@@ -2,9 +2,11 @@ CACHE MANIFEST
 
 CACHE:
 lib/bootstrap/dist/css/bootstrap.min.css
-#lib/bootstrap/dist/css/bootstrap-cyborg.min.css FIXME dark theme
 lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
 lib/bootstrap/dist/js/bootstrap.min.js
+
+lib/bootswatch/cyborg/bootstrap.min.css
+lib/bootswatch/fonts/glyphicons-halflings-regular.woff
 
 lib/angular/angular.min.js
 

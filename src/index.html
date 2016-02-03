@@ -25,8 +25,12 @@
 		<!-- inject:js -->
 		<!-- endinject -->
 
+		<!-- Bootstrap styles included manually for theme switcher -->
+		<link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" title="Light">
 		<link rel="stylesheet" href="view/style.css" title="Light">
-		<!-- FIXME dark theme <link rel="alternate stylesheet" href="partials/style-dark.css" title="Dark">-->
+
+		<link rel="alternate stylesheet" href="lib/bootswatch/cyborg/bootstrap.min.css" title="Dark">
+		<link rel="alternate stylesheet" href="view/style-dark.css" title="Dark">
 	</head>
 	<body ng-controller="DrillController">
 		<nav class="timer navbar navbar-default navbar-fixed-top" role="navigation" ng-show="config.timeLimitEnabled && view.isQuestion()">

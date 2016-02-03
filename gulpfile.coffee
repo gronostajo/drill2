@@ -5,28 +5,11 @@ beep = require 'beepbeep'
 bowerFiles = require 'main-bower-files'
 del = require 'del'
 runSequence = require 'run-sequence'
-sort = require 'sort-stream'
 
 pkg = require './package.json'
 
 deployPath = 'build'
 $.util.log "Project: #{pkg.name} v#{pkg.version}"
-
-
-
-sortFiles = (a, b) ->
-  countUnderscores = (s) ->
-    for i in [0..s.length-1]
-      return i if s[i] isnt '_'
-    return s.length
-  [_, ..., filename_a] = a.path.replace(/\\/g, '/').split('/')
-  [_, ..., filename_b] = b.path.replace(/\\/g, '/').split('/')
-  count_a = countUnderscores(filename_a)
-  count_b = countUnderscores(filename_b)
-  if count_a == count_b
-    filename_a.substring(count_a).localeCompare filename_b.substring(count_b)
-  else
-    if count_a < count_b then 1 else -1
 
 
 
@@ -89,7 +72,7 @@ gulp.task 'inject', ['view'], ->
   .pipe $.inject gulp.src([
     "#{deployPath}/**/*.js",
     "!#{deployPath}/lib/**/*"]
-  , read: no).pipe(sort(sortFiles)),
+  , read: no),
     relative: yes
   .pipe(gulp.dest deployPath)
 

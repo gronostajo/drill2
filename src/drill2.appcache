@@ -82,8 +82,8 @@ app/SafeEvalService.js
 app/StatsFactory.js
 app/ViewFactory.js
 
-app/__util.js
-app/_main.js
+app/10_util.js
+app/20_main.js
 app/filters.js
 
 view/style.css

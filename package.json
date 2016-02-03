@@ -19,8 +19,7 @@
     "gulp-replace": "0.5.4",
     "gulp-util": "3.0.7",
     "main-bower-files": "2.11.1",
-    "run-sequence": "1.1.5",
-    "sort-stream": "^1.0.1"
+    "run-sequence": "1.1.5"
   },
   "repository": {
     "type": "git",

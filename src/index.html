@@ -55,11 +55,16 @@
 									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="updateStatus == 'updateready'">Enable downloaded updates</button>
 								</li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="switchTheme()" ><i class="glyphicon glyphicon-adjust"></i></button></li>
+								<li><label for="keyboardShortcutsCheckbox" class="btn btn-default navbar-btn" title="Keyboard shortcuts on/off &ndash; 1-9 to select answers, Enter to accept">
+                                    <i class="glyphicon glyphicon-th"></i>
+                                    <input type="checkbox" id="keyboardShortcutsCheckbox" ng-model="keyboardShortcutsEnabled" />
+                                </label></li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><i class="glyphicon glyphicon-adjust"></i></button></li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="confirmRestart('reinitialize')" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
+								<li class="distance"></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('reinitialize')" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
 							</ul>
 						</div>
 					</div>

@@ -36,6 +36,11 @@
 
 			$scope.pasteEnabled = false;
 
+			$scope.keyboardShortcutsEnabled = ($.cookie('keyboardShortcuts') === 'true');
+			$scope.$watch('keyboardShortcutsEnabled', function (newValue) {
+				$.cookie('keyboardShortcuts', newValue ? 'true' : 'false');
+			});
+
 			$scope.config = {
 				shuffleQuestions: true,
 				shuffleAnswers: true
@@ -175,6 +180,10 @@
 		};
 
 		$scope.handleKeypress = function ($event) {
+			if (!$scope.keyboardShortcutsEnabled) {
+				return;
+			}
+
 			var sortingKeys = [],
 				i;
 

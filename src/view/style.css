@@ -4,12 +4,18 @@
  */
 
 
-/* Navbar buttons spacing */
+/* Navbar buttons */
 
 .navbar li.distance {
 	visibility: hidden;
 	width: 8px;
 	height: 1px;
+}
+
+.navbar-btn input[type=checkbox] {
+	margin-top: 0;
+	position: relative;
+	top: 2px;
 }
 
 

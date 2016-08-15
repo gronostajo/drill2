@@ -63,7 +63,6 @@
 	}
 
 	$['alternate'] = function(switchTo) {
-		//noinspection JSJQueryEfficiency
 		var head = $('head');
 
 		if (typeof(switchTo) == 'undefined') {

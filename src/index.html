@@ -32,7 +32,7 @@
 		<link rel="alternate stylesheet" href="lib/bootswatch/cyborg/bootstrap.min.css" title="Dark">
 		<link rel="alternate stylesheet" href="view/style-dark.css" title="Dark">
 	</head>
-	<body ng-controller="DrillController">
+	<body ng-controller="DrillController" ng-keypress="handleKeypress($event)">
 		<nav class="timer navbar navbar-default navbar-fixed-top" role="navigation" ng-show="config.timeLimitEnabled && view.isQuestion()">
 			{{currentQuestion.timeLeft | minutes}}
 		</nav>

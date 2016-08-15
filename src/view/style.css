@@ -136,6 +136,38 @@
 }
 
 
+/* Answer numbers when keyboard shortcuts are enabled */
+
+.keyboard-shortcut {
+	display: none;
+}
+
+.keyboard-shortcuts-enabled .keyboard-shortcut {
+    display: inline;
+    padding: 0.2em 0.4em 0.13em;
+    border: 1px solid #f4f4f4;
+}
+.keyboard-shortcuts-enabled .answer-number {
+	position: absolute;
+	left: 7px;
+	top: 29px;
+}
+
+.keyboard-shortcuts-enabled .answer:nth-child(9) ~ .answer .answer-number {
+	display: none;
+}
+
+.keyboard-shortcuts-enabled .answers {
+	counter-reset: answer-counter;
+}
+
+.keyboard-shortcuts-enabled .answers .answer .answer-number:before {
+	content: counter(answer-counter);
+	counter-increment: answer-counter;
+}
+
+
+
 /* Summary styles */
 
 .summary {

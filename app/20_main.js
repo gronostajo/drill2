@@ -339,7 +339,7 @@
 				}
 			}
 
-			$scope.config.gradingRadical = !!options.radical;
+			$scope.config.gradingRadical = options.radical ? '1' : '0';
 			$scope.config.gradingPPQ = parseInt(options.ptsPerQuestion);
 
 			var secs = (parseInt(options.timeLimit) / 5) * 5;

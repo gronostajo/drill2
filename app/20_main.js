@@ -36,6 +36,11 @@
 
 			$scope.pasteEnabled = false;
 
+			$scope.keyboardShortcutsEnabled = ($.cookie('keyboardShortcuts') === 'true');
+			$scope.$watch('keyboardShortcutsEnabled', function (newValue) {
+				$.cookie('keyboardShortcuts', newValue ? 'true' : 'false');
+			});
+
 			$scope.config = {
 				shuffleQuestions: true,
 				shuffleAnswers: true
@@ -171,6 +176,40 @@
 					//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 					MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
 				});
+			}
+		};
+
+		$scope.handleKeypress = function ($event) {
+			if (!$scope.keyboardShortcutsEnabled) {
+				return;
+			}
+
+			var sortingKeys = [],
+				i;
+
+			if (typeof $scope.currentQuestion === 'undefined') {
+				return;
+			}
+
+			if ($event.which == 13) {
+				if ($scope.view.isNotGraded()) {
+					$scope.grade();
+				}
+				else {
+					$scope.nextQuestion();
+				}
+			}
+
+			for (i = 0; i < $scope.currentQuestion.answers.length; i++) {
+				sortingKeys.push($scope.currentQuestion.answers[i].sortingKey);
+			}
+			
+			sortingKeys.sort();
+
+			for (i = 0; i < $scope.currentQuestion.answers.length; i++) {
+				if ($scope.currentQuestion.answers[i].sortingKey === sortingKeys[$event.which - 49]) {
+					$scope.currentQuestion.answers[i].checked = !$scope.currentQuestion.answers[i].checked;
+				}
 			}
 		};
 

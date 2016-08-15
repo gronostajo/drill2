@@ -51,61 +51,61 @@
 		<link rel="alternate stylesheet" href="view/style-dark.css" title="Dark">
 
 		<style>
-            #fallback-topbar-show {
-                display: none;
-            }
-
-            .fallback-topbar, .fallback-topbar-tab {
-                font-weight: bold;
-                color: #fff;
-                background-color: #0275d8;
-            }
-
-			.fallback-topbar {
-                padding: 0 20px;
-                height: 0;
-                text-align: center;
-                transition: height .3s, padding .3s;
-                overflow: hidden;
+			#fallback-topbar-show {
+				display: none;
 			}
 
-            #fallback-topbar-show:checked + .fallback-topbar {
-                padding: 15px 20px;
-                height: 70px;
-            }
+			.fallback-topbar, .fallback-topbar-tab {
+				font-weight: bold;
+				color: #fff;
+				background-color: #0275d8;
+			}
+
+			.fallback-topbar {
+				padding: 0 20px;
+				height: 0;
+				text-align: center;
+				transition: height .3s, padding .3s;
+				overflow: hidden;
+			}
+
+			#fallback-topbar-show:checked + .fallback-topbar {
+				padding: 10px 20px;
+				height: 40px;
+			}
 
 			.fallback-topbar a {
 				color: #cef;
-                text-decoration: underline;
+				text-decoration: underline;
 			}
 
-            .fallback-topbar-tab {
-                padding: 8px 12px;
-                border: none;
-                border-radius: 0 0 8px 0;
-                cursor: pointer;
-                position: absolute;
-                top: 0;
-                z-index: 1000000000;
-            }
+			.fallback-topbar-tab {
+				padding: 8px 12px;
+				border: none;
+				border-radius: 0 0 8px 0;
+				cursor: pointer;
+				position: absolute;
+				top: 0;
+				z-index: 1000000000;
+			}
 
-            .fallback-topbar-tab:before {
-                content: '\03b1';
-            }
+			.fallback-topbar-tab:before {
+				content: '\03b1';
+			}
 
-            #fallback-topbar-show:checked ~ .fallback-topbar-tab:before {
-                content: '\00d7';
-            }
-        </style>
+			#fallback-topbar-show:checked ~ .fallback-topbar-tab:before {
+				content: '\00d7';
+			}
+		</style>
 	</head>
-	<body ng-controller="DrillController">
-        <input type="checkbox" id="fallback-topbar-show" name="fallback-topbar-show" checked/>
-		<div href="old" class="fallback-topbar">
-			This is an alpha release. Report any issues on IIET forum or
-			<a href="https://github.com/gronostajo/drill2/issues">on GitHub</a>.<br/>
-			In case of painful problems, <a href="old">use the previous version</a>.
-		</div>
-        <label for="fallback-topbar-show" class="fallback-topbar-tab"></label>
+	<body ng-controller="DrillController" ng-keypress="handleKeypress($event)" ng-class="{ 'keyboard-shortcuts-enabled': keyboardShortcutsEnabled }">
+		<input type="checkbox" id="fallback-topbar-show" name="fallback-topbar-show" checked/>
+			<div href="old" class="fallback-topbar">
+				This is an alpha release. Report any issues on IIET forum or
+				<a href="https://github.com/gronostajo/drill2/issues">on GitHub</a>.
+				Serious problems? <a href="old">Use the previous version</a>.
+			</div>
+		<label for="fallback-topbar-show" class="fallback-topbar-tab"></label>
 
 		<nav class="timer navbar navbar-default navbar-fixed-top" role="navigation" ng-show="config.timeLimitEnabled && view.isQuestion()">
 			{{currentQuestion.timeLeft | minutes}}
@@ -129,11 +129,16 @@
 									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="updateStatus == 'updateready'">Enable downloaded updates</button>
 								</li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="switchTheme()" ><i class="glyphicon glyphicon-adjust"></i></button></li>
+								<li><label for="keyboardShortcutsCheckbox" class="btn btn-default navbar-btn" title="Keyboard shortcuts">
+                                    <i class="glyphicon glyphicon-th"></i>
+                                    <input type="checkbox" id="keyboardShortcutsCheckbox" ng-model="keyboardShortcutsEnabled" />
+                                </label></li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><i class="glyphicon glyphicon-adjust"></i></button></li>
 								<li class="distance"></li>
-								<li><button class="btn navbar-btn" ng-click="confirmRestart('reinitialize')" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
+								<li class="distance"></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('reinitialize')" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
 							</ul>
 						</div>
 					</div>
@@ -388,9 +393,10 @@ B) A mouse</pre>
 								<p ng-repeat="line in currentQuestion.body | lines track by $index">{{line}}</p>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group answers">
 							<div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
 								<label>
+									<span class="label label-default keyboard-shortcut answer-number"></span>
 									<input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
 									<span class="content">
 										<span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
@@ -406,8 +412,14 @@ B) A mouse</pre>
 							</div>
 						</div>
 						<div class="form-group">
-							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade()">Check answers</button>
-							<button type="submit" class="btn btn-info btn-lg btn-block" ng-show="view.isGraded() && questionIndex < questions.length">Next question</button>
+							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade()">
+								<span class="label label-default keyboard-shortcut">Enter</span>
+								Check answers
+							</button>
+							<button type="submit" class="btn btn-info btn-lg btn-block" ng-show="view.isGraded() && questionIndex < questions.length">
+								<span class="label label-default keyboard-shortcut">Enter</span>
+								Next question
+							</button>
 							<button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isGraded() && currentQuestion.hasExplanations && !config.showExplanations && config.explain != 'summary'" ng-click="config.showExplanations = true">Explain answers</button>
 							<button type="submit" class="btn btn-success btn-lg btn-block" ng-show="view.isGraded() && questionIndex >= questions.length">End test</button>
 						</div>

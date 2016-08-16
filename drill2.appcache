@@ -1,6 +1,7 @@
 CACHE MANIFEST
  # drill2 v2.3.2
  # built on Mon Aug 15 2016 20:11:42 GMT+0200 (Central European Daylight Time)
+ # alpha topbar fix Aug 16 12:44
 
 CACHE:
 lib/bootstrap/dist/css/bootstrap.min.css

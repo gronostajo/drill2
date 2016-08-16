@@ -56,22 +56,21 @@
 			}
 
 			.fallback-topbar, .fallback-topbar-tab {
-				font-weight: bold;
 				color: #fff;
 				background-color: #0275d8;
 			}
 
 			.fallback-topbar {
 				padding: 0 20px;
-				height: 0;
+				max-height: 0;
 				text-align: center;
-				transition: height .3s, padding .3s;
+				transition: max-height .3s, padding .3s;
 				overflow: hidden;
 			}
 
 			#fallback-topbar-show:checked + .fallback-topbar {
-				padding: 10px 20px;
-				height: 40px;
+				padding: 10px 30px;
+				max-height: 60px;
 			}
 
 			.fallback-topbar a {
@@ -100,11 +99,11 @@
 	</head>
 	<body ng-controller="DrillController" ng-keypress="handleKeypress($event)" ng-class="{ 'keyboard-shortcuts-enabled': keyboardShortcutsEnabled }">
 		<input type="checkbox" id="fallback-topbar-show" name="fallback-topbar-show" checked/>
-			<div href="old" class="fallback-topbar">
-				This is an alpha release. Report any issues on IIET forum or
-				<a href="https://github.com/gronostajo/drill2/issues">on GitHub</a>.
-				Serious problems? <a href="old">Use the previous version</a>.
-			</div>
+		<div href="old" class="fallback-topbar">
+			<strong>Alpha release.</strong> Report issues on IIET forum or
+			<a href="https://github.com/gronostajo/drill2/issues">GitHub</a>.
+			<a href="old">Previous version here</a>.
+		</div>
 		<label for="fallback-topbar-show" class="fallback-topbar-tab"></label>
 
 		<nav class="timer navbar navbar-default navbar-fixed-top" role="navigation" ng-show="config.timeLimitEnabled && view.isQuestion()">

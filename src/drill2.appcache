@@ -9,8 +9,8 @@ lib/bootswatch/cyborg/bootstrap.min.css
 lib/bootswatch/fonts/glyphicons-halflings-regular.woff
 
 lib/angular/angular.min.js
-
 lib/angular-bootstrap/ui-bootstrap-tpls.min.js
+lib/angular-cookies/angular-cookies.min.js
 
 lib/ng-file-upload/angular-file-upload-shim.min.js
 lib/ng-file-upload/angular-file-upload.min.js

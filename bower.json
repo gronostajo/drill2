@@ -17,7 +17,8 @@
     "commonmark": "~0.24.0",
     "jquery-cookie": "~1.4.1",
     "jquery": "~2.2.0",
-    "ng-file-upload": "3.3.4"
+    "ng-file-upload": "3.3.4",
+    "angular-cookies": "~1.4.9"
   },
   "overrides": {
     "angular": {
@@ -28,6 +29,11 @@
     "angular-bootstrap": {
       "main": [
         "./ui-bootstrap-tpls.min.js"
+      ]
+    },
+    "angular-cookies": {
+      "main": [
+        "./angular-cookies.min.js"
       ]
     },
     "bootstrap": {

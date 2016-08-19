@@ -6,10 +6,10 @@
 
 (function() {
 
-	var drillApp = angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap']);
+	var drillApp = angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies']);
 
 
-	drillApp.controller('DrillController', function($scope, $timeout, $document, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper) {
+	drillApp.controller('DrillController', function($scope, $timeout, $document, $cookies, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -35,13 +35,13 @@
 
 			$scope.pasteEnabled = false;
 
-			$scope.keyboardShortcutsEnabled = ($.cookie('keyboardShortcuts') === 'true');
+			$scope.keyboardShortcutsEnabled = ($cookies.get('keyboardShortcuts') === 'true');
 			$scope.$watch('keyboardShortcutsEnabled', function (newValue) {
-				$.cookie('keyboardShortcuts', newValue ? 'true' : 'false');
+				$cookies.put('keyboardShortcuts', newValue ? 'true' : 'false');
 			});
 
 			$document.ready(function () {
-				var statsPreference = $.cookie('stats');
+				var statsPreference = $cookies.get('stats');
 				if (!statsPreference) {
 					var bootstrapScreenSize = ViewportHelper.getBootstrapBreakpoint();
 					statsPreference = (bootstrapScreenSize == 'xs') ? 'collapsed' : 'expanded';
@@ -50,7 +50,7 @@
 				$scope.statsCollapsed = (statsPreference == 'collapsed');
 
 				$scope.$watch('statsCollapsed', function (collapsed) {
-					$.cookie('stats', collapsed ? 'collapsed' : 'expanded');
+					$cookies.put('stats', collapsed ? 'collapsed' : 'expanded');
 				});
 			});
 

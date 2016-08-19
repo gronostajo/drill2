@@ -1,0 +1,141 @@
+<form name="config_form">
+    <div class="page-header">
+        <h2>
+            <span title="Detected file format: {{fileFormat}}">{{loadedQuestions.length}} questions loaded</span>
+            <button class="btn btn-default" ng-click="reinitialize()">{{ fileApiSupported ? "Choose another file" : "Edit questions" }}</button>
+        </h2>
+    </div>
+    <div>
+        <div class="alert alert-danger" ng-show="fileFormat == 'unknown'">This file was prepared for an unrecognized version of Drill. Some features may not be available.</div>
+
+        <div class="form-group panel panel-default panel-compact">
+            <div class="panel-heading">Shuffling</div>
+            <div class="panel-body">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="config.shuffleQuestions">
+                        Shuffle questions
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="config.shuffleAnswers">
+                        Shuffle answers
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default panel-compact">
+            <div class="panel-heading">Grading</div>
+            <div class="panel-body">
+                <div>
+                    <div class="form-group radio">
+                        <label>
+                            <input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perAnswer">
+                            1 point for each correct answer
+                        </label>
+                    </div>
+                    <div class="form-group radio">
+                        <label>
+                            <input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="perQuestion">
+                            <span class="inline-control">
+													<input type="number" min="1" max="10" name="ppq" class="form-control input-xs text-right" ng-model="config.gradingPPQ" ng-disabled="config.gradingMethod != 'perQuestion'">
+												</span>
+                            points for entire question (fractions allowed)
+                        </label>
+                    </div>
+                    <div class="form-group radio" ng-show="config.customGrader">
+                        <label title="Grader oneliner: {{config.customGrader}}">
+                            <input type="radio" name="gradingMethod" ng-model="config.gradingMethod" value="custom">
+                            Use grading method provided in loaded file
+                        </label>
+                    </div>
+                </div>
+                <div ng-hide="config.gradingMethod == 'custom'">
+                    <hr>
+                    <div class="form-group radio">
+                        <label>
+                            <input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="1">
+                            One wrong answer zeroes score
+                        </label>
+                    </div>
+                    <div class="form-group radio">
+                        <label>
+                            <input type="radio" name="gradingRadical" ng-model="config.gradingRadical" value="0">
+                            Each wrong answer counterbalances correct one
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default panel-compact" ng-show="explanationsAvailable">
+            <div class="panel-heading">Explanations</div>
+            <div class="panel-body">
+                <div class="form-group radio">
+                    <label>
+                        <input type="radio" name="explain" ng-model="config.explain" value="summary">
+                        Only in summary
+                    </label>
+                </div>
+                <div class="form-group radio">
+                    <label>
+                        <input type="radio" name="explain" ng-model="config.explain" value="optional">
+                        Optional between questions
+                    </label>
+                </div>
+                <div class="form-group radio">
+                    <label>
+                        <input type="radio" name="explain" ng-model="config.explain" value="always">
+                        Always show between questions
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group panel panel-default panel-compact">
+            <div class="panel-heading">Test options</div>
+            <div class="panel-body">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="config.timeLimitEnabled">
+                        Time limit:
+                        <span class="inline-control">
+												<input type="number" min="5" step="5" name="time_limit" class="form-control input-xs text-right" ng-model="config.timeLimitSecs" ng-disabled="!config.timeLimitEnabled">
+											</span>
+                        seconds per question
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="config.repeatIncorrect">
+                        Repeat incorrectly answered questions
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group panel panel-default panel-compact-notop" ng-show="config.markdownReady || config.mathjaxReady">
+            <div class="panel-heading">Features</div>
+            <div class="panel-body">
+                <p>Following features are supported in this question bank:</p>
+                <div class="checkbox" ng-show="config.markdownReady">
+                    <label>
+                        <input type="checkbox" ng-model="config.markdown">
+                        Enable Markdown formatting
+                    </label>
+                </div>
+                <div class="checkbox" ng-show="config.mathjaxReady">
+                    <label>
+                        <input type="checkbox" ng-model="config.mathjax">
+                        Enable LaTeX support
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-default btn-lg btn-block" ng-click="firstQuestion()" ng-disabled="config_form.ppq.$invalid || config_form.time_limit.$invalid">Begin test</button>
+    </div>
+</form>

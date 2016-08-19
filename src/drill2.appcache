@@ -89,6 +89,11 @@ app/ViewFactory.js
 app/modal/modal.coffee
 app/modal/help.html
 
+app/pages/front/front.html
+app/pages/preferences/preferences.html
+app/pages/question/question.html
+app/pages/summary/summary.html
+
 app/stats/stats.coffee
 app/stats/stats.html
 app/stats/StatsController.coffee

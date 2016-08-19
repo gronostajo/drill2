@@ -1,13 +1,11 @@
-drillApp = angular.module 'DrillApp'
+angular.module 'DrillApp'
 
-
-drillApp.filter 'decPlaces', ->
+.filter 'decPlaces', ->
   (x, dec) ->
     pow = 10 ** dec
     (Math.round x * pow) / pow
 
-
-drillApp.filter 'markdown', ($sce) ->
+.filter 'markdown', ($sce) ->
   (str, $scope) ->
     return '' unless str && $scope.config.markdown
 
@@ -45,18 +43,15 @@ drillApp.filter 'markdown', ($sce) ->
 
     $sce.trustAsHtml html
 
-
-drillApp.filter 'lines', ->
+.filter 'lines', ->
   (str) ->
     if str then str.split /\s*(?:\r?\n)(?:\r?\n\s)*/ else []
 
-
-drillApp.filter 'doubleNewlines', ->
+.filter 'doubleNewlines', ->
   (str) ->
     if str then str.replace(/\n+/g, '\n\n') else ''
 
-
-drillApp.filter 'minutes', ->
+.filter 'minutes', ->
   (secs) ->
     return '' unless secs
     secs = parseInt secs
@@ -68,15 +63,13 @@ drillApp.filter 'minutes', ->
 
     "#{mins}:#{secs}"
 
-
-drillApp.filter 'minsSecs', ->
+.filter 'minsSecs', ->
   (secs) ->
     mins = Math.floor (secs / 60)
     mstr = if mins > 0 then mins + 'm ' else ''
     mstr + (secs % 60) + 's'
 
-
-drillApp.filter 'scoreFormat', (decPlacesFilter, minsSecsFilter) ->
+.filter 'scoreFormat', (decPlacesFilter, minsSecsFilter) ->
   (score, limitedTime, timeLimit) ->
     score_ = decPlacesFilter score.score, 2
     total = decPlacesFilter score.total, 2
@@ -87,13 +80,11 @@ drillApp.filter 'scoreFormat', (decPlacesFilter, minsSecsFilter) ->
 
     str
 
-
-drillApp.filter 'no', ->
+.filter 'no', ->
   (x, capitalized) ->
     x ? if capitalized then 'No' else 'no'
 
-
-drillApp.filter 'averageTime', ->
+.filter 'averageTime', ->
   (questions, timeLimit) ->
     count = 0
     total = 0
@@ -104,8 +95,7 @@ drillApp.filter 'averageTime', ->
 
     Math.round (total / count)
 
-
-drillApp.filter 'shuffle', ->
+.filter 'shuffle', ->
   (input) ->
     input_copy = input.slice(0)
     unsorted_count = input_copy.length
@@ -119,3 +109,9 @@ drillApp.filter 'shuffle', ->
       input_copy[next_index] = swap_temp
 
     input_copy
+
+.filter 'percentageOf', ->
+  (fraction, total) ->
+    if total != 0
+      Math.round(fraction * 100 / total) + '%'
+    else '0%'

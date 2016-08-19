@@ -51,6 +51,14 @@
 	display: block;
 }
 
+.stats-table th {
+	font-weight: normal;
+}
+
+.stats-table td {
+	font-weight: bold;
+}
+
 
 /* Test options */
 

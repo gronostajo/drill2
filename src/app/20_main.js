@@ -9,7 +9,7 @@
 	var drillApp = angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap']);
 
 
-	drillApp.controller('DrillController', function($scope, $timeout, $document, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory, shuffleFilter, ViewportHelper) {
+	drillApp.controller('DrillController', function($scope, $timeout, $document, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, Stats, ViewFactory, shuffleFilter, ViewportHelper) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -96,7 +96,7 @@
 			$scope.questions = [];
 			$scope.questionIndex = 0;
 
-			$scope.stats = StatsFactory.createStats();
+			$scope.stats = new Stats();
 			$scope.view = ViewFactory.createView();
 		};
 

@@ -79,7 +79,10 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">
-								<a ng-class="{ 'collapsed': statsCollapsed }" ng-click="statsCollapsed = !statsCollapsed">Score: {{stats.pcScore()}}% ({{stats.score | decPlaces:2}} / {{stats.totalPoints | decPlaces:2}})</a>
+								<a ng-class="{ 'collapsed': statsCollapsed }" ng-click="statsCollapsed = !statsCollapsed">
+									Score: {{ stats.score | percentageOf: stats.totalPoints }}
+									({{ stats.score | decPlaces: 2 }} / {{ stats.totalPoints | decPlaces: 2 }})
+								</a>
 							</h3>
 						</div>
 						<div uib-collapse="statsCollapsed">
@@ -87,21 +90,21 @@
 								<span ng-show="view.isQuestion()">All questions were already asked once.</span>
 								<span ng-show="view.isFinal()">Presented score doesn't reflect your performance in repeated questions.</span>
 							</div>
-							<table class="table">
+							<table class="table stats-table">
 								<tr>
-									<td>Correct:</td>
-									<td><b>{{stats.correct}}</b></td>
-									<td class="text-right"><b>{{stats.pcOfQuestions(stats.correct)}}%</b></td>
+									<th>Correct:</th>
+									<td>{{ stats.correct }}</td>
+									<td class="text-right">{{ stats.correct | percentageOf: stats.total() }}</td>
 								</tr>
 								<tr>
-									<td>Partially:</td>
-									<td><b>{{stats.partial}}</b></td>
-									<td class="text-right"><b>{{stats.pcOfQuestions(stats.partial)}}%</b></td>
+									<th>Partially:</th>
+									<td>{{ stats.partial }}</td>
+									<td class="text-right">{{ stats.partial | percentageOf: stats.total() }}</td>
 								</tr>
 								<tr>
-									<td>Incorrect:</td>
-									<td><b>{{stats.incorrect}}</b></td>
-									<td class="text-right"><b>{{stats.pcOfQuestions(stats.incorrect)}}%</b></td>
+									<th>Incorrect:</th>
+									<td>{{ stats.incorrect }}</td>
+									<td class="text-right">{{ stats.incorrect | percentageOf: stats.total() }}</td>
 								</tr>
 							</table>
 						</div>

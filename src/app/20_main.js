@@ -6,10 +6,10 @@
 
 (function() {
 
-	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
+	var drillApp = angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap']);
 
 
-	drillApp.controller('DrillController', function($scope, $timeout, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory, shuffleFilter) {
+	drillApp.controller('DrillController', function($scope, $timeout, $document, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory, shuffleFilter, ViewportHelper) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -39,6 +39,20 @@
 			$scope.keyboardShortcutsEnabled = ($.cookie('keyboardShortcuts') === 'true');
 			$scope.$watch('keyboardShortcutsEnabled', function (newValue) {
 				$.cookie('keyboardShortcuts', newValue ? 'true' : 'false');
+			});
+
+			$document.ready(function () {
+				var statsPreference = $.cookie('stats');
+				if (!statsPreference) {
+					var bootstrapScreenSize = ViewportHelper.getBootstrapBreakpoint();
+					statsPreference = (bootstrapScreenSize == 'xs') ? 'collapsed' : 'expanded';
+				}
+
+				$scope.statsCollapsed = (statsPreference == 'collapsed');
+
+				$scope.$watch('statsCollapsed', function (collapsed) {
+					$.cookie('stats', collapsed ? 'collapsed' : 'expanded');
+				});
 			});
 
 			$scope.config = {
@@ -162,7 +176,7 @@
 				$scope.currentQuestion.answers[i].checked = false;
 			}
 
-			scrollToTop(function() {
+			ViewportHelper.scrollToTop(function() {
 				$scope.$apply(function () {
 					if ($scope.config.timeLimitEnabled) {
 						$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;

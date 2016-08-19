@@ -12,6 +12,7 @@
     "MathJax": "2.6.0",
     "angular": "~1.4.9",
     "bootstrap": "~3.3.6",
+    "angular-bootstrap": "~2.0.2",
     "bootswatch": "~3.3.6",
     "commonmark": "~0.24.0",
     "jquery-cookie": "~1.4.1",
@@ -22,6 +23,11 @@
     "angular": {
       "main": [
         "./angular.min.js"
+      ]
+    },
+    "angular-bootstrap": {
+      "main": [
+        "./ui-bootstrap-tpls.min.js"
       ]
     },
     "bootstrap": {

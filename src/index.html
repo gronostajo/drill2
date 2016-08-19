@@ -79,10 +79,10 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">
-								<a href="#" id="collapseScoreToggle" data-toggle="collapse" data-target="#collapseScore">Score: {{stats.pcScore()}}% ({{stats.score | decPlaces:2}} / {{stats.totalPoints | decPlaces:2}})</a>
+								<a ng-class="{ 'collapsed': statsCollapsed }" ng-click="statsCollapsed = !statsCollapsed">Score: {{stats.pcScore()}}% ({{stats.score | decPlaces:2}} / {{stats.totalPoints | decPlaces:2}})</a>
 							</h3>
 						</div>
-						<div id="collapseScore" class="panel-collapse collapse">
+						<div uib-collapse="statsCollapsed">
 							<div class="panel-body" ng-show="questionIndex > loadedQuestions.length">
 								<span ng-show="view.isQuestion()">All questions were already asked once.</span>
 								<span ng-show="view.isFinal()">Presented score doesn't reflect your performance in repeated questions.</span>

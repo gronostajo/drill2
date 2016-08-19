@@ -38,7 +38,7 @@ gulp.task 'scripts', (done) ->
 ### View ###
 
 gulp.task 'html', ->
-  gulp.src(['src/*.html', 'src/view/**/*.html'], base: 'src')
+  gulp.src(['src/*.html', 'src/app/**/*.html', 'src/view/**/*.html'], base: 'src')
   .pipe(gulp.dest deployPath)
 
 gulp.task 'css', ->

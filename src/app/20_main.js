@@ -9,7 +9,7 @@
 	var drillApp = angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap']);
 
 
-	drillApp.controller('DrillController', function($scope, $timeout, $document, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, Stats, ViewFactory, shuffleFilter, ViewportHelper) {
+	drillApp.controller('DrillController', function($scope, $timeout, $document, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -21,7 +21,6 @@
 					$scope.updateStatus = event.type.toLowerCase();
 				});
 			});
-
 
 			$('#manualInput').keydown(function (e) {
 				if (e.ctrlKey && e.keyCode == 13) {
@@ -96,7 +95,13 @@
 			$scope.questions = [];
 			$scope.questionIndex = 0;
 
-			$scope.stats = new Stats();
+			$scope.stats = {
+				correct: 0,
+				partial: 0,
+				incorrect: 0,
+				score: 0,
+				totalPoints: 0
+			};
 			$scope.view = ViewFactory.createView();
 		};
 
@@ -538,6 +543,18 @@
 			}
 			$scope.explanationsAvailable = false;
 		};
+
+		$scope.getStatsMessage = function () {
+		    if ($scope.questionIndex <= $scope.loadedQuestions.length) {
+                return '';
+            } else if ($scope.view.isQuestion()) {
+                return 'All questions were already asked once.';
+            } else if ($scope.view.isFinal()) {
+                return 'Presented score doesn\'t reflect your performance in repeated questions.';
+            } else {
+                return '';
+            }
+        };
 
 
 		$scope.initialize();

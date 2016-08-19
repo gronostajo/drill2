@@ -76,39 +76,7 @@
 			<div class="row">
 
 				<div class="col-sm-4 col-sm-push-8 col-md-4 col-md-push-8">
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title">
-								<a ng-class="{ 'collapsed': statsCollapsed }" ng-click="statsCollapsed = !statsCollapsed">
-									Score: {{ stats.score | percentageOf: stats.totalPoints }}
-									({{ stats.score | decPlaces: 2 }} / {{ stats.totalPoints | decPlaces: 2 }})
-								</a>
-							</h3>
-						</div>
-						<div uib-collapse="statsCollapsed">
-							<div class="panel-body" ng-show="questionIndex > loadedQuestions.length">
-								<span ng-show="view.isQuestion()">All questions were already asked once.</span>
-								<span ng-show="view.isFinal()">Presented score doesn't reflect your performance in repeated questions.</span>
-							</div>
-							<table class="table stats-table">
-								<tr>
-									<th>Correct:</th>
-									<td>{{ stats.correct }}</td>
-									<td class="text-right">{{ stats.correct | percentageOf: stats.total() }}</td>
-								</tr>
-								<tr>
-									<th>Partially:</th>
-									<td>{{ stats.partial }}</td>
-									<td class="text-right">{{ stats.partial | percentageOf: stats.total() }}</td>
-								</tr>
-								<tr>
-									<th>Incorrect:</th>
-									<td>{{ stats.incorrect }}</td>
-									<td class="text-right">{{ stats.incorrect | percentageOf: stats.total() }}</td>
-								</tr>
-							</table>
-						</div>
-					</div>
+					<stats stats="stats" collapsed="statsCollapsed" message="getStatsMessage()"></stats>
 				</div>
 
 				<div class="modal fade" id="formatModal" role="dialog" aria-hidden="true">

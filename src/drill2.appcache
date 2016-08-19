@@ -77,15 +77,18 @@ lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 
 app/jquery.alternate.js
 
+app/20_main.js
+app/filters.js
+
 app/AnswerFactory.js
 app/GraderFactory.js
 app/QuestionFactory.js
 app/SafeEvalService.js
-app/StatsFactory.js
 app/ViewFactory.js
 
-app/20_main.js
-app/filters.js
+app/stats/stats.coffee
+app/stats/stats.html
+app/stats/StatsController.coffee
 
 view/style.css
 view/style-dark.css

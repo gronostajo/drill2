@@ -7,7 +7,7 @@ drillApp.filter 'decPlaces', ->
     (Math.round x * pow) / pow
 
 
-drillApp.filter 'markdown', ['$sce', ($sce) ->
+drillApp.filter 'markdown', ($sce) ->
   (str, $scope) ->
     return '' unless str && $scope.config.markdown
 
@@ -44,7 +44,6 @@ drillApp.filter 'markdown', ['$sce', ($sce) ->
     html = renderer.render ast
 
     $sce.trustAsHtml html
-]
 
 
 drillApp.filter 'lines', ->
@@ -77,7 +76,7 @@ drillApp.filter 'minsSecs', ->
     mstr + (secs % 60) + 's'
 
 
-drillApp.filter 'scoreFormat', ['decPlacesFilter', 'minsSecsFilter', (decPlacesFilter, minsSecsFilter) ->
+drillApp.filter 'scoreFormat', (decPlacesFilter, minsSecsFilter) ->
   (score, limitedTime, timeLimit) ->
     score_ = decPlacesFilter score.score, 2
     total = decPlacesFilter score.total, 2
@@ -87,7 +86,6 @@ drillApp.filter 'scoreFormat', ['decPlacesFilter', 'minsSecsFilter', (decPlacesF
       str += ', ' + minsSecsFilter(timeLimit - score.timeLeft)
 
     str
-]
 
 
 drillApp.filter 'no', ->

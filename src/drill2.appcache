@@ -86,6 +86,9 @@ app/QuestionFactory.js
 app/SafeEvalService.js
 app/ViewFactory.js
 
+app/modal/modal.coffee
+app/modal/help.html
+
 app/stats/stats.coffee
 app/stats/stats.html
 app/stats/StatsController.coffee

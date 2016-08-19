@@ -103,3 +103,19 @@ drillApp.filter 'averageTime', ->
         total += timeLimit - log.timeLeft
 
     Math.round (total / count)
+
+
+drillApp.filter 'shuffle', ->
+  (input) ->
+    input_copy = input.slice(0)
+    unsorted_count = input_copy.length
+
+    while unsorted_count
+      next_index = Math.floor(Math.random() * unsorted_count)
+      unsorted_count--
+
+      swap_temp = input_copy[next_index]
+      input_copy[unsorted_count] = input_copy[next_index]
+      input_copy[next_index] = swap_temp
+
+    input_copy

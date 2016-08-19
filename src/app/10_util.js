@@ -4,25 +4,6 @@
  */
 
 
-// Fisher-Yates shuffling algorithm
-// Adapted from: http://bost.ocks.org/mike/shuffle/
-
-function shuffle(input) {
-	var arr = input.slice(0);	// shallow copy
-	var numToShuffle = arr.length;
-
-	while (numToShuffle) {
-		var pick = Math.floor(Math.random() * numToShuffle);
-		numToShuffle--;
-
-		var temp = arr[numToShuffle];
-		arr[numToShuffle] = arr[pick];
-		arr[pick] = temp;
-	}
-
-	return arr;
-}
-
 
 // Detect current Bootstrap breakpoint
 // Adapted from: http://stackoverflow.com/a/19462847/1937994

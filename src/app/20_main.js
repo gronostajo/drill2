@@ -9,7 +9,7 @@
 	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
 
 
-	drillApp.controller('DrillController', function($scope, $timeout, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory) {
+	drillApp.controller('DrillController', function($scope, $timeout, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory, shuffleFilter) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -433,7 +433,7 @@
 
 		$scope.reorderElements = function () {
 			if ($scope.config.shuffleQuestions) {
-				$scope.questions = shuffle($scope.loadedQuestions);
+				$scope.questions = shuffleFilter($scope.loadedQuestions);
 			}
 			else {
 				$scope.questions = $scope.loadedQuestions.slice(0);	// shallow copy

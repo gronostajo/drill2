@@ -9,7 +9,7 @@
 	var drillApp = angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies']);
 
 
-	drillApp.controller('DrillController', function($scope, $timeout, $document, $cookies, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper) {
+	drillApp.controller('DrillController', function($scope, $timeout, $document, $cookies, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher) {
 
 		$scope.initialize = function () {
 			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
@@ -83,7 +83,7 @@
 
 			// load preferred stylesheet
 			angular.element(document).ready(function () {
-				$.alternate('-');
+				ThemeSwitcher.loadFromCookie()
 			});
 
 		};
@@ -148,10 +148,7 @@
 			}
 		};
 
-		$scope.switchTheme = function () {
-			var switchTo = $.alternate()[1];
-			$.alternate(switchTo);
-		};
+		$scope.switchTheme = ThemeSwitcher.cycle;
 
 		$scope.setPaste = function (state) {
 			$scope.pasteEnabled = !!state;

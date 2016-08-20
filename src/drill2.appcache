@@ -20,7 +20,6 @@ lib/ng-file-upload/FileAPI.min.js
 lib/commonmark/dist/commonmark.min.js
 
 lib/jquery/dist/jquery.min.js
-lib/jquery-cookie/jquery.cookie.js
 
 # To cache MathJax you have to hardcode its version
 lib/MathJax/config/Safe.js?rev=2.6.0
@@ -75,8 +74,6 @@ lib/MathJax/jax/output/HTML-CSS/jax.js?rev=2.6.0
 
 lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 
-app/jquery.alternate.js
-
 app/20_main.js
 app/filters.js
 
@@ -84,9 +81,10 @@ app/AnswerFactory.js
 app/GraderFactory.js
 app/QuestionFactory.js
 app/SafeEvalService.js
+app/ThemeSwitcher.js
 app/ViewFactory.js
 
-app/modal/modal.coffee
+app/modal/modal.js
 app/modal/help.html
 
 app/pages/front/front.html
@@ -94,9 +92,9 @@ app/pages/preferences/preferences.html
 app/pages/question/question.html
 app/pages/summary/summary.html
 
-app/stats/stats.coffee
+app/stats/stats.js
 app/stats/stats.html
-app/stats/StatsController.coffee
+app/stats/StatsController.js
 
 view/style.css
 view/style-dark.css

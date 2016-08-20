@@ -87,10 +87,10 @@ app/ViewFactory.js
 app/modal/modal.js
 app/modal/help.html
 
-app/pages/front/front.html
-app/pages/preferences/preferences.html
-app/pages/question/question.html
-app/pages/summary/summary.html
+app/screens/front/front.html
+app/screens/settings/settings.html
+app/screens/question/question.html
+app/screens/summary/summary.html
 
 app/stats/stats.js
 app/stats/stats.html

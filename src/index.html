@@ -78,8 +78,8 @@
 					<stats stats="stats" collapsed="statsCollapsed" message="getStatsMessage()"></stats>
 				</div>
 				<div class="col-sm-8 col-sm-pull-4 col-lg-7">
-					<div ng-show="view.isFirst() && !loadedQuestions.length" ng-include="'app/screens/front/front.html'"></div>
-					<div ng-show="view.isFirst() && loadedQuestions.length" ng-include="'app/screens/preferences/preferences.html'"></div>
+					<load-screen editor-enabled="editorEnabled" callback="loadQuestionsFromString" ng-show="view.isFirst() && !loadedQuestions.length"></load-screen>
+					<div ng-show="view.isFirst() && loadedQuestions.length" ng-include="'app/screens/settings/settings.html'"></div>
 					<div ng-show="view.isQuestion()" ng-include="'app/screens/question/question.html'" id="questionView"></div>
 					<div ng-show="view.isFinal()" ng-include="'app/screens/summary/summary.html'" id="finalView"></div>
 				</div>

@@ -2,7 +2,7 @@
     <div class="page-header">
         <h2>
             <span title="Detected file format: {{fileFormat}}">{{loadedQuestions.length}} questions loaded</span>
-            <button class="btn btn-default" ng-click="reinitialize()">{{ fileApiSupported ? "Choose another file" : "Edit questions" }}</button>
+            <button class="btn btn-default" ng-click="reinitialize()">{{ editorEnabled ? "Edit questions" : "Choose another file" }}</button>
         </h2>
     </div>
     <div>

@@ -1,19 +1,10 @@
-/*
- *	Drill 2 AngularJS controller
- *	https://github.com/gronostajo/drill2
- */
-
-
 (function() {
 
-	var drillApp = angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies']);
+	angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies'])
 
-
-	drillApp.controller('DrillController', function($scope, $timeout, $document, $cookies, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher) {
+	.controller('DrillController', function($scope, $timeout, $document, $cookies, $q, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher) {
 
 		$scope.initialize = function () {
-			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
-
 			$scope.updateStatus = false;
 			//noinspection JSUnresolvedVariable
 			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
@@ -33,7 +24,7 @@
 			$scope.fileError = false;
 			$scope.dataString = '';
 
-			$scope.pasteEnabled = false;
+			$scope.editorEnabled = false;
 
 			$scope.keyboardShortcutsEnabled = ($cookies.get('keyboardShortcuts') === 'true');
 			$scope.$watch('keyboardShortcutsEnabled', function (newValue) {
@@ -112,7 +103,7 @@
 			var $selector = $('#fileSelector');
 			$selector.val('').attr('type', 'text').attr('type', 'file');
 
-			if ($scope.pasteEnabled || !$scope.fileApiSupported) {
+			if ($scope.editorEnabled) {
 				$('#manualInput').focus();
 			}
 			else {
@@ -149,10 +140,6 @@
 		};
 
 		$scope.switchTheme = ThemeSwitcher.cycle;
-
-		$scope.setPaste = function (state) {
-			$scope.pasteEnabled = !!state;
-		};
 
 		$scope.firstQuestion = function () {
 			$scope.reorderElements();
@@ -254,24 +241,16 @@
 			}
 		};
 
-		$scope.loadTextFile = function (file) {
-			if (file != null) {
-				if ($scope.fileApiSupported) {
-					$timeout(function() {
-						var fileReader = new FileReader();
-						fileReader.readAsText(file);
-						fileReader.onload = function(e) {
-							$timeout(function() {
-								$scope.dataString = e.target.result;
-								$scope.loadQuestions();
-							});
-						}
-					});
-				}
+		$scope.loadQuestionsFromString = function (input) {
+			$scope.dataString = input;
+			if ($scope.loadQuestions()) {
+				return $q.resolve($scope.loadedQuestions);
+			} else {
+				return $q.reject(false);
 			}
 		};
 
-		$scope.loadQuestions = function (manual) {
+		$scope.loadQuestions = function () {
 			$scope.questions = [];
 			$scope.loadedQuestions = [];
 
@@ -441,10 +420,7 @@
 				}
 			}
 
-			$scope.fileError = !$scope.loadedQuestions.length;
-			if ($scope.fileError && !manual) {
-				$scope.dataString = '';
-			}
+			return !rejected;
 		};
 
 		$scope.reorderElements = function () {

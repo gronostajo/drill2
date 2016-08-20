@@ -253,6 +253,7 @@
 		$scope.loadQuestions = function () {
 			$scope.questions = [];
 			$scope.loadedQuestions = [];
+			$scope.bankInfo = {};
 
 			var qs = $scope.dataString.split(/(?:\r?\n){2,}/);
 
@@ -294,11 +295,11 @@
 				case 'legacy':
 				case '2':
 				case '2.1':
-					$scope.fileFormat = options.format;
+					$scope.bankInfo.fileFormat = options.format;
 					break;
 
 				default:
-					$scope.fileFormat = 'unknown';
+					$scope.bankInfo.fileFormat = 'unknown';
 					break;
 			}
 
@@ -410,15 +411,17 @@
 				console.info(rejected + ' questions rejected.');
 			}
 
-			$scope.explanationsAvailable = false;
+			$scope.bankInfo.explanationsAvailable = false;
 			if (expl) {
 				for (var q = 0; q < $scope.loadedQuestions.length; q++) {
 					$scope.loadedQuestions[q].loadExplanation(expl);
 					if ($scope.loadedQuestions[q].hasExplanations) {
-						$scope.explanationsAvailable = true;
+						$scope.bankInfo.explanationsAvailable = true;
 					}
 				}
 			}
+
+			$scope.bankInfo.questionCount = $scope.loadedQuestions.length;
 
 			return !rejected;
 		};
@@ -514,7 +517,7 @@
 			for (var q = 0; q < $scope.questions.length; q++) {
 				$scope.questions[q].explain = true;
 			}
-			$scope.explanationsAvailable = false;
+			$scope.bankInfo.explanationsAvailable = false;
 		};
 
 		$scope.getStatsMessage = function () {

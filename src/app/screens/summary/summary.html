@@ -3,7 +3,7 @@
 </div>
 <p ng-show="config.timeLimitEnabled">You had {{config.timeLimitSecs | minsSecs}} to answer each question. Your average answer time was {{ questions | averageTime:config.timeLimitSecs | minsSecs }}.</p>
 <p ng-show="config.repeatIncorrect">{{questions.length - loadedQuestions.length | no:true}} questions were repeated due to incorrect answers.</p>
-<p>Here's a wrap-up of your answers. <a href="#" ng-show="explanationsAvailable" ng-click="showAllExplanations()">Click here to reveal all explanations.</a></p>
+<p>Here's a wrap-up of your answers. <a href="#" ng-show="bankInfo.explanationsAvailable" ng-click="showAllExplanations()">Click here to reveal all explanations.</a></p>
 <form class="summary">
     <div class="question panel panel-default" ng-repeat="question in loadedQuestions">
         <div class="panel-body">

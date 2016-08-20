@@ -79,7 +79,7 @@
 				</div>
 				<div class="col-sm-8 col-sm-pull-4 col-lg-7">
 					<load-screen editor-enabled="editorEnabled" callback="loadQuestionsFromString" ng-show="view.isFirst() && !loadedQuestions.length"></load-screen>
-					<div ng-show="view.isFirst() && loadedQuestions.length" ng-include="'app/screens/settings/settings.html'"></div>
+					<settings-screen model="config" info="bankInfo" editor-enabled="editorEnabled" reset="reinitialize" continue="firstQuestion" ng-show="view.isFirst() && loadedQuestions.length"></settings-screen>
 					<div ng-show="view.isQuestion()" ng-include="'app/screens/question/question.html'" id="questionView"></div>
 					<div ng-show="view.isFinal()" ng-include="'app/screens/summary/summary.html'" id="finalView"></div>
 				</div>

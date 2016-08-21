@@ -5,6 +5,7 @@ beep = require 'beepbeep'
 bowerFiles = require 'main-bower-files'
 del = require 'del'
 runSequence = require 'run-sequence'
+KarmaServer = require('karma').Server
 
 pkg = require './package.json'
 
@@ -15,13 +16,12 @@ $.util.log "Project: #{pkg.name} v#{pkg.version}"
 
 ### Scripts ###
 
-coffeeStream = $.coffee(bare: yes)
-coffeeStream.on 'error', (error) ->
-  $.util.log(error)
-  beep()
-  coffeeStream.end()
-
 gulp.task 'coffee', ->
+  coffeeStream = $.coffee(bare: yes)
+  coffeeStream.on 'error', (error) ->
+    $.util.log(error)
+    beep()
+    coffeeStream.end()
   gulp.src(['src/app/**/*.coffee', 'src/lib/**/*.coffee'], base: 'src')
   .pipe(coffeeStream)
   .pipe(gulp.dest deployPath)
@@ -84,10 +84,47 @@ gulp.task 'bower-init', ->
 
 
 
+### Tests ###
+
+gulp.task 'build-tests', ->
+  del 'test/build', ->
+    coffeeStream = $.coffee(bare: yes)
+    coffeeStream.on 'error', (error) ->
+      $.util.log(error)
+      beep()
+      coffeeStream.end()
+    gulp.src(['test/src/**/*.coffee'], base: 'test/src')
+    .pipe(coffeeStream)
+    .pipe(gulp.dest 'test/build')
+
+gulp.task 'configure-karma', ->
+  bowerFilesToInject = bowerFiles(includeDev: yes)
+  bowerFilesToInject.push('!bower_components/MathJax/**/*')
+  dependencies = gulp.src(bowerFilesToInject, read: false)
+  .pipe($.ignore.include('**/*.js'))
+
+  require('child_process').execSync("git update-index --assume-unchanged \"#{__dirname}/test/karma.conf.js\"")
+
+  gulp.src('test/karma.conf.js')
+  .pipe $.inject dependencies,
+    addRootSlash: no
+    starttag: '// bower:{{ext}}'
+    endtag: '// endbower'
+    transform: (filepath) -> "'#{filepath}',"
+  .pipe(gulp.dest('test'))
+
+gulp.task 'run-tests', ['build-tests', 'configure-karma'], (done) ->
+  new KarmaServer(
+    configFile: __dirname + '/test/karma.conf.js'
+    singleRun: yes
+  , done).start()
+
+
+
 ### Misc ###
 
 gulp.task 'clean', (done) ->
-  del [deployPath], done
+  del deployPath, done
 
 gulp.task 'appcache', ->
   date = new Date()
@@ -111,13 +148,20 @@ gulp.task 'lint-coffee', ->
   .pipe($.coffeelint.reporter())
   .pipe($.coffeelint.reporter 'fail')
 
+gulp.task 'lint-tests', ->
+  gulp.src('test/src/**/*.coffee')
+  .pipe($.coffeelint 'coffeelint.json')
+  .pipe($.coffeelint.reporter())
+  .pipe($.coffeelint.reporter 'fail')
+
 gulp.task 'lint-gulpfile', ->
   gulp.src('gulpfile.coffee')
   .pipe($.coffeelint 'coffeelint.json')
   .pipe($.coffeelint.reporter())
   .pipe($.coffeelint.reporter 'fail')
 
-gulp.task 'lint', ['lint-gulpfile', 'lint-coffee'], ->
+gulp.task 'lint', (done) ->
+  runSequence 'lint-gulpfile', 'lint-coffee', 'lint-tests', done
 
 
 
@@ -128,6 +172,9 @@ gulp.task 'build', (done) ->
 
 gulp.task 'build-dev', ['lint'], (done) ->
   runSequence 'build', 'dev', done
+
+gulp.task 'test', (done) ->
+  runSequence 'build-dev', 'run-tests', done
 
 gulp.task 'init', (done) ->
   runSequence 'bower-init', 'help', done

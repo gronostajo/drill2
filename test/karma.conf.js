@@ -14,15 +14,24 @@ module.exports = function (config) {
 
         browserNoActivityTimeout: 3000,
 
-        frameworks: ['jasmine'],
+        client: {
+            captureConsole: true
+        },
+
+        frameworks: [
+            'jasmine',
+            'jasmine-matchers'
+        ],
 
         browsers: ['PhantomJS'],
 
-        reporters: ['progress'],
+        reporters: ['mocha'],
 
         plugins: [
             'karma-phantomjs-launcher',
-            'karma-jasmine'
+            'karma-jasmine',
+            'karma-mocha-reporter',
+            'karma-jasmine-matchers'
         ]
     })
 };

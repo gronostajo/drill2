@@ -7,7 +7,7 @@
     "beepbeep": "1.2.0",
     "bower": "1.7.7",
     "coffee-script": "1.10.0",
-    "coffeelint": "1.14.2",
+    "coffeelint": "1.15.7",
     "coffeelint-newline-at-eof": "0.4.1",
     "del": "^1.2.0",
     "gulp": "3.9.1",
@@ -23,6 +23,8 @@
     "jasmine-core": "^2.4.1",
     "karma": "^1.2.0",
     "karma-jasmine": "^1.0.2",
+    "karma-jasmine-matchers": "^2.0.2",
+    "karma-mocha-reporter": "^2.1.0",
     "karma-phantomjs-launcher": "^1.0.1",
     "main-bower-files": "2.11.1",
     "run-sequence": "1.1.5"

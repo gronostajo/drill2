@@ -87,15 +87,14 @@ gulp.task 'bower-init', ->
 ### Tests ###
 
 gulp.task 'build-tests', ->
-  del 'test/build', ->
-    coffeeStream = $.coffee(bare: yes)
-    coffeeStream.on 'error', (error) ->
-      $.util.log(error)
-      beep()
-      coffeeStream.end()
-    gulp.src(['test/src/**/*.coffee'], base: 'test/src')
-    .pipe(coffeeStream)
-    .pipe(gulp.dest 'test/build')
+  coffeeStream = $.coffee(bare: yes)
+  coffeeStream.on 'error', (error) ->
+    $.util.log(error)
+    beep()
+    coffeeStream.end()
+  gulp.src(['test/src/**/*.coffee'], base: 'test/src')
+  .pipe(coffeeStream)
+  .pipe(gulp.dest 'test/build')
 
 gulp.task 'configure-karma', ->
   bowerFilesToInject = bowerFiles(includeDev: yes).concat [
@@ -118,6 +117,7 @@ gulp.task 'run-tests', ['build-tests', 'configure-karma'], (done) ->
   new KarmaServer(
     configFile: __dirname + '/test/karma.conf.js'
     singleRun: yes
+    reporters: ['mocha']
   , done).start()
 
 
@@ -125,7 +125,7 @@ gulp.task 'run-tests', ['build-tests', 'configure-karma'], (done) ->
 ### Misc ###
 
 gulp.task 'clean', (done) ->
-  del deployPath, done
+  del([deployPath, 'test/build'], done)
 
 gulp.task 'appcache', ->
   date = new Date()

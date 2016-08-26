@@ -1,32 +1,11 @@
 CACHE MANIFEST
 
+
 CACHE:
-lib/bootstrap/dist/css/bootstrap.min.css
-lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
-lib/bootstrap/dist/js/bootstrap.min.js
 
-lib/bootswatch/cyborg/bootstrap.min.css
-lib/bootswatch/fonts/glyphicons-halflings-regular.woff
-
-lib/angular/angular.min.js
-lib/angular-bootstrap/ui-bootstrap-tpls.min.js
-lib/angular-cookies/angular-cookies.min.js
-
-lib/ng-file-upload/angular-file-upload-shim.min.js
-lib/ng-file-upload/angular-file-upload.min.js
-lib/ng-file-upload/FileAPI.flash.swf
-lib/ng-file-upload/FileAPI.min.js
-
-lib/commonmark/dist/commonmark.min.js
-
-lib/jquery/dist/jquery.min.js
-
-# To cache MathJax you have to hardcode its version
-lib/MathJax/config/Safe.js?rev=2.6.0
-lib/MathJax/config/TeX-AMS-MML_HTMLorMML.js?rev=2.6.0
-lib/MathJax/extensions/MathMenu.js?rev=2.6.0
-lib/MathJax/extensions/MathZoom.js?rev=2.6.0
-lib/MathJax/extensions/Safe.js?rev=2.6.0
+# inject
+#   build artifacts go here
+# endInject
 
 lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_AMS-Regular.woff?rev=2.6.0
 lib/MathJax/fonts/HTML-CSS/TeX/woff/MathJax_Caligraphic-Bold.woff?rev=2.6.0
@@ -74,31 +53,6 @@ lib/MathJax/jax/output/HTML-CSS/jax.js?rev=2.6.0
 
 lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 
-app/20_main.js
-app/filters.js
-
-app/GraderFactory.js
-app/SafeEvalService.js
-app/ThemeSwitcher.js
-app/ViewFactory.js
-
-app/data-model/Answer.js
-app/data-model/Question.js
-
-app/modal/modal.js
-app/modal/help.html
-
-app/screens/front/front.html
-app/screens/settings/settings.html
-app/screens/question/question.html
-app/screens/summary/summary.html
-
-app/stats/stats.js
-app/stats/stats.html
-app/stats/StatsController.js
-
-view/style.css
-view/style-dark.css
 
 NETWORK:
 *

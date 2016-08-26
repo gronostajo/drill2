@@ -1,13 +1,13 @@
 gulp = require 'gulp'
 
-$ = (require 'gulp-load-plugins')()
-beep = require 'beepbeep'
-bowerFiles = require 'main-bower-files'
-del = require 'del'
-runSequence = require 'run-sequence'
+$ = (require('gulp-load-plugins'))()
+beep = require('beepbeep')
+bowerFiles = require('main-bower-files')
+del = require('del')
+runSequence = require('run-sequence')
 KarmaServer = require('karma').Server
 
-pkg = require './package.json'
+pkg = require('./package.json')
 
 deployPath = 'build'
 $.util.log "Project: #{pkg.name} v#{pkg.version}"
@@ -57,11 +57,11 @@ gulp.task 'bower', ->
   .pipe(gulp.dest("#{deployPath}/lib"))
 
 gulp.task 'inject', ['view'], ->
-  bowerFilesToInject = bowerFiles()
-  bowerFilesToInject.push '!bower_components/MathJax/**/*'  # MathJax requires crazy inclusion args,
-                                                            #  we're doing that manually.
-  bowerFilesToInject.push '!bower_components/bootstrap/**/*.css'    # Included manually for theme switcher
-  bowerFilesToInject.push '!bower_components/bootswatch/**/*.css'   # Included manually for theme switcher
+  bowerFilesToInject = bowerFiles().concat [
+    '!bower_components/MathJax/**',           # MathJax requires crazy inclusion args, we're doing that manually.
+    '!bower_components/bootstrap/**/*.css',   # Included manually for theme switcher
+    '!bower_components/bootswatch/**/*.css'   # Included manually for theme switcher
+  ]
 
   gulp.src("#{deployPath}/*.html")
   .pipe $.inject gulp.src(bowerFilesToInject, read: false),
@@ -71,7 +71,7 @@ gulp.task 'inject', ['view'], ->
     addPrefix: 'lib'
   .pipe $.inject gulp.src([
     "#{deployPath}/**/*.js",
-    "!#{deployPath}/lib/**/*"]
+    "!#{deployPath}/lib/**"]
   , read: no),
     relative: yes
   .pipe(gulp.dest deployPath)
@@ -98,8 +98,9 @@ gulp.task 'build-tests', ->
     .pipe(gulp.dest 'test/build')
 
 gulp.task 'configure-karma', ->
-  bowerFilesToInject = bowerFiles(includeDev: yes)
-  bowerFilesToInject.push('!bower_components/MathJax/**/*')
+  bowerFilesToInject = bowerFiles(includeDev: yes).concat [
+    '!bower_components/MathJax/**'
+  ]
   dependencies = gulp.src(bowerFilesToInject, read: false)
   .pipe($.ignore.include('**/*.js'))
 
@@ -128,14 +129,30 @@ gulp.task 'clean', (done) ->
 
 gulp.task 'appcache', ->
   date = new Date()
+
+  cachedFiles = gulp.src([
+    '**',
+    '!**/.ht*',
+    '!**/*.appcache',
+    '!lib/MathJax/**',
+    '!lib/bootstrap/dist/fonts/!(glyphicons-halflings-regular.woff)'  # save some bytes by including only one font
+    '!lib/bootswatch/fonts/!(glyphicons-halflings-regular.woff)'
+  ], read: no, cwd: deployPath, nodir: yes)
+  .pipe($.sort())
+
   gulp.src('src/*.appcache', base: 'src')
   .pipe($.replace(/^CACHE MANIFEST/, "CACHE MANIFEST\n
                                      # #{pkg.name} v#{pkg.version}\n
                                      # built on #{date.toDateString()} #{date.toTimeString()}"))
+  .pipe $.inject cachedFiles,
+    addRootSlash: no
+    starttag: '# inject'
+    endtag: '# endInject'
+    transform: (path) -> path
   .pipe(gulp.dest deployPath)
 
 gulp.task 'dev', ->
-  gulp.src(['dev/**/*', 'dev/**/.*'], base: 'dev')
+  gulp.src(['dev/**', 'dev/**/.*'], base: 'dev')
   .pipe(gulp.dest deployPath)
 
 

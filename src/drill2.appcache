@@ -77,12 +77,13 @@ lib/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML,Safe
 app/20_main.js
 app/filters.js
 
-app/AnswerFactory.js
 app/GraderFactory.js
-app/QuestionFactory.js
 app/SafeEvalService.js
 app/ThemeSwitcher.js
 app/ViewFactory.js
+
+app/data-model/Answer.js
+app/data-model/Question.js
 
 app/modal/modal.js
 app/modal/help.html

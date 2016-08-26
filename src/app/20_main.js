@@ -2,7 +2,8 @@
 
 	angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies'])
 
-	.controller('DrillController', function($scope, $timeout, $document, $cookies, $q, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher) {
+	.controller('DrillController', function($scope, $timeout, $document, $cookies, $q,
+											SafeEvalService, GraderFactory, Question, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher) {
 
 		$scope.initialize = function () {
 			$scope.updateStatus = false;
@@ -388,7 +389,7 @@
 
 					else {
 						if (question == null) {
-							question = QuestionFactory.createQuestion(body.join('\n\n'), id);
+							question = new Question(body.join('\n\n'), id);
 						}
 						answers++;
 						if (matched[1]) {

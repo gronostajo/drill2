@@ -246,6 +246,19 @@
 }
 
 
+/* Progress indicator */
+
+stats .table {
+	margin-bottom: 0;
+}
+
+stats .progress {
+	margin-bottom: 0;
+	height: 3px;
+	border-radius: 0;
+}
+
+
 /* Footer */
 
 .footer {

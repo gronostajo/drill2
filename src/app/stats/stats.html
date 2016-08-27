@@ -8,6 +8,7 @@
         </h3>
     </div>
     <div uib-collapse="collapsed">
+        <uib-progressbar value="progress >= 0 ? progress : 0" max="questionCount || 1" animate="false"></uib-progressbar>
         <div class="panel-body" ng-if="message">
             <span>{{ message }}</span>
         </div>

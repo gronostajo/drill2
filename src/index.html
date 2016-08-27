@@ -75,7 +75,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-4 col-sm-push-8">
-					<stats stats="stats" collapsed="statsCollapsed" message="getStatsMessage()"></stats>
+					<stats stats="stats" progress="questionIndex - 1" question-count="questions.length" collapsed="statsCollapsed" message="getStatsMessage()"></stats>
 				</div>
 				<div class="col-sm-8 col-sm-pull-4 col-lg-7">
 					<load-screen editor="editor" callback="loadQuestionsFromString" ng-show="view.isFirst() && !loadedQuestions.length"></load-screen>

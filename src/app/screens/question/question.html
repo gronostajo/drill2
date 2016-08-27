@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="form-group answers">
-        <div class="checkbox answer correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
+        <div class="checkbox answer no-selection correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
             <label>
                 <span class="label label-default keyboard-shortcut answer-number"></span>
                 <input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">

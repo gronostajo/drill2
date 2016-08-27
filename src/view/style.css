@@ -4,6 +4,16 @@
  */
 
 
+/* Common */
+
+.no-selection {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-ms-user-select: none;
+}
+
+
 /* Navbar buttons */
 
 .navbar li.distance {
@@ -20,6 +30,14 @@
 
 
 /* Collapsing score */
+
+.panel-heading {
+	cursor: pointer;
+}
+
+.panel-heading a:hover {
+	text-decoration: none;
+}
 
 .panel-heading a:after {
 	display: inline-block;
@@ -88,18 +106,6 @@
 
 
 /* Answer customizations */
-
-.checkbox {
-	/*
-	 *	Prevents selection on double click. As a desired side effect this will
-	 *	also cause double clicks on labels to select and instantly un-select
-	 *	a checkbox.
-	 */
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-khtml-user-select: none;
-	-ms-user-select: none;
-}
 
 .answer label {
 	display: block;

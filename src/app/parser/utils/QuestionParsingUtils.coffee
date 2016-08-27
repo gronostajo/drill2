@@ -54,8 +54,8 @@ angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, Questi
         result.push(processedQuestion)
         if merged > 1
           processedQuestion.merged = merged
-          excerpt = excerpt(processedQuestion)
-          msg = "Merged #{merged} questions: '#{excerpt}' (#{processedQuestion.answers.length} answers total)"
+          questionExcerpt = excerpt(processedQuestion)
+          msg = "Merged #{merged} questions: '#{questionExcerpt}' (#{processedQuestion.answers.length} answers total)"
           logFn(msg)
 
       result.concat(questionsCopy)

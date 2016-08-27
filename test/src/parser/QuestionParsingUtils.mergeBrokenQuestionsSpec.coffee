@@ -26,15 +26,26 @@ describe 'QuestionParsingUtils.mergeBrokenQuestions', ->
       create.validQuestion()
       create.validQuestion()
     ]
+
     expect(result.length).toBe(3)
+    referenceQuestion = create.validQuestion()
     for question in result
-      expect(question)._toEqual(create.validQuestion())
+      expect(question.body).toEqual(referenceQuestion.body)
+      expect(question.identifier).toEqual(referenceQuestion.identifier)
+      expect(question.answers.length).toEqual(referenceQuestion.answers.length)
+      expect(question.answers[0].body).toEqual(referenceQuestion.answers[0].body)
+      expect(question.answers[0].correct).toBe(referenceQuestion.answers[0].correct)
+      expect(question.answers[0].id).toEqual(referenceQuestion.answers[0].id)
+      expect(question.answers[1].body).toEqual(referenceQuestion.answers[1].body)
+      expect(question.answers[1].correct).toBe(referenceQuestion.answers[1].correct)
+      expect(question.answers[1].id).toEqual(referenceQuestion.answers[1].id)
 
   it 'should merge question without answers with question without body', ->
     result = @fn [
       create.questionWithoutAnswers('Qwerty')
       create.questionWithoutBody()
     ]
+
     expect(result.length).toBe(1)
     expect(result[0].body).toEqual('Qwerty')
     expect(result[0].answers.length).toBe(2)
@@ -48,6 +59,7 @@ describe 'QuestionParsingUtils.mergeBrokenQuestions', ->
       create.validQuestion('Qwerty', 1)
       create.questionWithoutBody(2)
     ]
+
     expect(result.length).toBe(1)
     expect(result[0].body).toEqual('Qwerty')
     expect(result[0].answers.length).toBe(3)
@@ -64,6 +76,7 @@ describe 'QuestionParsingUtils.mergeBrokenQuestions', ->
       create.questionWithoutBody(1)
       create.questionWithoutBody(2)
     ]
+
     expect(result.length).toBe(1)
     expect(result[0].body).toEqual('Qwerty')
     expect(result[0].answers.length).toBe(4)
@@ -82,8 +95,18 @@ describe 'QuestionParsingUtils.mergeBrokenQuestions', ->
       create.questionWithoutBody(1)
       create.validQuestion()
     ]
+
     expect(result.length).toBe(2)
-    expect(result[1])._toEqual(create.validQuestion())
+    referenceQuestion = create.validQuestion()
+    expect(result[1].body).toEqual(referenceQuestion.body)
+    expect(result[1].identifier).toEqual(referenceQuestion.identifier)
+    expect(result[1].answers.length).toEqual(referenceQuestion.answers.length)
+    expect(result[1].answers[0].body).toEqual(referenceQuestion.answers[0].body)
+    expect(result[1].answers[0].correct).toBe(referenceQuestion.answers[0].correct)
+    expect(result[1].answers[0].id).toEqual(referenceQuestion.answers[0].id)
+    expect(result[1].answers[1].body).toEqual(referenceQuestion.answers[1].body)
+    expect(result[1].answers[1].correct).toBe(referenceQuestion.answers[1].correct)
+    expect(result[1].answers[1].id).toEqual(referenceQuestion.answers[1].id)
 
   it 'should not affect further valid questions if first one has no body', ->
     input = [
@@ -106,9 +129,24 @@ describe 'QuestionParsingUtils.mergeBrokenQuestions', ->
       create.validQuestion()
       create.questionWithoutAnswers()
     ]
+
     expect(result.length).toBe(2)
-    expect(result[0])._toEqual(create.validQuestion())
-    expect(result[1])._toEqual(create.questionWithoutAnswers())
+
+    referenceValidQuestion = create.validQuestion()
+    expect(result[0].body).toEqual(referenceValidQuestion.body)
+    expect(result[0].identifier).toEqual(referenceValidQuestion.identifier)
+    expect(result[0].answers.length).toEqual(referenceValidQuestion.answers.length)
+    expect(result[0].answers[0].body).toEqual(referenceValidQuestion.answers[0].body)
+    expect(result[0].answers[0].correct).toBe(referenceValidQuestion.answers[0].correct)
+    expect(result[0].answers[0].id).toEqual(referenceValidQuestion.answers[0].id)
+    expect(result[0].answers[1].body).toEqual(referenceValidQuestion.answers[1].body)
+    expect(result[0].answers[1].correct).toBe(referenceValidQuestion.answers[1].correct)
+    expect(result[0].answers[1].id).toEqual(referenceValidQuestion.answers[1].id)
+
+    referenceQuestionWithoutAnswers = create.questionWithoutAnswers()
+    expect(result[1].body).toEqual(referenceQuestionWithoutAnswers.body)
+    expect(result[1].identifier).toEqual(referenceQuestionWithoutAnswers.identifier)
+    expect(result[1].answers.length).toEqual(referenceQuestionWithoutAnswers.answers.length)
 
   it 'should log nothing for valid questions', ->
     log = []

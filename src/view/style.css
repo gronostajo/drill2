@@ -198,12 +198,12 @@
 }
 
 .summary .correct span, .summary .correct p {
-	color: #3c763d;
+	color: #2ca82c;
 	font-weight: bold;
 }
 
 .summary .incorrect span, .summary .incorrect p {
-	color: #888;
+	color: #d9534f;
 	text-decoration: line-through;
 }
 

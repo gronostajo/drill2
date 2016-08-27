@@ -97,18 +97,15 @@ angular.module 'DrillApp'
 
 .filter 'shuffle', ->
   (input) ->
-    input_copy = input.slice(0)
-    unsorted_count = input_copy.length
+    arr = input[..]
+    pivot = arr.length
+    return arr if pivot <= 1
 
-    while unsorted_count
-      next_index = Math.floor(Math.random() * unsorted_count)
-      unsorted_count--
+    while --pivot
+      pick = Math.floor(Math.random() * (pivot + 1))
+      [arr[pivot], arr[pick]] = [arr[pick], arr[pivot]]
 
-      swap_temp = input_copy[next_index]
-      input_copy[unsorted_count] = input_copy[next_index]
-      input_copy[next_index] = swap_temp
-
-    input_copy
+    arr
 
 .filter 'percentageOf', ->
   (fraction, total) ->

@@ -7,18 +7,10 @@
 <div class="alert alert-danger" role="alert" ng-show="fileError">This file doesn't contain any valid questions.</div>
 <div ng-show="fileApiSupported">
     <p><input type="file" id="fileSelector" ng-file-select ng-model="selectedFiles" ng-file-change="loadTextFile(selectedFiles[0], $files)" accept="text/plain"></p>
-    <p ng-hide="editorEnabled">You can also <a href="#" ng-click="editorEnabled = true">enter questions manually</a> if you prefer to.</p>
+    <p ng-hide="editor.enabled">You can also <a href="#" ng-click="editor.enabled = true">enter questions manually</a> if you prefer to.</p>
 </div>
-<div ng-show="editorEnabled || !fileApiSupported">
+<div ng-show="editor.enabled || !fileApiSupported">
     <p ng-hide="fileApiSupported">Your browser doesn't support File API, so loading file from your device is impossible.</p>
     <p>Paste questions below.</p>
-    <form role="form">
-        <div class="form-group">
-            <textarea class="form-control" id="manualInput" rows="15" ng-model="inputString"></textarea>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-link" ng-show="fileApiSupported" ng-click="editorEnabled = false">Hide this field</button>
-            <button class="btn btn-primary pull-right" id="confirmManualInput" ng-click="loadFromString(inputString)">Load questions</button>
-        </div>
-    </form>
+    <question-editor model="editor" submit="loadFromString"></question-editor>
 </div>

@@ -14,18 +14,12 @@
 				});
 			});
 
-			$('#manualInput').keydown(function (e) {
-				if (e.ctrlKey && e.keyCode == 13) {
-					$('#confirmManualInput').click();
-				}
-			});
-
 			$scope.softInitialize();
 
 			$scope.fileError = false;
 			$scope.dataString = '';
 
-			$scope.editorEnabled = false;
+			$scope.editor = {};
 
 			$scope.keyboardShortcutsEnabled = ($cookies.get('keyboardShortcuts') === 'true');
 			$scope.$watch('keyboardShortcutsEnabled', function (newValue) {
@@ -104,7 +98,7 @@
 			var $selector = $('#fileSelector');
 			$selector.val('').attr('type', 'text').attr('type', 'file');
 
-			if ($scope.editorEnabled) {
+			if ($scope.editor.enabled) {
 				$('#manualInput').focus();
 			}
 			else {
@@ -184,7 +178,7 @@
 		};
 
 		$scope.handleKeypress = function ($event) {
-			if (!$scope.keyboardShortcutsEnabled) {
+            if (!$scope.keyboardShortcutsEnabled || !$scope.view.isQuestion()) {
 				return;
 			}
 

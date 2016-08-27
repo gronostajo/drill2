@@ -3,7 +3,7 @@ angular.module('DrillApp').directive 'settingsScreen', ->
   scope:
     model: '='
     info: '='
-    editorEnabled: '='
+    editor: '='
     reset: '='
     continue: '='
   templateUrl: 'app/screens/settings/settings.html'

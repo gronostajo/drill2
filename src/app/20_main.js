@@ -3,7 +3,7 @@
 	angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies'])
 
 	.controller('DrillController', function($scope, $timeout, $document, $cookies, $q,
-											SafeEvalService, GraderFactory, Question, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher) {
+											SafeEvalService, GraderFactory, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher, LegacyParser) {
 
 		$scope.initialize = function () {
 			$scope.updateStatus = false;
@@ -359,57 +359,11 @@
 			}
 			$scope.config.showExplanations = ($scope.config.explain == 'always');
 
-			var rejected = 0;
-			for (var i = 0; i < qs.length; i++) {
-				var question = null;
-
-				var body = [];
-				var answers = 0;
-				var correct = 0;
-				var id = false;
-
-				var lines = qs[i].split(/(?:\r?\n)/);
-				for (var j = 0; j < lines.length; j++) {
-					//noinspection JSDuplicatedDeclaration
-					var matched = /^\s*(>+)?\s*([A-Z])\)\s*(.+)$/i.exec(lines[j]);
-
-					if (!matched && !answers) {
-						if (!body.length) {
-							var matchedId = /^\[#([a-zA-Z\d\-+_]+)]\s*(.+)$/.exec(lines[j]);
-							if (matchedId) {
-								id = matchedId[1];
-								lines[j] = matchedId[2];
-							}
-						}
-						body.push(lines[j]);
-					}
-					else if (!matched && answers) {
-						question.appendToLastAnswer(lines[j]);
-					}
-
-					else {
-						if (question == null) {
-							question = new Question(body.join('\n\n'), id);
-						}
-						answers++;
-						if (matched[1]) {
-							correct++;
-						}
-						question.addAnswer(matched[3], matched[1], matched[2]);
-					}
-				}
-
-				if (answers >= 2 && correct >= 1) {
-					$scope.loadedQuestions.push(question);
-				}
-				else if (question) {
-					console.error('Rejected question with ' + answers + ' answers total, ' + correct + ' correct. Requirement not satisfied: 2 total, 1 correct.', question);
-					rejected++;
-				}
-			}
-
-			if (rejected) {
-				console.info(rejected + ' questions rejected.');
+			var questionsString = qs.join('\n\n');
+			var parsingResult = LegacyParser.parse(questionsString);
+			$scope.loadedQuestions = parsingResult.questions;
+			for (var i = 0; i < parsingResult.log.length; i++) {
+				console.warn(parsingResult.log[i]);
 			}
 
 			$scope.bankInfo.explanationsAvailable = false;
@@ -424,7 +378,7 @@
 
 			$scope.bankInfo.questionCount = $scope.loadedQuestions.length;
 
-			return !rejected;
+			return !parsingResult.log.length;
 		};
 
 		$scope.reorderElements = function () {

@@ -1,6 +1,6 @@
 angular.module('DrillApp').service 'Question', (Answer) ->
   class Question
-    constructor: (@body, @id) ->
+    constructor: (@body = '', @id) ->
       @explanation = no
       @answers = []
       @scoreLog = []
@@ -9,6 +9,7 @@ angular.module('DrillApp').service 'Question', (Answer) ->
       answer = new Answer(body, correct, id)
       @answers.push(answer)
 
+    # TODO remove this in favor of QuestionBuilder
     appendToLastAnswer: (line) ->
       @answers[@answers.length - 1].append(line)
 
@@ -30,7 +31,7 @@ angular.module('DrillApp').service 'Question', (Answer) ->
     missed: ->
       @countAnswers (answer) -> not answer.checked and answer.correct
 
-    grade: (graderFunction) ->
+    grade: (graderFunction) =>
       grade = graderFunction(@)
       time = if @.timeLeft? then @timeLeft else 0
 

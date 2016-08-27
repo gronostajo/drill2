@@ -8,7 +8,12 @@
         </h3>
     </div>
     <div uib-collapse="collapsed">
-        <uib-progressbar value="progress >= 0 ? progress : 0" max="questionCount || 1" animate="false"></uib-progressbar>
+        <uib-progressbar value="progress >= 0 ? progress : 0" max="questionCount || 1" animate="false" ng-hide="showDistribution"></uib-progressbar>
+        <uib-progress max="total()" animate="false" ng-show="showDistribution" class="larger">
+            <uib-bar value="stats.correct" type="success"></uib-bar>
+            <uib-bar value="stats.partial" type="warning"></uib-bar>
+            <uib-bar value="stats.incorrect" type="danger"></uib-bar>
+        </uib-progress>
         <div class="panel-body" ng-if="message">
             <span>{{ message }}</span>
         </div>

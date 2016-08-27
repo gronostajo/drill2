@@ -6,5 +6,6 @@ angular.module('DrillApp').directive 'stats', ->
     questionCount: '='
     collapsed: '='
     message: '='
+    showDistribution: '='
   controller: 'StatsController'
   templateUrl: 'app/stats/stats.html'

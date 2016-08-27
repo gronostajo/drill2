@@ -258,6 +258,10 @@ stats .progress {
 	border-radius: 0;
 }
 
+stats .progress.larger {
+    height: 6px;
+}
+
 
 /* Footer */
 

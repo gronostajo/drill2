@@ -31,15 +31,7 @@ describe 'QuestionParsingUtils.removeInvalidQuestions', ->
     expect(result).toBeArrayOfSize(3)
     referenceQuestion = create.validQuestion()
     for question in result
-      expect(question.body).toEqual(referenceQuestion.body)
-      expect(question.identifier).toEqual(referenceQuestion.identifier)
-      expect(question.answers.length).toEqual(referenceQuestion.answers.length)
-      expect(question.answers[0].body).toEqual(referenceQuestion.answers[0].body)
-      expect(question.answers[0].correct).toBe(referenceQuestion.answers[0].correct)
-      expect(question.answers[0].id).toEqual(referenceQuestion.answers[0].id)
-      expect(question.answers[1].body).toEqual(referenceQuestion.answers[1].body)
-      expect(question.answers[1].correct).toBe(referenceQuestion.answers[1].correct)
-      expect(question.answers[1].id).toEqual(referenceQuestion.answers[1].id)
+      expect(question).toEqualQuestion(referenceQuestion)
     expect(log).toBeEmptyArray()
 
   it 'should not remove questions with only valid answers', ->
@@ -50,11 +42,11 @@ describe 'QuestionParsingUtils.removeInvalidQuestions', ->
     result = @fn [
       question
     ], (msg) -> log.push(msg)
+
     expect(result).toBeArrayOfSize(1)
-    expect(result[0].body).toEqual('Three valid answers')
-    expect(result[0].answers).toBeArrayOfSize(3)
-    for answer in result[0].answers
-      expect(answer.correct).toBe(true)
+    referenceQuestion = create.validQuestion('Three valid answers', 3)
+    answer.correct = yes for answer in referenceQuestion.answers
+    expect(result[0]).toEqualQuestion(referenceQuestion)
     expect(log).toBeEmptyArray()
 
   it 'should remove question without body', ->
@@ -102,19 +94,10 @@ describe 'QuestionParsingUtils.removeInvalidQuestions', ->
     ], (msg) -> log.push(msg)
 
     expect(result).toBeArrayOfSize(2)
-    expect(log).toBeArrayOfSize(2)
-
     referenceQuestion = create.validQuestion()
     for question in result
-      expect(question.body).toEqual(referenceQuestion.body)
-      expect(question.identifier).toEqual(referenceQuestion.identifier)
-      expect(question.answers.length).toEqual(referenceQuestion.answers.length)
-      expect(question.answers[0].body).toEqual(referenceQuestion.answers[0].body)
-      expect(question.answers[0].correct).toBe(referenceQuestion.answers[0].correct)
-      expect(question.answers[0].id).toEqual(referenceQuestion.answers[0].id)
-      expect(question.answers[1].body).toEqual(referenceQuestion.answers[1].body)
-      expect(question.answers[1].correct).toBe(referenceQuestion.answers[1].correct)
-      expect(question.answers[1].id).toEqual(referenceQuestion.answers[1].id)
+      expect(question).toEqualQuestion(referenceQuestion)
+    expect(log).toBeArrayOfSize(2)
 
   it 'should not affect valid questions between invalid ones', ->
     log = []
@@ -125,15 +108,5 @@ describe 'QuestionParsingUtils.removeInvalidQuestions', ->
     ], (msg) -> log.push(msg)
 
     expect(result).toBeArrayOfSize(1)
+    expect(result[0]).toEqualQuestion(create.validQuestion())
     expect(log).toBeArrayOfSize(2)
-
-    referenceQuestion = create.validQuestion()
-    expect(result[0].body).toEqual(referenceQuestion.body)
-    expect(result[0].identifier).toEqual(referenceQuestion.identifier)
-    expect(result[0].answers.length).toEqual(referenceQuestion.answers.length)
-    expect(result[0].answers[0].body).toEqual(referenceQuestion.answers[0].body)
-    expect(result[0].answers[0].correct).toBe(referenceQuestion.answers[0].correct)
-    expect(result[0].answers[0].id).toEqual(referenceQuestion.answers[0].id)
-    expect(result[0].answers[1].body).toEqual(referenceQuestion.answers[1].body)
-    expect(result[0].answers[1].correct).toBe(referenceQuestion.answers[1].correct)
-    expect(result[0].answers[1].id).toEqual(referenceQuestion.answers[1].id)

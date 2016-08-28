@@ -21,17 +21,17 @@
             <tr>
                 <th>Correct:</th>
                 <td>{{ stats.correct }}</td>
-                <td class="text-right">{{ stats.correct | percentageOf: total() }}</td>
+                <td class="text-right">{{ stats.correct | bankersPercentageOf: total() }}</td>
             </tr>
             <tr>
                 <th>Partially:</th>
                 <td>{{ stats.partial }}</td>
-                <td class="text-right">{{ stats.partial | percentageOf: total() }}</td>
+                <td class="text-right">{{ stats.partial | bankersPercentageOf: total() }}</td>
             </tr>
             <tr>
                 <th>Incorrect:</th>
                 <td>{{ stats.incorrect }}</td>
-                <td class="text-right">{{ stats.incorrect | percentageOf: total() }}</td>
+                <td class="text-right">{{ stats.incorrect | bankersPercentageOf: total() }}</td>
             </tr>
         </table>
     </div>

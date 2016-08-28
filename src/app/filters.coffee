@@ -112,3 +112,19 @@ angular.module 'DrillApp'
     if total != 0
       Math.round(fraction * 100 / total) + '%'
     else '0%'
+
+.filter 'bankersPercentageOf', ->
+  (fraction, total) ->
+    if total != 0
+      # adapted from http://stackoverflow.com/a/3109234/1937994
+      num = fraction * 100 / total
+      truncatedNum = num.toFixed(8)
+      numFloor = Math.floor(truncatedNum)
+      delta = truncatedNum - numFloor
+      epsilon = 1e-8
+      rounded = if delta > 0.5 - epsilon && delta < 0.5 + epsilon
+        if numFloor % 2 == 0 then numFloor else numFloor + 1
+      else
+        Math.round(truncatedNum)
+      rounded + '%'
+    else '0%'

@@ -2,6 +2,8 @@
 
 Browser-based multiple choice test learning assistant.
 
+[![Build Status](https://travis-ci.org/gronostajo/drill2.svg?branch=master)](https://travis-ci.org/gronostajo/drill2)
+
 
 ## What is Drill 2?
 
@@ -21,7 +23,7 @@ Drill 2 is a successor to [Pober's Drill System](https://code.google.com/p/drill
 
 ## How do I use it?
 
-#### Click here: [Drill 2 - public instance](https://gronostajo.github.io/drill2/)
+### Click here: [Drill 2 - public instance](https://gronostajo.github.io/drill2/)
 
 One instance of Drill 2 is publicly available via GitHub pages and always kept up-to-date with major milestones.
 

@@ -25,7 +25,7 @@ Drill 2 is a successor to [Pober's Drill System](https://code.google.com/p/drill
 
 ### Click here: [Drill 2 - public instance](https://gronostajo.github.io/drill2/)
 
-One instance of Drill 2 is publicly available via GitHub pages and always kept up-to-date with major milestones.
+One instance of Drill 2 is publicly available via GitHub pages and always kept up-to-date with major milestones. There's also a [bleeding-edge version](https://gronostajo.github.io/drill2/develop/) deployed automatically when the [`develop` branch](https://github.com/gronostajo/drill2/tree/develop) is updated.
 
 Feel free to download or fork the source code and make your own changes. Then you can deploy the application for yourself or for wider audience. (Please mind the [license](https://github.com/gronostajo/drill2/blob/master/LICENSE)!)
 

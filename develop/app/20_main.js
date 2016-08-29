@@ -68,7 +68,7 @@
 			});
 
 			// load preferred stylesheet
-			angular.element(document).ready(function () {
+			angular.element($document).ready(function () {
 				ThemeSwitcher.loadFromCookie()
 			});
 
@@ -93,17 +93,7 @@
 
 		$scope.reinitialize = function () {
 			$scope.softInitialize();
-
 			$scope.fileError = false;
-			var $selector = $('#fileSelector');
-			$selector.val('').attr('type', 'text').attr('type', 'file');
-
-			if ($scope.editor.enabled) {
-				$('#manualInput').focus();
-			}
-			else {
-				$selector.click();
-			}
 		};
 
 		$scope.restart = function () {

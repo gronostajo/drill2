@@ -6,7 +6,7 @@
 </div>
 <div class="alert alert-danger" role="alert" ng-show="fileError">This file doesn't contain any valid questions.</div>
 <div ng-show="fileApiSupported">
-    <p><input type="file" id="fileSelector" ng-file-select ng-model="selectedFiles" ng-file-change="loadTextFile(selectedFiles[0], $files)" accept="text/plain"></p>
+    <p><input type="file" ng-file-select ng-model="selectedFiles" ng-file-change="loadTextFile(selectedFiles[0], $files)" accept="text/plain"></p>
     <p ng-hide="editor.enabled">You can also <a href="#" ng-click="editor.enabled = true">enter questions manually</a> if you prefer to.</p>
 </div>
 <div ng-show="editor.enabled || !fileApiSupported">

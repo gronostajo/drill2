@@ -150,9 +150,10 @@ gulp.task 'appcache', ->
     transform: (path) -> path
   .pipe(gulp.dest deployPath)
 
-gulp.task 'dev', ->
+gulp.task 'dev', (done) ->
   gulp.src(['dev/**', 'dev/**/.*'], base: 'dev')
   .pipe(gulp.dest deployPath)
+  del("#{deployPath}/*.appcache", done)
 
 
 

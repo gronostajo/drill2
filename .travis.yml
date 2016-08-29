@@ -8,6 +8,7 @@ install:
   - gulp init
 script:
   - gulp test
+  - bash ./deploy.sh
 
 git:
   depth: 20

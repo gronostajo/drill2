@@ -52,7 +52,7 @@ Don't be scared, using them is pretty straightforward. You just have to issue a 
 
 Then use following commands each time you want to build the app:
 
-- `gulp build-dev` - Builds Drill 2 with appcache disabled (for Apache server only). Useful if you don't want to clear appcache or double-refresh every time you change something.
+- `gulp build-dev` - Builds Drill 2 with appcache disabled. Useful if you don't want to clear appcache or double-refresh every time you change something.
 - `gulp build` - Builds a production-ready instance of Drill 2 with full appcache support.
 
 Output files are created in the `build` folder.

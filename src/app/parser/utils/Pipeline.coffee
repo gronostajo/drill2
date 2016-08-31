@@ -17,6 +17,11 @@ angular.module('DrillApp').service 'Pipeline', ->
       @data = (func(item, @_logAppender) for item in @data)
       @
 
+    filter: (func) ->
+      throw new Error('Pipeline content is not an array') if not angular.isArray(@data)
+      @data = @data.filter (item) => func(item, @_logAppender)
+      @
+
     get: -> @data
 
     getLog: -> @log[..]

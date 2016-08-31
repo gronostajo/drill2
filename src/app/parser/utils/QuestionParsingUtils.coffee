@@ -82,3 +82,6 @@ angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, Questi
           validQuestions.push(question)
 
       validQuestions
+
+    matchNonEmptyStrings: (str) ->
+      str.trim().length > 0

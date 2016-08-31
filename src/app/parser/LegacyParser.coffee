@@ -5,6 +5,7 @@ angular.module('DrillApp').service 'LegacyParser', (Pipeline, ParsingUtils, Ques
     parse: (input) ->
       pipeline = new Pipeline(input)
       .apply(ParsingUtils.splitWithDoubleLines)
+      .filter(QuestionParsingUtils.matchNonEmptyStrings)
       .map(QuestionParsingUtils.parseQuestion)
       .apply(QuestionParsingUtils.mergeBrokenQuestions)
       .apply(QuestionParsingUtils.removeInvalidQuestions)

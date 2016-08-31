@@ -9,11 +9,11 @@ angular.module('DrillApp').controller 'QuestionEditorController', ($scope, $wind
       $scope.keypress = @keypress
       $scope.submit = @submit
 
-    keypress: ($event) ->
+    keypress: ($event) =>
       enterKey = ($event.key is '\n') or ($event.keyCode is 10) or ($event.keyCode is 13)
       if $event.ctrlKey and enterKey
-        $timeout ->
-          $scope.form.triggerHandler('submit')
+        $timeout =>
+          @form.triggerHandler('submit')
 
     submit: ->
       $parse($scope.submitExpr)($scope.$parent)

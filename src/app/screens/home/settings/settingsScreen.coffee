@@ -4,4 +4,4 @@ angular.module('DrillApp').directive 'settingsScreen', ->
     model: '='
     info: '='
     continue: '='
-  templateUrl: 'app/screens/settings/settings.html'
+  templateUrl: 'app/screens/home/settings/settings.html'

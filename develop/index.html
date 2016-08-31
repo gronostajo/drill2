@@ -13,10 +13,9 @@
 		<script src="lib/jquery/dist/jquery.min.js"></script>
 		<script src="lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 		<script src="lib/commonmark/dist/commonmark.min.js"></script>
-		<script src="lib/ng-file-upload/angular-file-upload-shim.min.js"></script>
-		<script src="lib/ng-file-upload/angular-file-upload.min.js"></script>
-		<script src="lib/ng-file-upload/FileAPI.min.js"></script>
+		<script src="lib/ng-file-upload/ng-file-upload.min.js"></script>
 		<script src="lib/angular-cookies/angular-cookies.min.js"></script>
+		<script src="lib/ng-elif/src/elif.js"></script>
 		<script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
 		<!-- endinject -->
 
@@ -39,21 +38,23 @@
 		<script src="app/ViewFactory.js"></script>
 		<script src="app/ViewportHelperService.js"></script>
 		<script src="app/filters.js"></script>
+		<script src="app/common/glyphicon.js"></script>
 		<script src="app/data-model/Answer.js"></script>
 		<script src="app/data-model/Question.js"></script>
 		<script src="app/modal/modal.js"></script>
 		<script src="app/parser/LegacyParser.js"></script>
+		<script src="app/parser/QuestionLoader.js"></script>
 		<script src="app/stats/StatsController.js"></script>
 		<script src="app/stats/stats.js"></script>
 		<script src="app/parser/utils/ParsingUtils.js"></script>
 		<script src="app/parser/utils/Pipeline.js"></script>
 		<script src="app/parser/utils/QuestionBuilder.js"></script>
 		<script src="app/parser/utils/QuestionParsingUtils.js"></script>
-		<script src="app/screens/load/LoadScreenController.js"></script>
-		<script src="app/screens/load/loadScreen.js"></script>
+		<script src="app/screens/home/HomeScreenController.js"></script>
+		<script src="app/screens/home/homeScreen.js"></script>
 		<script src="app/screens/settings/settingsScreen.js"></script>
-		<script src="app/screens/load/editor/QuestionEditorController.js"></script>
-		<script src="app/screens/load/editor/questionEditor.js"></script>
+		<script src="app/screens/home/editor/QuestionEditorController.js"></script>
+		<script src="app/screens/home/editor/questionEditor.js"></script>
 		<!-- endinject -->
 
 		<!-- Bootstrap styles included manually for theme switcher -->
@@ -75,7 +76,7 @@
 						<div class="navbar-header">
 							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
 								<span class="sr-only">Toggle navigation</span>
-								<span class="glyphicon glyphicon-wrench"></span>
+								<glyphicon icon="wrench"></glyphicon>
 							</button>
 							<a href="#" class="navbar-brand">Drill 2</a>
 						</div>
@@ -87,15 +88,13 @@
 								</li>
 								<li class="distance"></li>
 								<li><label for="keyboardShortcutsCheckbox" class="btn btn-default navbar-btn" title="Keyboard shortcuts">
-                                    <i class="glyphicon glyphicon-th"></i>
+                                    <glyphicon icon="th"></glyphicon>
                                     <input type="checkbox" id="keyboardShortcutsCheckbox" ng-model="keyboardShortcutsEnabled" />
                                 </label></li>
 								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><i class="glyphicon glyphicon-adjust"></i></button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><glyphicon icon="adjust"></glyphicon></i></button></li>
 								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
-								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('reinitialize')" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="confirmInterruption()" ng-disabled="view.isFirst()">Home screen</button></li>
 							</ul>
 						</div>
 					</div>
@@ -109,8 +108,7 @@
 					<stats stats="stats" progress="questionIndex - 1" question-count="questions.length" collapsed="statsCollapsed" message="getStatsMessage()" show-distribution="view.isFinal()"></stats>
 				</div>
 				<div class="col-sm-8 col-sm-pull-4 col-lg-7">
-					<load-screen editor="editor" callback="loadQuestionsFromString" ng-show="view.isFirst() && !loadedQuestions.length"></load-screen>
-					<settings-screen model="config" info="bankInfo" editor="editor" reset="reinitialize" continue="firstQuestion" ng-show="view.isFirst() && loadedQuestions.length"></settings-screen>
+					<home-screen ng-show="view.isFirst()" bank="loadedQuestions" settings="config" info="bankInfo" start="firstQuestion"></home-screen>
 					<div ng-show="view.isQuestion()" ng-include="'app/screens/question/question.html'" id="questionView"></div>
 					<div ng-show="view.isFinal()" ng-include="'app/screens/summary/summary.html'" id="finalView"></div>
 				</div>

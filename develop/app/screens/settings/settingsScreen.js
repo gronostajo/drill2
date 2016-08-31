@@ -4,8 +4,6 @@ angular.module('DrillApp').directive('settingsScreen', function() {
     scope: {
       model: '=',
       info: '=',
-      editor: '=',
-      reset: '=',
       "continue": '='
     },
     templateUrl: 'app/screens/settings/settings.html'

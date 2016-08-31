@@ -8,7 +8,7 @@ angular.module('DrillApp').service('LegacyParser', function(Pipeline, ParsingUti
 
     _Class.prototype.parse = function(input) {
       var pipeline;
-      pipeline = new Pipeline(input).apply(ParsingUtils.splitWithDoubleLines).map(QuestionParsingUtils.parseQuestion).apply(QuestionParsingUtils.mergeBrokenQuestions).apply(QuestionParsingUtils.removeInvalidQuestions);
+      pipeline = new Pipeline(input).apply(ParsingUtils.splitWithDoubleLines).filter(QuestionParsingUtils.matchNonEmptyStrings).map(QuestionParsingUtils.parseQuestion).apply(QuestionParsingUtils.mergeBrokenQuestions).apply(QuestionParsingUtils.removeInvalidQuestions);
       return {
         questions: pipeline.get(),
         log: pipeline.getLog()

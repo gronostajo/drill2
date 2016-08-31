@@ -38,6 +38,18 @@ angular.module('DrillApp').service('Pipeline', function() {
       return this;
     };
 
+    Pipeline.prototype.filter = function(func) {
+      if (!angular.isArray(this.data)) {
+        throw new Error('Pipeline content is not an array');
+      }
+      this.data = this.data.filter((function(_this) {
+        return function(item) {
+          return func(item, _this._logAppender);
+        };
+      })(this));
+      return this;
+    };
+
     Pipeline.prototype.get = function() {
       return this.data;
     };

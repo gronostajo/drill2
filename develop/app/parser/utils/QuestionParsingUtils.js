@@ -116,6 +116,10 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
       return validQuestions;
     };
 
+    _Class.prototype.matchNonEmptyStrings = function(str) {
+      return str.trim().length > 0;
+    };
+
     return _Class;
 
   })());

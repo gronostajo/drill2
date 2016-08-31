@@ -2,8 +2,9 @@ angular.module('DrillApp').directive 'questionEditor', ->
   restrict: 'E'
   scope:
     model: '='
-    submit: '='
-  templateUrl: 'app/screens/load/editor/editor.html'
+    submitExpr: '@submit'
+  transclude: yes
+  templateUrl: 'app/screens/home/editor/editor.html'
   controller: 'QuestionEditorController'
   # TODO use ngForm
 

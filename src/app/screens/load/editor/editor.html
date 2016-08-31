@@ -1,9 +1,0 @@
-<form ng-submit="submit(model.value)" question-editor-form>
-    <div class="form-group">
-        <textarea class="form-control" rows="15" ng-model="model.value" question-editor-textarea ng-keypress="keypress($event)"></textarea>
-    </div>
-    <div class="form-group">
-        <button type="button" class="btn btn-link" ng-show="fileApiSupported" ng-click="model.enabled = false">Hide this field</button>
-        <button type="submit" class="btn btn-primary pull-right">Load questions</button>
-    </div>
-</form>

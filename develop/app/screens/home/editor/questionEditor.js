@@ -12,7 +12,7 @@ angular.module('DrillApp').directive('questionEditor', function() {
 }).directive('questionEditorTextarea', function() {
   return {
     restrict: 'A',
-    scope: false,
+    require: '^^questionEditor',
     link: function(scope, element) {
       element.bind('focus', function() {
         return scope.$apply('model.focused=true');
@@ -25,9 +25,9 @@ angular.module('DrillApp').directive('questionEditor', function() {
 }).directive('questionEditorForm', function() {
   return {
     restrict: 'A',
-    scope: false,
-    link: function(scope, element) {
-      return scope.form = element;
+    require: '^^questionEditor',
+    link: function(scope, element, attr, controller) {
+      return controller.form = element;
     }
   };
 });

@@ -32,3 +32,6 @@ module.exports = (config) ->
       'karma-mocha-reporter'
       'karma-jasmine-matchers'
     ]
+
+    mochaReporter:
+      ignoreSkipped: yes

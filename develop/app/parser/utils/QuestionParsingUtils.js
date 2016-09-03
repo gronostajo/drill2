@@ -1,4 +1,4 @@
-angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils, QuestionBuilder) {
+angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils, QuestionBuilder, QuestionMerger) {
   var excerpt;
   excerpt = function(question, limit) {
     var body;
@@ -23,7 +23,7 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
       builder = new QuestionBuilder();
       if ((identifierMatched = ParsingUtils.matchIdentifier(lines[0]))) {
         lines = lines.slice(1);
-        builder.appendBodyLine(identifierMatched.content);
+        builder.appendToBody(identifierMatched.content);
         builder.setIdentifier(identifierMatched.identifier);
       }
       parsingAnswers = false;
@@ -31,7 +31,7 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
         line = lines[i];
         if (!parsingAnswers) {
           if (!(answerMatch = ParsingUtils.matchAnswer(line))) {
-            builder.appendBodyLine(line);
+            builder.appendToBody(line);
           } else {
             parsingAnswers = true;
             builder.addAnswer(answerMatch.content, answerMatch.correct, answerMatch.letter);
@@ -48,7 +48,7 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
     };
 
     _Class.prototype.mergeBrokenQuestions = function(questions, logFn) {
-      var mergeNextOne, mergeWithNextOne, mergeWithPreviousOne, merged, msg, processedQuestion, question, questionExcerpt, questionsCopy, result, toBeMerged;
+      var i, index, mergeNextOne, mergeWithNextOne, mergeWithPreviousOne, merged, msg, processedQuestion, question, questionExcerpt, ref, result, toBeMerged;
       if (logFn == null) {
         logFn = function() {};
       }
@@ -61,17 +61,23 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
         }
         return results;
       })();
-      mergeWithNextOne = mergeWithPreviousOne.slice(1).concat([false]);
+      mergeWithNextOne = mergeWithPreviousOne.slice(1);
+      for (index = i = 0, ref = mergeWithNextOne.length; 0 <= ref ? i < ref : i > ref; index = 0 <= ref ? ++i : --i) {
+        if (questions[index].answers.length === 0) {
+          mergeWithNextOne[index] = true;
+        }
+      }
+      mergeWithNextOne = mergeWithNextOne.concat([false]);
       result = [];
-      questionsCopy = questions.slice(0);
-      while (questionsCopy.length > 1) {
-        processedQuestion = questionsCopy.shift();
+      questions = questions.slice(0);
+      while (questions.length > 1) {
+        processedQuestion = questions.shift();
         mergeNextOne = mergeWithNextOne.shift();
         merged = 1;
         while (mergeNextOne) {
-          toBeMerged = questionsCopy.shift();
+          toBeMerged = questions.shift();
           mergeNextOne = mergeWithNextOne.shift();
-          processedQuestion.answers = processedQuestion.answers.concat(toBeMerged.answers);
+          processedQuestion = QuestionMerger.merge(processedQuestion, toBeMerged);
           merged++;
         }
         result.push(processedQuestion);
@@ -82,7 +88,7 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
           logFn(msg);
         }
       }
-      return result.concat(questionsCopy);
+      return result.concat(questions);
     };
 
     _Class.prototype.removeInvalidQuestions = function(questions, logFn) {

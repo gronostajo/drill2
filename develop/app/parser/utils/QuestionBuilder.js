@@ -25,7 +25,7 @@ angular.module('DrillApp').service('QuestionBuilder', function(Question) {
       return this;
     };
 
-    QuestionBuilder.prototype.appendBodyLine = function(line) {
+    QuestionBuilder.prototype.appendToBody = function(line) {
       if (this.question != null) {
         throw new Error('Answers already appended');
       }
@@ -53,6 +53,20 @@ angular.module('DrillApp').service('QuestionBuilder', function(Question) {
       this.answer.lines.push(line.trim());
       this.answer.correct = correct;
       this.answer.identifier = identifier;
+      return this;
+    };
+
+    QuestionBuilder.prototype.addAnswers = function(answers) {
+      var answer, i, len;
+      if (this.question == null) {
+        this._buildQuestion();
+      } else if (this.answer.lines.length) {
+        this._pushAnswer();
+      }
+      for (i = 0, len = answers.length; i < len; i++) {
+        answer = answers[i];
+        this.question.addAnswer(answer.body, answer.correct, answer.id);
+      }
       return this;
     };
 

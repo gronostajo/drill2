@@ -1,19 +1,29 @@
 describe 'QuestionBuilder', ->
   beforeEach ->
     module('DrillApp')
-    inject (@QuestionBuilder) ->
+    jasmine.addMatchers(customMatchers)
+    inject (@QuestionBuilder, @Answer) ->
 
   it 'should create simple questions', ->
     builder = new @QuestionBuilder()
-    builder.appendBodyLine('Hello world')
+    builder.appendToBody('Hello world')
     question = builder.build()
     expect(question.body).toEqual('Hello world')
     expect(question.id).toBeFalsy()
     expect(question.answers.length).toBe(0)
 
+  it 'should allow for multi-line body appending', ->
+    builder = new @QuestionBuilder()
+    builder.appendToBody('Hello\n\nworld')
+    builder.appendToBody('Hiya')
+    question = builder.build()
+    expect(question.body).toEqual('Hello\n\nworld\n\nHiya')
+    expect(question.id).toBeFalsy()
+    expect(question.answers.length).toBe(0)
+
   it 'should create questions with identifiers', ->
     builder = new @QuestionBuilder()
-    builder.appendBodyLine('Hello world')
+    builder.appendToBody('Hello world')
     builder.setIdentifier('id')
     question = builder.build()
     expect(question.body).toEqual('Hello world')
@@ -29,12 +39,20 @@ describe 'QuestionBuilder', ->
 
   it 'should allow for multiline questions', ->
     builder = new @QuestionBuilder()
-    builder.appendBodyLine('Hello world')
-    builder.appendBodyLine('How are you?')
-    builder.appendBodyLine('Cool? Cool.')
+    builder.appendToBody('Hello world')
+    builder.appendToBody('How are you?')
+    builder.appendToBody('Cool? Cool.')
     expect(builder.build().body).toEqual('Hello world\n\nHow are you?\n\nCool? Cool.')
 
-  it 'should allow for question-only answers', ->
+  it 'should allow for body-only questions', ->
+    builder = new @QuestionBuilder()
+    builder.appendToBody('Hello world')
+    question = builder.build()
+    expect(question.body).toEqual('Hello world')
+    expect(question.id).toBeFalsy()
+    expect(question.answers).toBeArrayOfSize(0)
+
+  it 'should allow for answer-only questions', ->
     builder = new @QuestionBuilder()
     builder.addAnswer('First answer', '>', 'a')
     question = builder.build()
@@ -47,7 +65,7 @@ describe 'QuestionBuilder', ->
 
   it 'should allow for regular questions', ->
     builder = new @QuestionBuilder()
-    builder.appendBodyLine('Hello world')
+    builder.appendToBody('Hello world')
     builder.addAnswer('First answer', '>', 'a')
     builder.addAnswer('Second answer', false, 'b')
     question = builder.build()
@@ -111,18 +129,34 @@ describe 'QuestionBuilder', ->
     expect(question.answers[1].correct).toBe(false)
     expect(question.answers[1].id).toEqual('Z')
 
+  it 'should allow for adding multiple answers at once', ->
+    builder = new @QuestionBuilder()
+    builder.addAnswers [
+      new @Answer('answer 1', yes, 'a')
+      new @Answer('answer 2', no, 'b')
+    ]
+    question = builder.build()
+    expect(question.answers).toEqualAnswers [
+      new @Answer('answer 1', yes, 'a')
+      new @Answer('answer 2', no, 'b')
+    ]
+
   it 'should chain methods', ->
     new @QuestionBuilder()
-    .appendBodyLine('body')
+    .appendToBody('body')
     .setIdentifier('id')
     .addAnswer('answer', true, 'X')
     .appendAnswerLine('line 2')
+    .addAnswers([
+      new @Answer('answer 1', yes, 'a')
+      new @Answer('answer 2', no, 'b')
+    ])
     .build()
     .body
 
   it 'should have independent instances', ->
     builder1 = new @QuestionBuilder()
     builder2 = new @QuestionBuilder()
-    builder1.appendBodyLine('one')
+    builder1.appendToBody('one')
     expect(builder1.build().body).toEqual('one')
     expect(builder2.build().body).toEqual('')

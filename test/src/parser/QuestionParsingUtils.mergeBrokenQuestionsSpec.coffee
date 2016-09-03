@@ -68,7 +68,6 @@ describe 'QuestionParsingUtils.mergeBrokenQuestions', ->
       create.questionWithoutBody(1)
       create.validQuestion()
     ]
-
     expect(result).toBeArrayOfSize(2)
     expect(result[1]).toEqualQuestion(create.validQuestion())
 
@@ -93,12 +92,36 @@ describe 'QuestionParsingUtils.mergeBrokenQuestions', ->
     expect(result[0].answers[2..3]).toEqualAnswers(create.questionWithoutBody().answers)
     expect(result[1]).toEqualQuestion(create.validQuestion())
 
+  it 'should merge two questions without answers', ->
+    result = @fn [
+      create.questionWithoutAnswers()
+      create.questionWithoutAnswers()
+      create.questionWithoutBody()
+    ]
+    expect(result).toBeArrayOfSize(1)
+    referenceQuestion = create.questionWithoutAnswers()
+    expect(result[0].body).toEqual(referenceQuestion.body + '\n\n' + referenceQuestion.body)
+    expect(result[0].answers).toEqualAnswers(create.questionWithoutBody().answers)
+
+  it 'should merge two questions without answers and two question without bodies', ->
+    result = @fn [
+      create.questionWithoutAnswers()
+      create.questionWithoutAnswers()
+      create.questionWithoutBody()
+      create.questionWithoutBody()
+    ]
+    expect(result).toBeArrayOfSize(1)
+    referenceQuestion = create.questionWithoutAnswers()
+    referenceAnswers = create.questionWithoutBody().answers
+    expect(result[0].body).toEqual(referenceQuestion.body + '\n\n' + referenceQuestion.body)
+    expect(result[0].answers[0..1]).toEqualAnswers(referenceAnswers)
+    expect(result[0].answers[2..3]).toEqualAnswers(referenceAnswers)
+
   it 'should leave last question without answers untouched', ->
     result = @fn [
       create.validQuestion()
       create.questionWithoutAnswers()
     ]
-
     expect(result).toBeArrayOfSize(2)
     expect(result[0]).toEqualQuestion(create.validQuestion())
     expect(result[1]).toEqualQuestion(create.questionWithoutAnswers())

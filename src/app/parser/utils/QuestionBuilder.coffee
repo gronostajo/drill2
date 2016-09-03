@@ -17,7 +17,7 @@ angular.module('DrillApp').service 'QuestionBuilder', (Question) ->
       @identifier = identifier
       @
 
-    appendBodyLine: (line) ->
+    appendToBody: (line) ->
       if @question?
         throw new Error('Answers already appended')
       @bodyLines.push(line)
@@ -39,6 +39,15 @@ angular.module('DrillApp').service 'QuestionBuilder', (Question) ->
       @answer.lines.push(line.trim())
       @answer.correct = correct
       @answer.identifier = identifier
+      @
+
+    addAnswers: (answers) ->
+      if not @question?
+        @_buildQuestion()
+      else if @answer.lines.length
+        @_pushAnswer()
+      for answer in answers
+        @question.addAnswer(answer.body, answer.correct, answer.id)
       @
 
     appendAnswerLine: (line) ->

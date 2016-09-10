@@ -159,17 +159,31 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
     function _Class() {}
 
     _Class.prototype.process = function(str, logFn) {
-      var i, len, property, ref, result;
+      var e, error, errorType, i, len, matched, property, ref, result;
       if (logFn == null) {
         logFn = function() {};
       }
-      result = new JsonLoader(v2mappers).load(str, logFn);
-      ref = result.unknown;
-      for (i = 0, len = ref.length; i < len; i++) {
-        property = ref[i];
-        logFn("Unknown option " + property);
+      try {
+        result = new JsonLoader(v2mappers).load(str, logFn);
+        ref = result.unknown;
+        for (i = 0, len = ref.length; i < len; i++) {
+          property = ref[i];
+          logFn("Unknown option " + property);
+        }
+        return result.object;
+      } catch (error) {
+        e = error;
+        matched = /[a-z\d_-]*Error/i.exec(e.toString());
+        errorType = matched != null ? matched[0] : void 0;
+        if (errorType === 'SyntaxError') {
+          logFn('Syntax error in <options> block - parsing failed');
+        } else if (errorType) {
+          logFn("Parsing <options> block failed - " + errorType);
+        } else {
+          logFn('Parsing <options> block failed');
+        }
+        return new JsonLoader(v2mappers).load('{}').object;
       }
-      return result.object;
     };
 
     return _Class;

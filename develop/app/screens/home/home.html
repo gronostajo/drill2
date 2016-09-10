@@ -33,7 +33,7 @@
     </question-editor>
 </div>
 
-<div uib-alert ng-if="parserLog.length && editor.visibility == 'mini'" class="alert-danger">
+<div uib-alert ng-if="parserLog.length" class="alert-danger">
     <p style="font-weight: bold">There were some problems while loading questions:</p>
     <ul>
         <li ng-repeat="message in parserLog | limitTo: 3 track by $index">{{ message }}</li>

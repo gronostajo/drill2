@@ -13,7 +13,7 @@
     <span class="btn btn-primary btn-file" ng-class="{ 'btn-large-padding': file == null }">
         <glyphicon icon="open"></glyphicon>
         Select file
-        <input type="file" ngf-select ng-model="selectedFiles" ngf-change="loadFromFile($files[0])" accept="text/plain"/>
+        <input type="file" ngf-select ngf-change="loadFromFile($files[0])" accept="text/plain"/>
     </span>
     <span ng-if="file">{{ file.name }}</span>
     <div class="pull-right">

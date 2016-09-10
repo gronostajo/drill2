@@ -73,7 +73,9 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
 
     _Class.prototype.clearLoadedData = function() {
       $scope.bank = [];
-      return $scope.info = {};
+      $scope.info = {};
+      $scope.parserLog = [];
+      return $scope.file = null;
     };
 
     _Class.prototype.showLogModal = function(log) {

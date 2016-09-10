@@ -4,22 +4,9 @@ angular.module('DrillApp').service('QuestionLoader', function ($q, SafeEvalServi
     //
     var ret = {
         loadFromString: function (input) {
-            var bankInfo = {};
-
             var qs = input.split(/(?:\r?\n){2,}/);
 
-            var options = {
-                format: 'legacy',
-                markdown: false,
-                mathjax: false,
-                grading: 'perAnswer',
-                radical: true,
-                ptsPerQuestion: 1,
-                timeLimit: 0,
-                repeatIncorrect: false,
-                explain: 'optional'
-            };
-
+            var bankInfo = {};
             var config = {};
             var log = [];
 

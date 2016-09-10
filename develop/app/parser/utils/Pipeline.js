@@ -3,12 +3,10 @@ var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); 
 angular.module('DrillApp').service('Pipeline', function() {
   var Pipeline;
   return Pipeline = (function() {
-    Pipeline.prototype.log = [];
-
     function Pipeline(data) {
       this.data = data;
       this._logAppender = bind(this._logAppender, this);
-      return;
+      this.log = [];
     }
 
     Pipeline.prototype._logAppender = function(str) {

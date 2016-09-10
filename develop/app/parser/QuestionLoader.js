@@ -26,9 +26,6 @@ angular.module('DrillApp').service('QuestionLoader', function ($q, SafeEvalServi
             var questionsString = qs.join('\n\n');
             var parsingResult = LegacyParser.parse(questionsString);
             var loadedQuestions = parsingResult.questions;
-            for (var i = 0; i < parsingResult.log.length; i++) {
-                console.warn(parsingResult.log[i]);
-            }
 
             bankInfo.explanationsAvailable = false;
             if (expl) {

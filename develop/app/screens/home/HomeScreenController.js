@@ -1,6 +1,6 @@
 var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-angular.module('DrillApp').controller('HomeScreenController', function($scope, $window, QuestionLoader) {
+angular.module('DrillApp').controller('HomeScreenController', function($scope, $window, $uibModal, QuestionLoader) {
   return new ((function() {
     function _Class() {
       this.loadFromString = bind(this.loadFromString, this);
@@ -21,6 +21,7 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
       $scope.loadFromString = this.loadFromString;
       $scope.collapseEditorIfLoaded = this.collapseEditorIfLoaded;
       $scope.clearLoadedData = this.clearLoadedData;
+      $scope.showLogModal = this.showLogModal;
     }
 
     _Class.prototype.loadFromFile = function(file) {
@@ -73,6 +74,21 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
     _Class.prototype.clearLoadedData = function() {
       $scope.bank = [];
       return $scope.info = {};
+    };
+
+    _Class.prototype.showLogModal = function(log) {
+      return $uibModal.open({
+        templateUrl: 'app/modal/log.html',
+        size: 'md',
+        controller: function($scope, log) {
+          return $scope.log = log;
+        },
+        resolve: {
+          log: function() {
+            return log;
+          }
+        }
+      });
     };
 
     return _Class;

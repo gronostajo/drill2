@@ -18,6 +18,10 @@
 	padding-right: 24px;
 }
 
+a[ng-click] {
+	cursor: pointer;
+}
+
 
 /* Navbar buttons */
 

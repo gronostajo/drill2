@@ -96,6 +96,17 @@ angular.module('DrillApp').service 'OptionsBlockProcessor', (JsonLoader, SafeEva
 
   new class
     process: (str, logFn = ->) ->
-      result = new JsonLoader(v2mappers).load(str, logFn)
-      logFn("Unknown option #{property}") for property in result.unknown
-      result.object
+      try
+        result = new JsonLoader(v2mappers).load(str, logFn)
+        logFn("Unknown option #{property}") for property in result.unknown
+        result.object
+      catch e
+        matched = /[a-z\d_-]*Error/i.exec(e.toString())
+        errorType = matched?[0]
+        if errorType is 'SyntaxError'
+          logFn('Syntax error in <options> block - parsing failed')
+        else if errorType
+          logFn("Parsing <options> block failed - #{errorType}")
+        else
+          logFn('Parsing <options> block failed')
+        new JsonLoader(v2mappers).load('{}').object

@@ -4,24 +4,25 @@ describe 'OptionsBlockProcessor', ->
     jasmine.addMatchers(customMatchers)
     inject (@OptionsBlockProcessor) ->
 
+  defaults =
+    format: 'legacy'
+    markdownReady: no
+    markdown: no
+    mathjaxReady: no
+    mathjax: no
+    gradingMethod: 'perAnswer'
+    gradingRadical: '0'
+    gradingPPQ: 1
+    timeLimitEnabled: no
+    timeLimitSecs: 60
+    repeatIncorrect: no
+    explain: 'optional'
+    showExplanations: no
+    explanations: {}
+
   it 'should have correct defaults', ->
-    expected =
-      format: 'legacy'
-      markdownReady: no
-      markdown: no
-      mathjaxReady: no
-      mathjax: no
-      gradingMethod: 'perAnswer'
-      gradingRadical: '0'
-      gradingPPQ: 1
-      timeLimitEnabled: no
-      timeLimitSecs: 60
-      repeatIncorrect: no
-      explain: 'optional'
-      showExplanations: no
-      explanations: {}
     logger = jasmine.createSpy('logger')
-    expect(@OptionsBlockProcessor.process('{}', logger)).toEqualObject(expected)
+    expect(@OptionsBlockProcessor.process('{}', logger)).toEqualObject(defaults)
     expect(logger).not.toHaveBeenCalled()
 
   it 'should recognize formats', ->
@@ -281,3 +282,9 @@ describe 'OptionsBlockProcessor', ->
     expect(@OptionsBlockProcessor.process('{"explanations": false}', logger))
     expect(@OptionsBlockProcessor.process('{"explanations": "a lot of them"}', logger))
     expect(logger).toHaveBeenCalledTimes(4)
+
+  it 'should log JSON syntax problem and return defaults', ->
+    logger = jasmine.createSpy('logger').and.callFake (msg) ->
+      expect(msg.toLowerCase()).toContainSubstring('syntax')
+    expect(@OptionsBlockProcessor.process('{"format": "42",}', logger)).toEqualObject(defaults)
+    expect(logger).toHaveBeenCalledTimes(1)

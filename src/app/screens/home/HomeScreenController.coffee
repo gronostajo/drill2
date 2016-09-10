@@ -47,6 +47,8 @@ angular.module('DrillApp').controller 'HomeScreenController', ($scope, $window, 
     clearLoadedData: ->
       $scope.bank = []
       $scope.info = {}
+      $scope.parserLog = []
+      $scope.file = null
 
     showLogModal: (log) ->
       $uibModal.open

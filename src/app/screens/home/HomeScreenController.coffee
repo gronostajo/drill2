@@ -1,4 +1,4 @@
-angular.module('DrillApp').controller 'HomeScreenController', ($scope, $window, QuestionLoader) ->
+angular.module('DrillApp').controller 'HomeScreenController', ($scope, $window, $uibModal, QuestionLoader) ->
   new class
     constructor: ->
       $scope.fileApiSupported = $window.File && $window.FileList && $window.FileReader
@@ -14,6 +14,7 @@ angular.module('DrillApp').controller 'HomeScreenController', ($scope, $window, 
       $scope.loadFromString = @loadFromString
       $scope.collapseEditorIfLoaded = @collapseEditorIfLoaded
       $scope.clearLoadedData = @clearLoadedData
+      $scope.showLogModal = @showLogModal
 
     loadFromFile: (file) =>
       return if (not file) or (not $scope.fileApiSupported)
@@ -46,3 +47,12 @@ angular.module('DrillApp').controller 'HomeScreenController', ($scope, $window, 
     clearLoadedData: ->
       $scope.bank = []
       $scope.info = {}
+
+    showLogModal: (log) ->
+      $uibModal.open
+        templateUrl: 'app/modal/log.html'
+        size: 'md'
+        controller: ($scope, log) ->
+          $scope.log = log
+        resolve:
+          log: -> log

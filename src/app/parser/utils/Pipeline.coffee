@@ -1,9 +1,7 @@
 angular.module('DrillApp').service 'Pipeline', ->
   class Pipeline
-    log: []
-
     constructor: (@data) ->
-      return
+      @log = []
 
     _logAppender: (str) =>
       @log.push(str)

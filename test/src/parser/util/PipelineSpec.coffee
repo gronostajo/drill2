@@ -99,3 +99,11 @@ describe 'Pipeline', ->
     expect(pipeline.getLog()[1]).toBe(3)
     expect(pipeline.getLog()[2]).toBe(2)
     expect(pipeline.getLog()[3]).toBe(4)
+
+  it 'should have independent logs for each instance', ->
+    teeFunc = (value, logFn) ->
+      logFn(value)
+      value
+    new @Pipeline([1, 2, 3]).filter(teeFunc)
+    log = new @Pipeline([1, 2, 3]).filter(teeFunc).getLog()
+    expect(log).toBeArrayOfSize(3)

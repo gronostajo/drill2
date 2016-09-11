@@ -52,7 +52,7 @@ angular.module('DrillApp').controller 'HomeScreenController', ($scope, $window, 
 
     showLogModal: (log) ->
       $uibModal.open
-        templateUrl: 'app/modal/log.html'
+        templateUrl: 'app/screens/home/logModal.html'
         size: 'md'
         controller: ($scope, log) ->
           $scope.log = log

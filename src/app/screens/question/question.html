@@ -1,4 +1,7 @@
 <div class="page-header">
+    <button class="btn btn-default pull-right" type="button" question-string="currentQuestion" title="Show question string">
+        <glyphicon icon="copy"></glyphicon>
+    </button>
     <h2 title="{{currentQuestion.id != false ? currentQuestion.id : 'No ID'}}">Question {{questionIndex}} out of {{questions.length}}</h2>
 </div>
 <form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">

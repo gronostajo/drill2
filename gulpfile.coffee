@@ -157,6 +157,33 @@ gulp.task 'dev', (done) ->
 
 
 
+### sloc ###
+
+gulp.task 'sloc-src', ->
+  gulp.src(['src/**'], nodir: yes)
+  .pipe($.sloc2
+    metrics: ['total', 'source', 'comment']
+    reportElements:
+      before: '=======  Source stats  ========'
+      after: false
+      mode: false
+  )
+
+gulp.task 'sloc-test', ->
+  gulp.src(['test/src/**'], nodir: yes)
+  .pipe($.sloc2
+    metrics: ['total', 'source', 'comment']
+    reportElements:
+      before: '========  Test stats  ========'
+      after: false
+      mode: false
+  )
+
+gulp.task 'sloc', (done) ->
+  runSequence 'sloc-src', 'sloc-test', done
+
+
+
 ### Linter ###
 
 gulp.task 'lint-coffee', ->
@@ -188,7 +215,7 @@ gulp.task 'build', (done) ->
   runSequence 'lint', 'clean', 'view', 'scripts', 'dependencies', 'appcache', done
 
 gulp.task 'build-dev', ['lint'], (done) ->
-  runSequence 'build', 'dev', done
+  runSequence 'build', 'dev', 'sloc', done
 
 gulp.task 'test', (done) ->
   runSequence 'build-dev', 'run-tests', done

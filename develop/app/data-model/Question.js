@@ -78,6 +78,23 @@ angular.module('DrillApp').service('Question', function(Answer) {
       }
     };
 
+    Question.prototype.toString = function(includeAnswers) {
+      var answer, body, i, len, ref;
+      if (includeAnswers == null) {
+        includeAnswers = true;
+      }
+      body = this.id != null ? "[#" + this.id + "] " + this.body : this.body;
+      body = body.replace(/\n\n/g, '\n') + '\n';
+      if (includeAnswers) {
+        ref = this.answers;
+        for (i = 0, len = ref.length; i < len; i++) {
+          answer = ref[i];
+          body += answer.toString();
+        }
+      }
+      return body;
+    };
+
     return Question;
 
   })();

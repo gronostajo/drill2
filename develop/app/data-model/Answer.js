@@ -12,6 +12,14 @@ angular.module('DrillApp').service('Answer', function() {
       return this.body += '\n\n' + line.trim();
     };
 
+    Answer.prototype.toString = function() {
+      if (this.correct) {
+        return "> " + this.id + ") " + this.body + "\n";
+      } else {
+        return "  " + this.id + ") " + this.body + "\n";
+      }
+    };
+
     return Answer;
 
   })();

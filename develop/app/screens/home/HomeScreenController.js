@@ -80,7 +80,7 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
 
     _Class.prototype.showLogModal = function(log) {
       return $uibModal.open({
-        templateUrl: 'app/modal/log.html',
+        templateUrl: 'app/screens/home/logModal.html',
         size: 'md',
         controller: function($scope, log) {
           return $scope.log = log;

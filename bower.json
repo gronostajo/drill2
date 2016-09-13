@@ -9,7 +9,7 @@
     "tests"
   ],
   "dependencies": {
-    "MathJax": "2.6.0",
+    "MathJax": "2.6.1",
     "angular": "1.4.12",
     "bootstrap": "~3.3.6",
     "angular-bootstrap": "~2.0.2",

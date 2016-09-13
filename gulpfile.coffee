@@ -139,8 +139,8 @@ gulp.task 'lint', (done) ->
 
 ### Misc ###
 
-gulp.task 'clean', (done) ->
-  del([deployPath, 'test/build'], done)
+gulp.task 'clean', ->
+  del([deployPath, 'test/build'])
 
 appcacheFiles = [
   '**'

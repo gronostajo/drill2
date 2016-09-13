@@ -1,12 +1,15 @@
 gulp = require 'gulp'
 
 $ = (require('gulp-load-plugins'))()
+appcacheFiles = require('appcache-files')
 argv = require('yargs').argv
 beep = require('beepbeep')
 bowerFiles = require('main-bower-files')
 del = require('del')
 fs = require('fs')
+groupArray = require('group-array')
 KarmaServer = require('karma').Server
+merge = require('merge2')
 path = require('path')
 runSequence = require('run-sequence')
 
@@ -239,10 +242,23 @@ gulp.task 'report', ['sloc-src', 'sloc-test', 'size'], ->
   for line in output
     $.util.log(line)
 
-gulp.task 'appcache-details', $.folders path.join(deployPath, 'lib'), (folder) ->
-  folderPath = path.join('lib', folder)
-  gulp.src(appcacheExclusions.concat("#{folderPath}/**"), cwd: deployPath, nodir: yes)
-  .pipe($.size(title: folder))
+firstPathPart = (path) ->
+  slashIndex = path.replace('\\', '/').indexOf('/')
+  if slashIndex is -1 then '.' else path.substr(0, slashIndex)
+
+gulp.task 'appcache-details', ->
+  files = appcacheFiles("#{deployPath}/drill2.appcache")
+  groupedFiles = groupArray files, (path) ->
+    firstDir = firstPathPart(path)
+    if firstDir isnt 'lib'
+      firstDir
+    else
+      firstDir + '/' + firstPathPart(path.substr(firstDir.length + 1))
+  streams = for group, paths of groupedFiles
+    gulp.src(paths, cwd: deployPath)
+    .pipe($.size(title: group))
+  streams.push gulp.src(files, cwd: deployPath).pipe($.size())
+  merge.apply(@, streams)
 
 
 ### Core tasks ###

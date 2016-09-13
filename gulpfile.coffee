@@ -79,7 +79,7 @@ gulp.task 'dependencies', ['bower', 'inject']
 
 ### Tests ###
 
-gulp.task 'build-tests', ->
+gulp.task 'build-tests', ['clean-tests'], ->
   coffeeStream = $.coffee(bare: yes)
   coffeeStream.on 'error', (error) ->
     $.util.log(error)
@@ -140,7 +140,10 @@ gulp.task 'lint', (done) ->
 ### Misc ###
 
 gulp.task 'clean', ->
-  del([deployPath, 'test/build'])
+  del(deployPath)
+
+gulp.task 'clean-tests', ->
+  del('test/build')
 
 appcacheFiles = [
   '**'

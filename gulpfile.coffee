@@ -16,6 +16,24 @@ devBuild = not argv.production
 $.util.log 'Project: ' + $.util.colors.blue("#{pkg.name} v#{pkg.version}")
 
 
+### Clean ###
+
+gulp.task 'clean', (done) ->
+  del(deployPath, done)
+
+gulp.task 'clean-tests', (done) ->
+  del('test/build', done)
+
+appcacheFiles = [
+  '**'
+  '!**/.ht*'
+  '!**/*.appcache'
+  '!lib/MathJax/**'
+  '!lib/bootstrap/dist/fonts/!(glyphicons-halflings-regular.woff)'  # save some bytes by including only one font
+  '!lib/bootswatch/fonts/!(glyphicons-halflings-regular.woff)'
+]
+
+
 ### Scripts ###
 
 gulp.task 'coffee', ->
@@ -32,7 +50,8 @@ gulp.task 'js', ->
   gulp.src('src/app/**/*.js', base: 'src')
   .pipe(gulp.dest deployPath)
 
-gulp.task 'scripts', ['coffee', 'js']
+gulp.task 'scripts', (done) ->
+  runSequence('coffee', 'js', done)
 
 
 ### View ###
@@ -45,7 +64,8 @@ gulp.task 'css', ->
   gulp.src('src/view/**/*.css', base: 'src')
   .pipe(gulp.dest deployPath)
 
-gulp.task 'view', ['html', 'css']
+gulp.task 'view', (done) ->
+  runSequence('html', 'css', done)
 
 
 ### Dependencies ###
@@ -54,7 +74,7 @@ gulp.task 'bower', ->
   gulp.src(bowerFiles(), base: 'bower_components')
   .pipe(gulp.dest("#{deployPath}/lib"))
 
-gulp.task 'inject', ['view'], ->
+gulp.task 'inject', ->
   bowerFilesToInject = bowerFiles().concat [
     '!bower_components/MathJax/**'            # MathJax requires crazy inclusion args, we're doing that manually.
     '!bower_components/bootstrap/**/*.css'    # Included manually for theme switcher
@@ -74,12 +94,13 @@ gulp.task 'inject', ['view'], ->
     relative: yes
   .pipe(gulp.dest deployPath)
 
-gulp.task 'dependencies', ['bower', 'inject']
+gulp.task 'dependencies', (done) ->
+  runSequence('bower', 'inject', done)
 
 
 ### Tests ###
 
-gulp.task 'build-tests', ['clean-tests'], ->
+gulp.task 'build-tests', ->
   coffeeStream = $.coffee(bare: yes)
   coffeeStream.on 'error', (error) ->
     $.util.log(error)
@@ -89,7 +110,7 @@ gulp.task 'build-tests', ['clean-tests'], ->
   .pipe(coffeeStream)
   .pipe(gulp.dest 'test/build')
 
-gulp.task 'configure-karma', ['build'], ->
+gulp.task 'configure-karma', ->
   bowerFilesToInject = bowerFiles(includeDev: yes).concat [
     '!bower_components/MathJax/**'
   ]
@@ -106,7 +127,7 @@ gulp.task 'configure-karma', ['build'], ->
     transform: (filepath) -> "'#{filepath}'"
   .pipe(gulp.dest('test'))
 
-gulp.task 'test', ['build', 'build-tests', 'configure-karma'], (done) ->
+gulp.task 'run-tests', (done) ->
   new KarmaServer(
     configFile: __dirname + '/test/karma.conf.coffee'
     singleRun: yes
@@ -139,22 +160,9 @@ gulp.task 'lint', (done) ->
 
 ### Misc ###
 
-gulp.task 'clean', ->
-  del(deployPath)
-
-gulp.task 'clean-tests', ->
-  del('test/build')
-
-appcacheFiles = [
-  '**'
-  '!**/.ht*'
-  '!**/*.appcache'
-  '!lib/MathJax/**'
-  '!lib/bootstrap/dist/fonts/!(glyphicons-halflings-regular.woff)'  # save some bytes by including only one font
-  '!lib/bootswatch/fonts/!(glyphicons-halflings-regular.woff)'
-]
-
 gulp.task 'appcache', ->
+  return if devBuild
+
   date = new Date()
 
   cachedFiles = gulp.src(appcacheFiles, read: no, cwd: deployPath, nodir: yes)
@@ -173,7 +181,7 @@ gulp.task 'appcache', ->
     transform: (path) -> path
   .pipe(gulp.dest deployPath)
 
-gulp.task 'envSpecific', (done) ->
+gulp.task 'env-specific', (done) ->
   env = if devBuild then 'dev' else 'prod'
   gulp.src(["#{env}/**", "#{env}/**/.*"], base: env)
   .pipe(gulp.dest deployPath)
@@ -232,9 +240,15 @@ gulp.task 'report', ['sloc-src', 'sloc-test', 'size'], ->
     $.util.log(line)
 
 
-### Large tasks ###
+### Core tasks ###
 
-gulp.task 'build', ['lint'], (done) ->
-  runSequence 'clean', ['view', 'scripts', 'dependencies', 'appcache', 'envSpecific'], 'report', done
+gulp.task 'assets', (done) ->
+  runSequence('clean', ['view', 'scripts', 'dependencies'], done)
+
+gulp.task 'build', (done) ->
+  runSequence('lint', 'assets', 'appcache', 'env-specific', 'report', done)
+
+gulp.task 'test', (done) ->
+  runSequence('clean-tests', 'build', 'build-tests', 'configure-karma', 'run-tests', done)
 
 gulp.task 'default', ['build']

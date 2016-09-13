@@ -11,7 +11,6 @@
     "coffeelint-newline-at-eof": "0.4.1",
     "del": "^1.2.0",
     "gulp": "3.9.1",
-    "gulp-bower": "0.0.13",
     "gulp-coffee": "2.3.1",
     "gulp-coffeelint": "0.6.0",
     "gulp-debug": "^2.1.2",
@@ -31,15 +30,15 @@
     "karma-mocha-reporter": "^2.1.0",
     "karma-phantomjs-launcher": "^1.0.1",
     "main-bower-files": "2.11.1",
-    "run-sequence": "1.1.5",
-    "stream-end": "^0.1.0"
+    "run-sequence": "1.2.2",
+    "yargs": "^5.0.0"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/gronostajo/drill2.git"
   },
   "author": "Krzysztof Śmiałek (github.com/gronostajo)",
-  "license": "GPLv2",
+  "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/gronostajo/drill2/issues"
   },

@@ -7,6 +7,7 @@ bowerFiles = require('main-bower-files')
 del = require('del')
 fs = require('fs')
 KarmaServer = require('karma').Server
+path = require('path')
 runSequence = require('run-sequence')
 
 pkg = require('./package.json')
@@ -24,8 +25,7 @@ gulp.task 'clean', (done) ->
 gulp.task 'clean-tests', (done) ->
   del('test/build', done)
 
-appcacheFiles = [
-  '**'
+appcacheExclusions = [
   '!**/.ht*'
   '!**/*.appcache'
   '!lib/MathJax/**'
@@ -165,7 +165,7 @@ gulp.task 'appcache', ->
 
   date = new Date()
 
-  cachedFiles = gulp.src(appcacheFiles, read: no, cwd: deployPath, nodir: yes)
+  cachedFiles = gulp.src(appcacheExclusions.concat('**'), read: no, cwd: deployPath, nodir: yes)
   .pipe($.sort())
 
   gulp.src('src/*.appcache', base: 'src')
@@ -212,7 +212,7 @@ size = null
 
 gulp.task 'calculate-size', ->
   size = $.size(showTotal: no)
-  gulp.src(appcacheFiles, cwd: deployPath, nodir: yes)
+  gulp.src(appcacheExclusions.concat('**'), cwd: deployPath, nodir: yes)
   .pipe(size)
 
 gulp.task 'size', ['calculate-size'], ->
@@ -238,6 +238,11 @@ gulp.task 'report', ['sloc-src', 'sloc-test', 'size'], ->
   ]
   for line in output
     $.util.log(line)
+
+gulp.task 'appcache-details', $.folders path.join(deployPath, 'lib'), (folder) ->
+  folderPath = path.join('lib', folder)
+  gulp.src(appcacheExclusions.concat("#{folderPath}/**"), cwd: deployPath, nodir: yes)
+  .pipe($.size(title: folder))
 
 
 ### Core tasks ###

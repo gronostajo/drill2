@@ -4,14 +4,14 @@ $ = (require('gulp-load-plugins'))()
 beep = require('beepbeep')
 bowerFiles = require('main-bower-files')
 del = require('del')
-runSequence = require('run-sequence')
 KarmaServer = require('karma').Server
+runSequence = require('run-sequence')
+streamEnd = require('stream-end')
 
 pkg = require('./package.json')
 
 deployPath = 'build'
 $.util.log "Project: #{pkg.name} v#{pkg.version}"
-
 
 
 ### Scripts ###
@@ -34,7 +34,6 @@ gulp.task 'scripts', (done) ->
   runSequence 'js', 'coffee', done
 
 
-
 ### View ###
 
 gulp.task 'html', ->
@@ -49,7 +48,6 @@ gulp.task 'view', (done) ->
   runSequence 'html', 'css', done
 
 
-
 ### Dependencies ###
 
 gulp.task 'bower', ->
@@ -58,8 +56,8 @@ gulp.task 'bower', ->
 
 gulp.task 'inject', ['view'], ->
   bowerFilesToInject = bowerFiles().concat [
-    '!bower_components/MathJax/**',           # MathJax requires crazy inclusion args, we're doing that manually.
-    '!bower_components/bootstrap/**/*.css',   # Included manually for theme switcher
+    '!bower_components/MathJax/**'            # MathJax requires crazy inclusion args, we're doing that manually.
+    '!bower_components/bootstrap/**/*.css'    # Included manually for theme switcher
     '!bower_components/bootswatch/**/*.css'   # Included manually for theme switcher
   ]
 
@@ -81,7 +79,6 @@ gulp.task 'dependencies', (done) ->
 
 gulp.task 'bower-init', ->
   $.bower()
-
 
 
 ### Tests ###
@@ -120,23 +117,24 @@ gulp.task 'run-tests', ['build-tests', 'configure-karma'], (done) ->
   , done).start()
 
 
-
 ### Misc ###
 
 gulp.task 'clean', (done) ->
   del([deployPath, 'test/build'], done)
 
+appcacheFiles = [
+  '**'
+  '!**/.ht*'
+  '!**/*.appcache'
+  '!lib/MathJax/**'
+  '!lib/bootstrap/dist/fonts/!(glyphicons-halflings-regular.woff)'  # save some bytes by including only one font
+  '!lib/bootswatch/fonts/!(glyphicons-halflings-regular.woff)'
+]
+
 gulp.task 'appcache', ->
   date = new Date()
 
-  cachedFiles = gulp.src([
-    '**',
-    '!**/.ht*',
-    '!**/*.appcache',
-    '!lib/MathJax/**',
-    '!lib/bootstrap/dist/fonts/!(glyphicons-halflings-regular.woff)'  # save some bytes by including only one font
-    '!lib/bootswatch/fonts/!(glyphicons-halflings-regular.woff)'
-  ], read: no, cwd: deployPath, nodir: yes)
+  cachedFiles = gulp.src(appcacheFiles, read: no, cwd: deployPath, nodir: yes)
   .pipe($.sort())
 
   gulp.src('src/*.appcache', base: 'src')
@@ -156,32 +154,50 @@ gulp.task 'dev', (done) ->
   del("#{deployPath}/*.appcache", done)
 
 
-
-### sloc ###
+### Reports ###
 
 gulp.task 'sloc-src', ->
   gulp.src(['src/**'], nodir: yes)
   .pipe($.sloc2
-    metrics: ['total', 'source', 'comment']
-    reportElements:
-      before: '=======  Source stats  ========'
-      after: false
-      mode: false
+    reportType: 'json'
+    reportFile: 'sloc-src.json'
   )
+  .pipe(gulp.dest('reports'))
 
 gulp.task 'sloc-test', ->
   gulp.src(['test/src/**'], nodir: yes)
   .pipe($.sloc2
-    metrics: ['total', 'source', 'comment']
-    reportElements:
-      before: '========  Test stats  ========'
-      after: false
-      mode: false
+    reportType: 'json'
+    reportFile: 'sloc-test.json'
+  )
+  .pipe(gulp.dest('reports'))
+
+gulp.task 'size', ->
+  size = $.size(showTotal: no)
+  gulp.src(appcacheFiles.concat('*.appcache'), cwd: deployPath, nodir: yes)
+  .pipe(size)
+  .pipe(streamEnd ->
+    out = JSON.stringify
+      size: size.size
+      prettySize: size.prettySize
+    $.file('size.json', out, src: yes)
+    .pipe(gulp.dest('reports'))
   )
 
-gulp.task 'sloc', (done) ->
-  runSequence 'sloc-src', 'sloc-test', done
+gulp.task 'printReport', ->
+  slocSrc = require('./reports/sloc-src.json')
+  slocTest = require('./reports/sloc-test.json')
+  size = require('./reports/size.json')
+  output = [
+    "    Source SLOC: #{$.util.colors.green(slocSrc.source)}"
+    "     Tests SLOC: #{$.util.colors.green(slocTest.source)}"
+    "  Appcache size: #{$.util.colors.green(size.prettySize)}"
+  ]
+  for line in output
+    $.util.log(line)
 
+gulp.task 'report', (done) ->
+  runSequence 'sloc-src', 'sloc-test', 'size', 'printReport', done
 
 
 ### Linter ###
@@ -208,14 +224,13 @@ gulp.task 'lint', (done) ->
   runSequence 'lint-gulpfile', 'lint-coffee', 'lint-tests', done
 
 
-
 ### Large tasks ###
 
 gulp.task 'build', (done) ->
-  runSequence 'lint', 'clean', 'view', 'scripts', 'dependencies', 'appcache', done
+  runSequence 'lint', 'clean', 'view', 'scripts', 'dependencies', 'appcache', 'report', done
 
 gulp.task 'build-dev', ['lint'], (done) ->
-  runSequence 'build', 'dev', 'sloc', done
+  runSequence 'build', 'dev', 'report', done
 
 gulp.task 'test', (done) ->
   runSequence 'build-dev', 'run-tests', done

@@ -14,10 +14,13 @@
     "gulp-bower": "0.0.13",
     "gulp-coffee": "2.3.1",
     "gulp-coffeelint": "0.6.0",
+    "gulp-debug": "^2.1.2",
+    "gulp-file": "^0.3.0",
     "gulp-ignore": "^2.0.1",
     "gulp-inject": "^1.3.1",
     "gulp-load-plugins": "1.2.0",
     "gulp-replace": "0.5.4",
+    "gulp-size": "^2.1.0",
     "gulp-sloc2": "git+https://github.com/gronostajo/gulp-sloc2.git#sloc-0.1.11",
     "gulp-sort": "^2.0.0",
     "gulp-util": "3.0.7",
@@ -28,7 +31,8 @@
     "karma-mocha-reporter": "^2.1.0",
     "karma-phantomjs-launcher": "^1.0.1",
     "main-bower-files": "2.11.1",
-    "run-sequence": "1.1.5"
+    "run-sequence": "1.1.5",
+    "stream-end": "^0.1.0"
   },
   "repository": {
     "type": "git",

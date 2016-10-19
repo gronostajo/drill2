@@ -1,0 +1,38 @@
+<div class="panel panel-default">
+    <div class="panel-heading no-selection">
+        <h3 class="panel-title">
+            <a ng-class="{ 'collapsed': collapsed }" ng-click="collapsed = !collapsed">
+                Score: {{ stats.score | percentageOf: stats.totalPoints }}
+                ({{ stats.score | decPlaces: 2 }} / {{ stats.totalPoints | decPlaces: 2 }})
+            </a>
+        </h3>
+    </div>
+    <div uib-collapse="collapsed">
+        <uib-progressbar value="progress >= 0 ? progress : 0" max="questionCount || 1" animate="false" ng-hide="showDistribution"></uib-progressbar>
+        <uib-progress max="total()" animate="false" ng-show="showDistribution" class="larger">
+            <uib-bar value="stats.correct" type="success"></uib-bar>
+            <uib-bar value="stats.partial" type="warning"></uib-bar>
+            <uib-bar value="stats.incorrect" type="danger"></uib-bar>
+        </uib-progress>
+        <div class="panel-body" ng-if="message">
+            <span>{{ message }}</span>
+        </div>
+        <table class="table stats-table">
+            <tr>
+                <th>Correct:</th>
+                <td>{{ stats.correct }}</td>
+                <td class="text-right">{{ stats.correct | bankersPercentageOf: total() }}</td>
+            </tr>
+            <tr>
+                <th>Partially:</th>
+                <td>{{ stats.partial }}</td>
+                <td class="text-right">{{ stats.partial | bankersPercentageOf: total() }}</td>
+            </tr>
+            <tr>
+                <th>Incorrect:</th>
+                <td>{{ stats.incorrect }}</td>
+                <td class="text-right">{{ stats.incorrect | bankersPercentageOf: total() }}</td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <h4 class="modal-title">Parser errors</h4>
+</div>
+<div class="modal-body">
+    <p>Following errors were encountered while loading questions:</p>
+    <ol>
+        <li ng-repeat="message in log track by $index">{{ message }}</li>
+    </ol>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$dismiss()">Close</button>
+</div>

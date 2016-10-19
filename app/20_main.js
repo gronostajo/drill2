@@ -1,19 +1,11 @@
-/*
- *	Drill 2 AngularJS controller
- *	https://github.com/gronostajo/drill2
- */
-
-
 (function() {
 
-	var drillApp = angular.module('DrillApp', ['ngFileUpload']);
+	angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies', 'elif'])
 
-
-	drillApp.controller('DrillController', function($scope, $timeout, SafeEvalService, GraderFactory, QuestionFactory, AnswerFactory, StatsFactory, ViewFactory) {
+	.controller('DrillController', function($scope, $timeout, $document, $cookies, $q,
+											GraderFactory, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher, QuestionLoader) {
 
 		$scope.initialize = function () {
-			$scope.fileApiSupported = window.File && window.FileList && window.FileReader;
-
 			$scope.updateStatus = false;
 			//noinspection JSUnresolvedVariable
 			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
@@ -22,23 +14,27 @@
 				});
 			});
 
-
-			$('#manualInput').keydown(function (e) {
-				if (e.ctrlKey && e.keyCode == 13) {
-					$('#confirmManualInput').click();
-				}
-			});
-
 			$scope.softInitialize();
 
-			$scope.fileError = false;
-			$scope.dataString = '';
+			$scope.bankInfo = {};
 
-			$scope.pasteEnabled = false;
-
-			$scope.keyboardShortcutsEnabled = ($.cookie('keyboardShortcuts') === 'true');
+			$scope.keyboardShortcutsEnabled = ($cookies.get('keyboardShortcuts') === 'true');
 			$scope.$watch('keyboardShortcutsEnabled', function (newValue) {
-				$.cookie('keyboardShortcuts', newValue ? 'true' : 'false');
+				$cookies.put('keyboardShortcuts', newValue ? 'true' : 'false');
+			});
+
+			$document.ready(function () {
+				var statsPreference = $cookies.get('stats');
+				if (!statsPreference) {
+					var bootstrapScreenSize = ViewportHelper.getBootstrapBreakpoint();
+					statsPreference = (bootstrapScreenSize == 'xs') ? 'collapsed' : 'expanded';
+				}
+
+				$scope.statsCollapsed = (statsPreference == 'collapsed');
+
+				$scope.$watch('statsCollapsed', function (collapsed) {
+					$cookies.put('stats', collapsed ? 'collapsed' : 'expanded');
+				});
 			});
 
 			$scope.config = {
@@ -69,8 +65,8 @@
 			});
 
 			// load preferred stylesheet
-			angular.element(document).ready(function () {
-				$.alternate('-');
+			angular.element($document).ready(function () {
+				ThemeSwitcher.loadFromCookie()
 			});
 
 		};
@@ -82,44 +78,33 @@
 			$scope.questions = [];
 			$scope.questionIndex = 0;
 
-			$scope.stats = StatsFactory.createStats();
+			$scope.stats = {
+				correct: 0,
+				partial: 0,
+				incorrect: 0,
+				score: 0,
+				totalPoints: 0
+			};
 			$scope.view = ViewFactory.createView();
 		};
 
-		$scope.reinitialize = function () {
+		$scope.reload = function () {
 			$scope.softInitialize();
 
-			$scope.fileError = false;
-			var $selector = $('#fileSelector');
-			$selector.val('').attr('type', 'text').attr('type', 'file');
-
-			if ($scope.pasteEnabled || !$scope.fileApiSupported) {
-				$('#manualInput').focus();
-			}
-			else {
-				$selector.click();
-			}
+			QuestionLoader.loadFromString($scope.bankInfo.input).then(function (result) {
+				$scope.loadedQuestions = result.loadedQuestions;
+				angular.extend($scope.bankInfo, result.bankInfo);
+				// ignore config - keep previous values
+			});
 		};
 
-		$scope.restart = function () {
-			$scope.softInitialize();
-
-			// clone config
-			var config = JSON.parse(JSON.stringify($scope.config));
-
-			$scope.loadQuestions();
-
-			// restore config
-			$scope.config = config;
-		};
-
-		$scope.confirmRestart = function (func) {
+		$scope.confirmInterruption = function () {
 			var confirmed = $scope.view.isQuestion()
 				? confirm('This will interrupt the test in progress.\nAre you sure?')
 				: true;
 
 			if (confirmed) {
-				$scope[func]();
+				$scope.reload();
 			}
 		};
 
@@ -129,14 +114,7 @@
 			}
 		};
 
-		$scope.switchTheme = function () {
-			var switchTo = $.alternate()[1];
-			$.alternate(switchTo);
-		};
-
-		$scope.setPaste = function (state) {
-			$scope.pasteEnabled = !!state;
-		};
+		$scope.switchTheme = ThemeSwitcher.cycle;
 
 		$scope.firstQuestion = function () {
 			$scope.reorderElements();
@@ -162,7 +140,7 @@
 				$scope.currentQuestion.answers[i].checked = false;
 			}
 
-			scrollToTop(function() {
+			ViewportHelper.scrollToTop(function() {
 				$scope.$apply(function () {
 					if ($scope.config.timeLimitEnabled) {
 						$scope.currentQuestion.timeLeft = $scope.config.timeLimitSecs;
@@ -180,7 +158,7 @@
 		};
 
 		$scope.handleKeypress = function ($event) {
-			if (!$scope.keyboardShortcutsEnabled) {
+            if (!$scope.keyboardShortcutsEnabled || !$scope.view.isQuestion()) {
 				return;
 			}
 
@@ -238,202 +216,9 @@
 			}
 		};
 
-		$scope.loadTextFile = function (file) {
-			if (file != null) {
-				if ($scope.fileApiSupported) {
-					$timeout(function() {
-						var fileReader = new FileReader();
-						fileReader.readAsText(file);
-						fileReader.onload = function(e) {
-							$timeout(function() {
-								$scope.dataString = e.target.result;
-								$scope.loadQuestions();
-							});
-						}
-					});
-				}
-			}
-		};
-
-		$scope.loadQuestions = function (manual) {
-			$scope.questions = [];
-			$scope.loadedQuestions = [];
-
-			var qs = $scope.dataString.split(/(?:\r?\n){2,}/);
-
-			var options = {
-				format: 'legacy',
-				markdown: false,
-				mathjax: false,
-				grading: 'perAnswer',
-				radical: true,
-				ptsPerQuestion: 1,
-				timeLimit: 0,
-				repeatIncorrect: false,
-				explain: 'optional'
-			};
-			var expl = false;
-
-			//noinspection JSDuplicatedDeclaration
-			var matched = /<options>\s*(\{(?:.|\n|\r)*})\s*/i.exec(qs[qs.length - 1]);
-			if (matched) {
-				qs.pop();
-
-				try {
-					var loaded = JSON.parse(matched[1]);
-				} catch (e) {
-					console.error('Invalid <options> object:', matched[1]);
-				}
-
-				for (var key in loaded) {
-					if (key == 'explanations') {
-						expl = loaded[key];
-					}
-					else if (options.hasOwnProperty(key)) {
-						options[key] = loaded[key];
-					}
-				}
-			}
-
-			switch (options.format) {
-				case 'legacy':
-				case '2':
-				case '2.1':
-					$scope.fileFormat = options.format;
-					break;
-
-				default:
-					$scope.fileFormat = 'unknown';
-					break;
-			}
-
-			$scope.config.markdownReady = !!options.markdown;
-			$scope.config.markdown = $scope.config.markdownReady;
-
-			$scope.config.mathjaxReady = !!options.mathjax;
-			$scope.config.mathjax = $scope.config.mathjaxReady;
-
-			$scope.config.customGrader = false;
-
-			if ((options.grading == 'perQuestion') || (options.grading == 'perAnswer')) {
-				// for built-in graders, just accept them
-				$scope.config.gradingMethod = options.grading;
-			}
-			else {
-				//noinspection JSDuplicatedDeclaration
-				var matched = /^custom: *(.+)$/.exec(options.grading);
-				if (matched) {
-					try {
-						SafeEvalService.eval(matched[1], function (id) {
-							return (id == 'total') ? 3 : 1;
-						});
-						$scope.config.gradingMethod = 'custom';
-						$scope.config.customGrader = matched[1];
-					}
-					catch (ex) {
-						console.error('Custom grader caused an error when testing.');
-					}
-				}
-				else {
-					$scope.config.gradingMethod = 'perAnswer';
-				}
-			}
-
-			$scope.config.gradingRadical = options.radical ? '1' : '0';
-			$scope.config.gradingPPQ = parseInt(options.ptsPerQuestion);
-
-			var secs = (parseInt(options.timeLimit) / 5) * 5;
-			if (!secs) {
-				$scope.config.timeLimitEnabled = false;
-				$scope.config.timeLimitSecs = 60;
-			}
-			else {
-				$scope.config.timeLimitEnabled = true;
-				$scope.config.timeLimitSecs = secs;
-			}
-
-			$scope.config.repeatIncorrect = !!options.repeatIncorrect;
-
-			if (expl && /summary|optional|always/i.exec(options.explain)) {
-				$scope.config.explain = options.explain.toLowerCase();
-			}
-			else if (expl) {
-				$scope.config.explain = 'optional';
-			}
-			$scope.config.showExplanations = ($scope.config.explain == 'always');
-
-			var rejected = 0;
-			for (var i = 0; i < qs.length; i++) {
-				var question = null;
-
-				var body = [];
-				var answers = 0;
-				var correct = 0;
-				var id = false;
-
-				var lines = qs[i].split(/(?:\r?\n)/);
-				for (var j = 0; j < lines.length; j++) {
-					//noinspection JSDuplicatedDeclaration
-					var matched = /^\s*(>+)?\s*([A-Z])\)\s*(.+)$/i.exec(lines[j]);
-
-					if (!matched && !answers) {
-						if (!body.length) {
-							var matchedId = /^\[#([a-zA-Z\d\-+_]+)]\s*(.+)$/.exec(lines[j]);
-							if (matchedId) {
-								id = matchedId[1];
-								lines[j] = matchedId[2];
-							}
-						}
-						body.push(lines[j]);
-					}
-					else if (!matched && answers) {
-						question.appendToLastAnswer(lines[j]);
-					}
-
-					else {
-						if (question == null) {
-							question = QuestionFactory.createQuestion(body.join('\n\n'), id);
-						}
-						answers++;
-						if (matched[1]) {
-							correct++;
-						}
-						question.addAnswer(matched[3], matched[1], matched[2]);
-					}
-				}
-
-				if (answers >= 2 && correct >= 1) {
-					$scope.loadedQuestions.push(question);
-				}
-				else if (question) {
-					console.error('Rejected question with ' + answers + ' answers total, ' + correct + ' correct. Requirement not satisfied: 2 total, 1 correct.', question);
-					rejected++;
-				}
-			}
-
-			if (rejected) {
-				console.info(rejected + ' questions rejected.');
-			}
-
-			$scope.explanationsAvailable = false;
-			if (expl) {
-				for (var q = 0; q < $scope.loadedQuestions.length; q++) {
-					$scope.loadedQuestions[q].loadExplanation(expl);
-					if ($scope.loadedQuestions[q].hasExplanations) {
-						$scope.explanationsAvailable = true;
-					}
-				}
-			}
-
-			$scope.fileError = !$scope.loadedQuestions.length;
-			if ($scope.fileError && !manual) {
-				$scope.dataString = '';
-			}
-		};
-
 		$scope.reorderElements = function () {
 			if ($scope.config.shuffleQuestions) {
-				$scope.questions = shuffle($scope.loadedQuestions);
+				$scope.questions = shuffleFilter($scope.loadedQuestions);
 			}
 			else {
 				$scope.questions = $scope.loadedQuestions.slice(0);	// shallow copy
@@ -522,8 +307,20 @@
 			for (var q = 0; q < $scope.questions.length; q++) {
 				$scope.questions[q].explain = true;
 			}
-			$scope.explanationsAvailable = false;
+			$scope.bankInfo.explanationsAvailable = false;
 		};
+
+		$scope.getStatsMessage = function () {
+		    if ($scope.questionIndex <= $scope.loadedQuestions.length) {
+                return '';
+            } else if ($scope.view.isQuestion()) {
+                return 'All questions were already asked once.';
+            } else if ($scope.view.isFinal()) {
+                return 'Presented score doesn\'t reflect your performance in repeated questions.';
+            } else {
+                return '';
+            }
+        };
 
 
 		$scope.initialize();

@@ -1,10 +1,5 @@
 <form name="config_form">
-    <div class="page-header">
-        <h2>
-            <span title="Detected file format: {{ info.fileFormat }}">{{ info.questionCount }} questions loaded</span>
-            <button class="btn btn-default" ng-click="reset()">{{ editor.enabled ? "Edit questions" : "Choose another file" }}</button>
-        </h2>
-    </div>
+    <p title="Detected file format: {{ info.fileFormat }}">{{ info.questionCount }} questions loaded</p>
     <div>
         <div class="alert alert-danger" ng-show="info.fileFormat == 'unknown'">This file was prepared for an unrecognized version of Drill. Some features may not be available.</div>
 
@@ -136,6 +131,6 @@
         </div>
     </div>
     <div class="form-group">
-        <button type="button" class="btn btn-default btn-lg btn-block" ng-click="continue()" ng-disabled="config_form.ppq.$invalid || config_form.time_limit.$invalid">Begin test</button>
+        <button type="button" class="btn btn-primary btn-lg btn-block" ng-click="continue()" ng-disabled="config_form.ppq.$invalid || config_form.time_limit.$invalid">Begin test</button>
     </div>
 </form>

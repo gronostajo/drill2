@@ -46,14 +46,14 @@ Don't be scared, using them is pretty straightforward. You just have to issue a 
 
         npm install
 
-0. Initialize project:
+0. Install project dependencies:
 
-        gulp init
+        bower install
 
 Then use following commands each time you want to build the app:
 
-- `gulp build-dev` - Builds Drill 2 with appcache disabled. Useful if you don't want to clear appcache or double-refresh every time you change something.
-- `gulp build` - Builds a production-ready instance of Drill 2 with full appcache support.
+- `gulp build` - Builds Drill 2 with appcache disabled and no optimizations. Debugging-friendly.
+- `gulp build --production` - Builds a production-ready instance of Drill 2 with full appcache support.
 
 Output files are created in the `build` folder.
 

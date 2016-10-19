@@ -13,6 +13,15 @@
 	-ms-user-select: none;
 }
 
+.btn-large-padding {
+	padding-left: 24px;
+	padding-right: 24px;
+}
+
+a[ng-click] {
+	cursor: pointer;
+}
+
 
 /* Navbar buttons */
 
@@ -75,6 +84,33 @@
 
 .stats-table td {
 	font-weight: bold;
+}
+
+
+/* Home screen */
+
+.nav-tabs {
+	margin-bottom: 15px;
+}
+
+.btn-file {
+	position: relative;
+	overflow: hidden;
+}
+.btn-file input[type=file] {
+	position: absolute;
+	top: -20px;
+	right: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-size: 100px;
+	text-align: right !important;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	outline: none;
+	background: white;
+	cursor: inherit;
+	display: block;
 }
 
 

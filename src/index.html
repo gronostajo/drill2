@@ -44,7 +44,7 @@
 						<div class="navbar-header">
 							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
 								<span class="sr-only">Toggle navigation</span>
-								<span class="glyphicon glyphicon-wrench"></span>
+								<glyphicon icon="wrench"></glyphicon>
 							</button>
 							<a href="#" class="navbar-brand">Drill 2</a>
 						</div>
@@ -56,15 +56,13 @@
 								</li>
 								<li class="distance"></li>
 								<li><label for="keyboardShortcutsCheckbox" class="btn btn-default navbar-btn" title="Keyboard shortcuts">
-                                    <i class="glyphicon glyphicon-th"></i>
+                                    <glyphicon icon="th"></glyphicon>
                                     <input type="checkbox" id="keyboardShortcutsCheckbox" ng-model="keyboardShortcutsEnabled" />
                                 </label></li>
 								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><i class="glyphicon glyphicon-adjust"></i></button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><glyphicon icon="adjust"></glyphicon></i></button></li>
 								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('restart')" ng-disabled="view.isFirst()">Restart test</button></li>
-								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="confirmRestart('reinitialize')" ng-disabled="view.isFirst() && !loadedQuestions.length">Load questions</button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="confirmInterruption()" ng-disabled="view.isFirst()">Home screen</button></li>
 							</ul>
 						</div>
 					</div>
@@ -78,8 +76,7 @@
 					<stats stats="stats" progress="questionIndex - 1" question-count="questions.length" collapsed="statsCollapsed" message="getStatsMessage()" show-distribution="view.isFinal()"></stats>
 				</div>
 				<div class="col-sm-8 col-sm-pull-4 col-lg-7">
-					<load-screen editor="editor" callback="loadQuestionsFromString" ng-show="view.isFirst() && !loadedQuestions.length"></load-screen>
-					<settings-screen model="config" info="bankInfo" editor="editor" reset="reinitialize" continue="firstQuestion" ng-show="view.isFirst() && loadedQuestions.length"></settings-screen>
+					<home-screen ng-show="view.isFirst()" bank="loadedQuestions" settings="config" info="bankInfo" start="firstQuestion"></home-screen>
 					<div ng-show="view.isQuestion()" ng-include="'app/screens/question/question.html'" id="questionView"></div>
 					<div ng-show="view.isFinal()" ng-include="'app/screens/summary/summary.html'" id="finalView"></div>
 				</div>

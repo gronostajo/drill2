@@ -1,4 +1,4 @@
-angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, QuestionBuilder) ->
+angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, QuestionBuilder, QuestionMerger) ->
   excerpt = (question, limit = 40) ->
     body = question.body.trim()
     if body.length > limit
@@ -15,7 +15,7 @@ angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, Questi
 
       if (identifierMatched = ParsingUtils.matchIdentifier(lines[0]))
         lines = lines[1..]
-        builder.appendBodyLine(identifierMatched.content)
+        builder.appendToBody(identifierMatched.content)
         builder.setIdentifier(identifierMatched.identifier)
 
       parsingAnswers = no
@@ -23,7 +23,7 @@ angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, Questi
       for line in lines
         if not parsingAnswers
           if not (answerMatch = ParsingUtils.matchAnswer(line))
-            builder.appendBodyLine(line)
+            builder.appendToBody(line)
           else
             parsingAnswers = yes
             builder.addAnswer(answerMatch.content, answerMatch.correct, answerMatch.letter)
@@ -35,21 +35,23 @@ angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, Questi
 
       builder.build()
 
-
     mergeBrokenQuestions: (questions, logFn = ->) ->
       mergeWithPreviousOne = (question.body.trim().length is 0 for question in questions)
-      mergeWithNextOne = mergeWithPreviousOne[1..].concat([no])
+      mergeWithNextOne = mergeWithPreviousOne[1..]  # one 'no' missing for last question
+      for index in [0...mergeWithNextOne.length] when questions[index].answers.length is 0
+        mergeWithNextOne[index] = yes
+      mergeWithNextOne = mergeWithNextOne.concat([no])
 
       result = []
-      questionsCopy = questions[..]
-      while questionsCopy.length > 1
-        processedQuestion = questionsCopy.shift()
+      questions = questions[..]
+      while questions.length > 1
+        processedQuestion = questions.shift()
         mergeNextOne = mergeWithNextOne.shift()
         merged = 1
         while mergeNextOne
-          toBeMerged = questionsCopy.shift()
+          toBeMerged = questions.shift()
           mergeNextOne = mergeWithNextOne.shift()
-          processedQuestion.answers = processedQuestion.answers.concat(toBeMerged.answers)
+          processedQuestion = QuestionMerger.merge(processedQuestion, toBeMerged)
           merged++
         result.push(processedQuestion)
         if merged > 1
@@ -58,7 +60,7 @@ angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, Questi
           msg = "Merged #{merged} questions: '#{questionExcerpt}' (#{processedQuestion.answers.length} answers total)"
           logFn(msg)
 
-      result.concat(questionsCopy)
+      result.concat(questions)
 
     removeInvalidQuestions: (questions, logFn = ->) ->
       validQuestions = []
@@ -82,3 +84,6 @@ angular.module('DrillApp').service 'QuestionParsingUtils', (ParsingUtils, Questi
           validQuestions.push(question)
 
       validQuestions
+
+    matchNonEmptyStrings: (str) ->
+      str.trim().length > 0

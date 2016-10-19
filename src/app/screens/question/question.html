@@ -1,4 +1,7 @@
 <div class="page-header">
+    <button class="btn btn-default pull-right" type="button" question-string="currentQuestion" title="Show question string">
+        <glyphicon icon="copy"></glyphicon>
+    </button>
     <h2 title="{{currentQuestion.id != false ? currentQuestion.id : 'No ID'}}">Question {{questionIndex}} out of {{questions.length}}</h2>
 </div>
 <form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">
@@ -14,9 +17,9 @@
                 <span class="label label-default keyboard-shortcut answer-number"></span>
                 <input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
                 <span class="content">
-										<span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
-										<span class="p" ng-repeat="line in answer.body | lines track by $index">{{line}}</span>
-									</span>
+                    <span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
+                    <span class="p" ng-repeat="line in answer.body | lines track by $index">{{line}}</span>
+                </span>
             </label>
         </div>
     </div>

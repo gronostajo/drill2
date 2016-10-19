@@ -46,3 +46,11 @@ angular.module('DrillApp').service 'Question', (Answer) ->
       if explanation[@id]?
         @explanation = explanation[@id]
         @hasExplanations = yes
+
+    toString: (includeAnswers = yes) ->
+      body = if @id? then "[##{@id}] #{@body}" else @body
+      body = body.replace(/\n\n/g, '\n') + '\n'
+      if includeAnswers
+        for answer in @answers
+          body += answer.toString()
+      body

@@ -1,4 +1,5 @@
-node_modules
+.idea
 bower_components
 build
-.idea
+node_modules
+reports

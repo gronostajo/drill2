@@ -1,9 +1,7 @@
 angular.module('DrillApp').service 'Pipeline', ->
   class Pipeline
-    log: []
-
     constructor: (@data) ->
-      return
+      @log = []
 
     _logAppender: (str) =>
       @log.push(str)
@@ -15,6 +13,11 @@ angular.module('DrillApp').service 'Pipeline', ->
     map: (func) ->
       throw new Error('Pipeline content is not an array') if not angular.isArray(@data)
       @data = (func(item, @_logAppender) for item in @data)
+      @
+
+    filter: (func) ->
+      throw new Error('Pipeline content is not an array') if not angular.isArray(@data)
+      @data = @data.filter (item) => func(item, @_logAppender)
       @
 
     get: -> @data

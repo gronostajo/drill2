@@ -151,6 +151,7 @@
 
 			if ($scope.config.mathjax) {
 				$timeout(function () {
+                    $('#questionView').find('.MathJax, .MathJax_Preview, [type="math/tex"]').remove();
 					//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 					MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
 				});

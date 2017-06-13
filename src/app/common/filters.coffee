@@ -43,9 +43,33 @@ angular.module 'DrillApp'
 
     $sce.trustAsHtml html
 
-.filter 'lines', ->
+.filter 'escapeHtmlEntities', ->
   (str) ->
-    if str then str.split /\s*(?:\r?\n)(?:\r?\n\s)*/ else []
+    # https://stackoverflow.com/a/9251169/1937994
+    $e = $('<textarea>')
+    $e.text(str)
+    $e.html()
+
+.filter 'wrapWithTag', ->
+  (str, tag) ->
+    parts = tag.split('.')
+    tagName = parts[0]
+    klass = if parts.length > 1 then parts[1] else null
+    openTag = if klass == null then "<#{tagName}>" else "<#{tagName} class=\"#{klass}\">"
+    closeTag = "</#{tagName}>"
+    openTag + str + closeTag
+
+.filter 'plaintext', ($sce, escapeHtmlEntitiesFilter, wrapWithTagFilter) ->
+  (str, tag) ->
+    return '' if not str
+    tag = 'p' if not tag
+    escaped = escapeHtmlEntitiesFilter(str)
+    html = escaped
+      .split(/\s*(?:\r?\n)(?:\r?\n\s)*/)
+      .filter((line) -> line.trim().length > 0)
+      .map((line) -> wrapWithTagFilter(line, tag))
+      .join('')
+    $sce.trustAsHtml html
 
 .filter 'doubleNewlines', ->
   (str) ->

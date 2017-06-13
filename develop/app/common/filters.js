@@ -39,13 +39,39 @@ angular.module('DrillApp').filter('decPlaces', function() {
     html = renderer.render(ast);
     return $sce.trustAsHtml(html);
   };
-}).filter('lines', function() {
+}).filter('escapeHtmlEntities', function() {
   return function(str) {
-    if (str) {
-      return str.split(/\s*(?:\r?\n)(?:\r?\n\s)*/);
-    } else {
-      return [];
+    var $e;
+    $e = $('<textarea>');
+    $e.text(str);
+    return $e.html();
+  };
+}).filter('wrapWithTag', function() {
+  return function(str, tag) {
+    var closeTag, klass, openTag, parts, tagName;
+    parts = tag.split('.');
+    tagName = parts[0];
+    klass = parts.length > 1 ? parts[1] : null;
+    openTag = klass === null ? "<" + tagName + ">" : "<" + tagName + " class=\"" + klass + "\">";
+    closeTag = "</" + tagName + ">";
+    return openTag + str + closeTag;
+  };
+}).filter('plaintext', function($sce, escapeHtmlEntitiesFilter, wrapWithTagFilter) {
+  return function(str, tag) {
+    var escaped, html;
+    if (!str) {
+      return '';
     }
+    if (!tag) {
+      tag = 'p';
+    }
+    escaped = escapeHtmlEntitiesFilter(str);
+    html = escaped.split(/\s*(?:\r?\n)(?:\r?\n\s)*/).filter(function(line) {
+      return line.trim().length > 0;
+    }).map(function(line) {
+      return wrapWithTagFilter(line, tag);
+    }).join('');
+    return $sce.trustAsHtml(html);
   };
 }).filter('doubleNewlines', function() {
   return function(str) {

@@ -1,0 +1,37 @@
+<div class="page-header">
+    <h2>The test is over</h2>
+</div>
+<p ng-show="config.timeLimitEnabled">You had {{config.timeLimitSecs | minsSecs}} to answer each question. Your average answer time was {{ questions | averageTime:config.timeLimitSecs | minsSecs }}.</p>
+<p ng-show="config.repeatIncorrect">{{questions.length - loadedQuestions.length | no:true}} questions were repeated due to incorrect answers.</p>
+<p>Here's a wrap-up of your answers. <a href="#" ng-show="bankInfo.explanationsAvailable" ng-click="showAllExplanations()">Click here to reveal all explanations.</a></p>
+<form class="summary">
+    <div class="question panel panel-default" ng-repeat="question in loadedQuestions">
+        <div class="panel-body">
+            <div class="question-body" ng-bind-html="question.body | markdown:this" ng-show="config.markdown"></div>
+            <div class="question-body" ng-hide="config.markdown">
+                <p ng-repeat="line in question.body | lines track by $index">{{line}}</p>
+            </div>
+            <div class="checkbox answer explained" ng-repeat="answer in question.answers">
+                <label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
+                    <input type="checkbox" disabled ng-checked="answer.checked">
+                    <span class="content">
+											<span class="id">{{answer.id}})&nbsp;</span>
+											<span class="p" ng-repeat="line in answer.body | doubleNewlines | lines track by $index">{{line}}</span>
+										</span>
+                </label>
+            </div>
+            <div ng-show="question.explain && question.explanation">
+                <div ng-bind-html="question.explanation | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
+                <div ng-hide="config.markdown">
+                    <p ng-repeat="line in question.explanation | lines track by $index">{{line}}</p>
+                </div>
+            </div>
+            <ol class="pull-right" ng-class="{'one-result': !config.repeatIncorrect}">
+                <li ng-repeat="score in question.scoreLog">
+                    {{score | scoreFormat:config.timeLimitEnabled:config.timeLimitSecs}}
+                </li>
+            </ol>
+            <button type="button" class="btn btn-default" ng-show="question.hasExplanations && !question.explain" ng-click="question.explain = true">Explain answers</button>
+        </div>
+    </div>
+</form>

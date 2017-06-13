@@ -1,0 +1,329 @@
+/*
+ *	Drill 2 styles
+ *	https://github.com/gronostajo/drill2
+ */
+
+
+/* Common */
+
+.no-selection {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-ms-user-select: none;
+}
+
+.btn-large-padding {
+	padding-left: 24px;
+	padding-right: 24px;
+}
+
+a[ng-click] {
+	cursor: pointer;
+}
+
+
+/* Navbar buttons */
+
+.navbar li.distance {
+	visibility: hidden;
+	width: 8px;
+	height: 1px;
+}
+
+.navbar-btn input[type=checkbox] {
+	margin-top: 0;
+	position: relative;
+	top: 2px;
+}
+
+
+/* Collapsing score */
+
+.panel-heading {
+	cursor: pointer;
+}
+
+.panel-heading a:hover {
+	text-decoration: none;
+}
+
+.panel-heading a:after {
+	display: inline-block;
+	float: right;
+	position: relative;
+
+	content: '';
+	width: 0;
+	height: 0;
+
+    border: 9px solid transparent;
+    border-top-color: #888;
+    border-bottom-width: 0;
+    border-radius: 2px;
+
+    top: 5px;
+	right: -5px;
+}
+
+.panel-heading a.collapsed:after {
+	border-top-color: transparent;
+	border-left-color: #888;
+	border-width: 9px 0 9px 9px;
+	top: 0;
+	right: 0;
+}
+
+.panel-heading a {
+	display: block;
+}
+
+.stats-table th {
+	font-weight: normal;
+}
+
+.stats-table td {
+	font-weight: bold;
+}
+
+
+/* Home screen */
+
+.nav-tabs {
+	margin-bottom: 15px;
+}
+
+.btn-file {
+	position: relative;
+	overflow: hidden;
+}
+.btn-file input[type=file] {
+	position: absolute;
+	top: -20px;
+	right: 0;
+	min-width: 100%;
+	min-height: 100%;
+	font-size: 100px;
+	text-align: right !important;
+	filter: alpha(opacity=0);
+	opacity: 0;
+	outline: none;
+	background: white;
+	cursor: inherit;
+	display: block;
+}
+
+
+/* Test options */
+
+.panel-compact .panel-heading, .panel-compact-notop .panel-heading {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.panel-compact .panel-body {
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.panel-compact-notop .panel-body {
+	padding-bottom: 0;
+}
+
+.inline-control {
+	display: inline-block;
+	width: 4em;
+}
+
+.input-xs {
+	height: 26px;
+	padding: 0 4px;
+}
+
+
+/* Answer customizations */
+
+.answer label {
+	display: block;
+	padding: .8em 8px .8em 28px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+}
+
+.answer label:hover {
+	border-color: #ccc;
+}
+
+.answer .p {
+    margin: 0 0 10px;
+}
+
+.answer .p:last-of-type {
+	margin-bottom: 0;
+}
+
+.answer .content {
+	display: block;
+}
+
+
+/* Answer coloring */
+
+.answer.checked-true label {
+	font-weight: bold;
+}
+
+.graded .answer.correct-true label {
+	color: #3c763d;
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+}
+
+.graded .answer.checked-true.correct-false label {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+}
+
+
+/* Answer numbers when keyboard shortcuts are enabled */
+
+.keyboard-shortcut {
+	display: none;
+}
+
+.keyboard-shortcuts-enabled .keyboard-shortcut {
+    display: inline;
+    padding: 0.2em 0.4em 0.13em;
+    border: 1px solid #f4f4f4;
+}
+.keyboard-shortcuts-enabled .answer-number {
+	position: absolute;
+	left: 7px;
+	top: 29px;
+}
+
+.keyboard-shortcuts-enabled .answer:nth-child(9) ~ .answer .answer-number {
+	display: none;
+}
+
+.keyboard-shortcuts-enabled .answers {
+	counter-reset: answer-counter;
+}
+
+.keyboard-shortcuts-enabled .answers .answer .answer-number:before {
+	content: counter(answer-counter);
+	counter-increment: answer-counter;
+}
+
+
+
+/* Summary styles */
+
+.summary {
+	counter-reset: question-counter;
+}
+
+.summary .question-body > p:first-child:before {
+	content: counter(question-counter) '. ';
+	counter-increment: question-counter;
+}
+
+.summary label {
+	font-weight: normal;
+}
+
+.summary .correct span, .summary .correct p {
+	color: #2ca82c;
+	font-weight: bold;
+}
+
+.summary .incorrect span, .summary .incorrect p {
+	color: #d9534f;
+	text-decoration: line-through;
+}
+
+.summary .missed span, .summary .missed p {
+	font-weight: bold;
+}
+
+.summary .one-result {
+	list-style-type: none;
+}
+
+.summary .answer label {
+	border: none;
+	padding-top: .6em;
+	padding-bottom: .6em;
+}
+
+.answer .id {
+	display: inline-block;
+	float: left;
+}
+
+.answer.explained p + p {
+	margin-left: 1.5em;
+}
+
+
+/* Timer */
+
+.timer {
+	left: 50%;
+	width: 4em;
+	margin-left: -2em;
+	border-radius: 0 0 8px 8px;
+	border-width: 0 1px 1px;
+	font-size: 2em;
+	font-weight: bold;
+	text-align: center;
+	line-height: 50px;
+}
+
+
+/* Progress indicator */
+
+stats .table {
+	margin-bottom: 0;
+}
+
+stats .progress {
+	margin-bottom: 0;
+	height: 3px;
+	border-radius: 0;
+}
+
+stats .progress.larger {
+    height: 6px;
+}
+
+
+/* Footer */
+
+.footer {
+	margin-top: 2em;
+	font-size: 85%;
+}
+
+.footer .separator {
+	padding: 0 4px;
+}
+
+.footer .separator:before {
+	content: '//';
+	letter-spacing: -1px;
+}
+
+
+/* In-question styles */
+
+blockquote {
+	font-size: 1em;
+	border: 1px solid #eee;
+	border-left-width: 5px;
+}
+
+pre {
+	line-height: 1.7em;
+}

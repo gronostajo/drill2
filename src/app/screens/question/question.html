@@ -6,10 +6,8 @@
 </div>
 <form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">
     <div>
-        <div ng-bind-html="currentQuestion.body | markdown:this" ng-show="config.markdown"></div>
-        <div ng-hide="config.markdown">
-            <p ng-repeat="line in currentQuestion.body | lines track by $index">{{line}}</p>
-        </div>
+        <div ng-show="config.markdown" ng-bind-html="currentQuestion.body | markdown:this"></div>
+        <div ng-hide="config.markdown" ng-bind-html="currentQuestion.body | plaintext"></div>
     </div>
     <div class="form-group answers">
         <div class="checkbox answer no-selection correct-{{answer.correct}} checked-{{answer.checked}}" ng-class="{ explained: view.isGraded() && config.showExplanations && currentQuestion.hasExplanations }" ng-repeat="answer in currentQuestion.answers | orderBy:'sortingKey'">
@@ -17,17 +15,15 @@
                 <span class="label label-default keyboard-shortcut answer-number"></span>
                 <input type="checkbox" ng-model="answer.checked" ng-disabled="view.isGraded()">
                 <span class="content">
-                    <span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp;</span>
-                    <span class="p" ng-repeat="line in answer.body | lines track by $index">{{line}}</span>
+                    <span class="id" ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">{{answer.id}})&nbsp</span>
+                    <span ng-bind-html="answer.body | plaintext:'span.p'"></span>
                 </span>
             </label>
         </div>
     </div>
     <div ng-show="view.isGraded() && config.showExplanations && currentQuestion.hasExplanations">
-        <div ng-bind-html="currentQuestion.explanation | doubleNewlines | markdown:this" ng-show="config.markdown"></div>
-        <div ng-hide="config.markdown">
-            <p ng-repeat="line in currentQuestion.explanation | lines track by $index">{{line}}</p>
-        </div>
+        <div ng-show="config.markdown" ng-bind-html="currentQuestion.explanation | doubleNewlines | markdown:this"></div>
+        <div ng-hide="config.markdown" ng-bind-html="currentQuestion.explanation | plaintext"></div>
     </div>
     <div class="form-group">
         <button type="button" class="btn btn-default btn-lg btn-block" ng-show="view.isNotGraded()" ng-click="grade()">

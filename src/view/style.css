@@ -156,6 +156,7 @@ a[ng-click] {
 
 .answer .p {
     margin: 0 0 10px;
+	display: block;
 }
 
 .answer .p:last-of-type {

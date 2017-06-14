@@ -145,20 +145,22 @@ describe 'OptionsBlockProcessor', ->
       @OptionsBlockUtils.loadOptions(target)(input)
       expect(target.explanations).toBeObject()
 
-  describe 'assignExplanations', ->
+  describe 'assignQuestionExtras', ->
     it 'should throw on invalid input', ->
-      expect(-> @OptionsBlockUtils.assignExplanations({explanations: {}})({})).toThrow()
-      expect(-> @OptionsBlockUtils.assignExplanations({explanations: {}})('')).toThrow()
-      expect(-> @OptionsBlockUtils.assignExplanations({explanations: {}})(false)).toThrow()
-      expect(-> @OptionsBlockUtils.assignExplanations([])([])).toThrow()
-      expect(-> @OptionsBlockUtils.assignExplanations('')([])).toThrow()
-      expect(-> @OptionsBlockUtils.assignExplanations(false)([])).toThrow()
-      expect(-> @OptionsBlockUtils.assignExplanations({})([])).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras({explanations: {}, relatedLinks: {}})({})).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras({explanations: {}, relatedLinks: {}})('')).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras({explanations: {}, relatedLinks: {}})(false)).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras({explanations: {}})([])).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras({relatedLinks: {}})([])).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras([])([])).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras('')([])).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras(false)([])).toThrow()
+      expect(-> @OptionsBlockUtils.assignQuestionExtras({})([])).toThrow()
 
     it 'should handle empty input', ->
       logger = jasmine.createSpy('logger')
       expect =>
-        @OptionsBlockUtils.assignExplanations({explanations: {}})([], logger)
+        @OptionsBlockUtils.assignQuestionExtras({explanations: {}, relatedLinks: {}})([], logger)
       .not.toThrow()
       expect(logger).not.toHaveBeenCalled()
 
@@ -172,11 +174,26 @@ describe 'OptionsBlockProcessor', ->
         '1': 'Explanation 1'
         '2': 'Explanation 2'
       }
-      output = @OptionsBlockUtils.assignExplanations({explanations})(questions, logger)
+      output = @OptionsBlockUtils.assignQuestionExtras({explanations, relatedLinks: {}})(questions, logger)
       expect(output[0].explanation).toEqual('Explanation 1')
       expect(output[0].hasExplanations).toBe(true)
       expect(output[1].explanation).toEqual('Explanation 2')
       expect(output[1].hasExplanations).toBe(true)
+      expect(logger).not.toHaveBeenCalled()
+
+    it 'should assign present related links', ->
+      logger = jasmine.createSpy('logger')
+      questions = [
+        new @Question('Body 1', '1')
+        new @Question('Body 2', '2')
+      ]
+      relatedLinks = {
+        '1': ['link']
+        '2': ['also link']
+      }
+      output = @OptionsBlockUtils.assignQuestionExtras({explanations: {}, relatedLinks})(questions, logger)
+      expect(output[0].relatedLinks).toEqual(['link'])
+      expect(output[1].relatedLinks).toEqual(['also link'])
       expect(logger).not.toHaveBeenCalled()
 
     it 'should assign only present explanations', ->
@@ -188,11 +205,25 @@ describe 'OptionsBlockProcessor', ->
       explanations = {
         '1': 'Explanation 1'
       }
-      output = @OptionsBlockUtils.assignExplanations({explanations})(questions, logger)
+      output = @OptionsBlockUtils.assignQuestionExtras({explanations, relatedLinks: {}})(questions, logger)
       expect(output[0].explanation).toEqual('Explanation 1')
       expect(output[0].hasExplanations).toBe(true)
       expect(output[1].explanation).toBeFalsy()
       expect(output[1].hasExplanations).toBeFalsy()
+      expect(logger).not.toHaveBeenCalled()
+
+    it 'should assign only present related links', ->
+      logger = jasmine.createSpy('logger')
+      questions = [
+        new @Question('Body 1', '1')
+        new @Question('Body 2', '2')
+      ]
+      relatedLinks = {
+        '1': ['link']
+      }
+      output = @OptionsBlockUtils.assignQuestionExtras({explanations: {}, relatedLinks})(questions, logger)
+      expect(output[0].relatedLinks).toEqual(['link'])
+      expect(output[1].relatedLinks).toEqual([])
       expect(logger).not.toHaveBeenCalled()
 
     it 'should work with questions without id', ->
@@ -204,7 +235,10 @@ describe 'OptionsBlockProcessor', ->
       explanations = {
         '2': 'Explanation 2'
       }
-      @OptionsBlockUtils.assignExplanations({explanations})(questions, logger)
+      relatedLinks = {
+        '2': ['link', 'link2']
+      }
+      @OptionsBlockUtils.assignQuestionExtras({explanations, relatedLinks})(questions, logger)
       expect(logger).not.toHaveBeenCalled()
 
     it 'should report unmatched explanations', ->
@@ -217,9 +251,23 @@ describe 'OptionsBlockProcessor', ->
         '0': 'Explanation 1'
         '2': 'Explanation 2'
       }
-      output = @OptionsBlockUtils.assignExplanations({explanations})(questions, logger)
+      output = @OptionsBlockUtils.assignQuestionExtras({explanations, relatedLinks: {}})(questions, logger)
       expect(output[0].explanation).toEqual('Explanation 2')
       expect(output[0].hasExplanations).toBe(true)
+      expect(logger).toHaveBeenCalled()
+
+    it 'should report unmatched related links', ->
+      logger = jasmine.createSpy('logger')
+      questions = [
+        new @Question('Body 2', '2')
+        new @Question('Body 3', '3')
+      ]
+      relatedLinks = {
+        '0': ['link']
+        '2': ['also link']
+      }
+      output = @OptionsBlockUtils.assignQuestionExtras({explanations: {}, relatedLinks})(questions, logger)
+      expect(output[0].relatedLinks).toEqual(['also link'])
       expect(logger).toHaveBeenCalled()
 
     it 'should indicate that explanations were added', ->
@@ -230,7 +278,8 @@ describe 'OptionsBlockProcessor', ->
         explanations:
           '0': 'Explanation 1'
           '2': 'Explanation 2'
-      @OptionsBlockUtils.assignExplanations(options)(questions, ->)
+        relatedLinks: {}
+      @OptionsBlockUtils.assignQuestionExtras(options)(questions, ->)
       expect(options.explanationsAvailable).toBe(true)
 
     it 'should not indicate that explanations were added if none were matched', ->
@@ -241,5 +290,6 @@ describe 'OptionsBlockProcessor', ->
         explanations:
           '0': 'Explanation 1'
           '3': 'Explanation 3'
-      @OptionsBlockUtils.assignExplanations(options)(questions, ->)
+        relatedLinks: {}
+      @OptionsBlockUtils.assignQuestionExtras(options)(questions, ->)
       expect(options.explanationsAvailable).toBe(false)

@@ -19,6 +19,7 @@ describe 'OptionsBlockProcessor', ->
     explain: 'optional'
     showExplanations: no
     explanations: {}
+    relatedLinks: {}
 
   it 'should have correct defaults', ->
     logger = jasmine.createSpy('logger')
@@ -200,16 +201,15 @@ describe 'OptionsBlockProcessor', ->
       showExplanations: no
     expect(logger).toHaveBeenCalled()
 
-  it 'should load explanations', ->
 # coffeelint: disable=no_unnecessary_double_quotes
 # because it doesn't work properly with block strings
+  it 'should load explanations', ->
     input = """
             { "explanations": {
               "1": "test",
               "A_+-Z": "test2"
             } }
             """
-# coffeelint: enable=no_unnecessary_double_quotes
     logger = jasmine.createSpy('logger')
     result = @OptionsBlockProcessor.process(input, logger)
     expect(result.explanations).toEqualObject
@@ -218,8 +218,6 @@ describe 'OptionsBlockProcessor', ->
     expect(logger).not.toHaveBeenCalled()
 
   it 'should reject invalid explanations', ->
-# coffeelint: disable=no_unnecessary_double_quotes
-# because it doesn't work properly with block strings
     input = """
             { "explanations": {
               "1": "test",
@@ -227,7 +225,6 @@ describe 'OptionsBlockProcessor', ->
               "^regex-like$": "this is invalid"
             } }
             """
-    # coffeelint: enable=no_unnecessary_double_quotes
     logger = jasmine.createSpy('logger').and.callFake (msg) ->
       expect(msg.toLowerCase()).toContainSubstring('invalid')
     result = @OptionsBlockProcessor.process(input, logger)
@@ -237,8 +234,6 @@ describe 'OptionsBlockProcessor', ->
     expect(logger).toHaveBeenCalled()
 
   it 'should reject empty explanations', ->
-# coffeelint: disable=no_unnecessary_double_quotes
-# because it doesn't work properly with block strings
     input = """
             { "explanations": {
               "1": "test",
@@ -247,7 +242,6 @@ describe 'OptionsBlockProcessor', ->
               "valid_id2": "   "
             } }
             """
-    # coffeelint: enable=no_unnecessary_double_quotes
     logger = jasmine.createSpy('logger').and.callFake (msg) ->
       expect(msg.toLowerCase()).toContainSubstring('empty')
     result = @OptionsBlockProcessor.process(input, logger)
@@ -257,8 +251,6 @@ describe 'OptionsBlockProcessor', ->
     expect(logger).toHaveBeenCalledTimes(2)
 
   it 'should reject non-string explanations', ->
-# coffeelint: disable=no_unnecessary_double_quotes
-# because it doesn't work properly with block strings
     input = """
             { "explanations": {
               "1": "test",
@@ -266,7 +258,6 @@ describe 'OptionsBlockProcessor', ->
               "valid_id": 5
             } }
             """
-    # coffeelint: enable=no_unnecessary_double_quotes
     logger = jasmine.createSpy('logger').and.callFake (msg) ->
       expect(msg.toLowerCase()).toContainSubstring('string')
     result = @OptionsBlockProcessor.process(input, logger)
@@ -282,6 +273,62 @@ describe 'OptionsBlockProcessor', ->
     expect(@OptionsBlockProcessor.process('{"explanations": false}', logger))
     expect(@OptionsBlockProcessor.process('{"explanations": "a lot of them"}', logger))
     expect(logger).toHaveBeenCalledTimes(4)
+
+  it 'should load links in arrays', ->
+    input = """
+            { "relatedLinks": {
+              "1": ["test", "test_2"],
+              "A_+-Z": ["test3"]
+            } }
+            """
+    logger = jasmine.createSpy('logger')
+    result = @OptionsBlockProcessor.process(input, logger)
+    expect(result.relatedLinks).toEqualObject
+      '1': ['test', 'test_2']
+      'A_+-Z': ['test3']
+    expect(logger).not.toHaveBeenCalled()
+
+  it 'should load links without arrays', ->
+    input = """
+            { "relatedLinks": {
+              "1": "test"
+            } }
+            """
+    logger = jasmine.createSpy('logger')
+    result = @OptionsBlockProcessor.process(input, logger)
+    expect(result.relatedLinks).toEqualObject
+      '1': ['test']
+    expect(logger).not.toHaveBeenCalled()
+
+  it 'should reject non-string links in arrays', ->
+    input = """
+            { "relatedLinks": {
+              "1": [0, "test_2"],
+              "A_+-Z": ["test3"]
+            } }
+            """
+    logger = jasmine.createSpy('logger').and.callFake (msg) ->
+      expect(msg.toLowerCase()).toContainSubstring('string')
+    result = @OptionsBlockProcessor.process(input, logger)
+    expect(result.relatedLinks).toEqualObject
+      'A_+-Z': ['test3']
+    expect(logger).toHaveBeenCalled()
+
+  it 'should reject non-string links without arrays', ->
+    input = """
+            { "relatedLinks": {
+              "1": "test",
+              "m": false
+            } }
+            """
+    logger = jasmine.createSpy('logger').and.callFake (msg) ->
+      expect(msg.toLowerCase()).toContainSubstring('string')
+      expect(msg.toLowerCase()).toContainSubstring('array')
+    result = @OptionsBlockProcessor.process(input, logger)
+    expect(result.relatedLinks).toEqualObject
+      '1': ['test']
+    expect(logger).toHaveBeenCalled()
+# coffeelint: enable=no_unnecessary_double_quotes
 
   it 'should log JSON syntax problem and return defaults', ->
     logger = jasmine.createSpy('logger').and.callFake (msg) ->

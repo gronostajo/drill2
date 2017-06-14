@@ -8,10 +8,10 @@ angular.module('DrillApp').service 'QuestionLoader', ($q, QuestionParser) ->
           explanationsAvailable: options.explanationsAvailable
           questionCount: questions.length
         $q.resolve {
-          bankInfo
+          bankInfo: bankInfo
           config: options
           loadedQuestions: questions
-          log
+          log: log
         }
       catch e
         $q.reject(e)

@@ -14,7 +14,7 @@ angular.module('DrillApp').service 'QuestionParser',
         .apply(QuestionParsingUtils.mergeBrokenQuestions)
         .apply(QuestionParsingUtils.removeInvalidQuestions)
 
-        .apply(OptionsBlockUtils.assignExplanations(options))
+        .apply(OptionsBlockUtils.assignQuestionExtras(options))
 
         questions: pipeline.get()
         options: options

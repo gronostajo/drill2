@@ -2,15 +2,25 @@
 
 	angular.module('DrillApp', ['ngFileUpload', 'ui.bootstrap', 'ngCookies', 'elif'])
 
-	.controller('DrillController', function($scope, $timeout, $document, $cookies, $q,
+	.controller('DrillController', function($scope, $timeout, $document, $cookies, $q, $uibModal, $rootScope,
 											GraderFactory, ViewFactory, shuffleFilter, ViewportHelper, ThemeSwitcher, QuestionLoader) {
 
 		$scope.initialize = function () {
-			$scope.updateStatus = false;
+			$scope.appUpdate = {status: false};
 			//noinspection JSUnresolvedVariable
 			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
 				$scope.$apply(function () {
-					$scope.updateStatus = event.type.toLowerCase();
+					$scope.appUpdate.status = event.type.toLowerCase();
+					if ($scope.appUpdate.status == 'downloading') {
+                        var scope = $rootScope.$new(true);
+                        scope.update = $scope.appUpdate;
+                        scope.installUpdate = function () { $scope.installUpdate(true); };
+						$uibModal.open({
+							size: 'md',
+							scope: scope,
+							templateUrl: 'app/screens/updateAvailableModal.html'
+                        });
+					}
 				});
 			});
 
@@ -108,8 +118,8 @@
 			}
 		};
 
-		$scope.installUpdate = function () {
-			if (window.confirm('The page will be reloaded to install downloaded updates.')) {
+		$scope.installUpdate = function (noConfirmation) {
+			if (noConfirmation || window.confirm('The page will be reloaded to install downloaded updates.')) {
 				window.location.reload();
 			}
 		};

@@ -29,16 +29,20 @@ angular.module('DrillApp').service('OptionsBlockUtils', function(OptionsBlockPro
       };
     };
 
-    _Class.prototype.assignExplanations = function(options) {
-      var explanations;
+    _Class.prototype.assignQuestionExtras = function(options) {
+      var explanations, relatedLinks;
       explanations = options.explanations;
+      relatedLinks = options.relatedLinks;
       return function(questions, logFn) {
-        var commonIds, i, id, len, loadedIds, question;
+        var commonExplanationIds, commonLinkIds, i, id, j, len, len1, loadedIds, question;
         if (!angular.isArray(questions)) {
           throw new Error('Expected an array of questions');
         }
         if (!angular.isObject(explanations)) {
           throw new Error('Expected a map of explanations');
+        }
+        if (!angular.isObject(relatedLinks)) {
+          throw new Error('Expected a map of related links');
         }
         if (questions.length === 0) {
           return questions;
@@ -51,19 +55,39 @@ angular.module('DrillApp').service('OptionsBlockUtils', function(OptionsBlockPro
           }
           return results;
         })();
-        commonIds = [];
+        commonExplanationIds = [];
         for (i = 0, len = questions.length; i < len; i++) {
           question = questions[i];
           if (!(question.id in explanations)) {
             continue;
           }
-          question.loadExplanation(explanations);
-          commonIds.push(question.id);
+          question.setExplanation(explanations[question.id]);
+          commonExplanationIds.push(question.id);
         }
-        if (loadedIds.length > commonIds.length) {
-          logFn((loadedIds.length - commonIds.length) + " explanations couldn't be matched to questions");
+        if (loadedIds.length > commonExplanationIds.length) {
+          logFn((loadedIds.length - commonExplanationIds.length) + " explanations couldn't be matched to questions");
         }
-        options.explanationsAvailable = commonIds.length > 0;
+        loadedIds = (function() {
+          var results;
+          results = [];
+          for (id in relatedLinks) {
+            results.push(id);
+          }
+          return results;
+        })();
+        commonLinkIds = [];
+        for (j = 0, len1 = questions.length; j < len1; j++) {
+          question = questions[j];
+          if (!(question.id in relatedLinks)) {
+            continue;
+          }
+          question.setRelatedLinks(relatedLinks[question.id]);
+          commonLinkIds.push(question.id);
+        }
+        if (loadedIds.length > commonLinkIds.length) {
+          logFn((loadedIds.length - commonLinkIds.length) + " related links couldn't be matched to questions");
+        }
+        options.explanationsAvailable = commonExplanationIds.length > 0;
         return questions;
       };
     };

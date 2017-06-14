@@ -1,5 +1,5 @@
 angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader, SafeEvalService) {
-  var parseBool, testGrader, v2mappers;
+  var genericIdValueMapper, parseBool, testGrader, v2mappers;
   testGrader = function(grader) {
     return SafeEvalService["eval"](grader, function(id) {
       if (id === 'total') {
@@ -20,6 +20,40 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
     } else {
       return true;
     }
+  };
+  genericIdValueMapper = function(blockKey, itemValidator, itemTransformer) {
+    if (itemTransformer == null) {
+      itemTransformer = function(v) {
+        return v;
+      };
+    }
+    return function(v, m, logFn) {
+      var failureRet, key, result, ret, value;
+      failureRet = {};
+      failureRet[blockKey] = {};
+      if (v === void 0) {
+        return failureRet;
+      }
+      if (!angular.isObject(v)) {
+        logFn("Invalid " + blockKey + " object (type: " + (typeof v) + ")");
+        return failureRet;
+      } else if (angular.isArray(v)) {
+        logFn("Invalid " + blockKey + " object (type: array)");
+        return failureRet;
+      }
+      result = {};
+      for (key in v) {
+        value = v[key];
+        if (!/^[A-Z\d\-+_]+$/i.exec(key)) {
+          logFn("Invalid " + blockKey + " key '" + key + "'");
+        } else if (itemValidator(value, key, logFn)) {
+          result[key] = itemTransformer(value);
+        }
+      }
+      ret = {};
+      ret[blockKey] = result;
+      return ret;
+    };
   };
   v2mappers = {
     format: function(v) {
@@ -119,41 +153,41 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
         };
       }
     },
-    explanations: function(v, m, logFn) {
-      var key, result, value;
-      if (v === void 0) {
-        return {
-          explanations: {}
-        };
+    explanations: genericIdValueMapper('explanations', function(v, k, logFn) {
+      if (!angular.isString(v)) {
+        logFn("Value of explanation '" + k + "' is not a string");
+        return false;
+      } else if (v.trim().length === 0) {
+        logFn("Value of explanation '" + k + "' is empty");
+        return false;
       }
-      if (!angular.isObject(v)) {
-        logFn("Invalid explanations object (type: " + (typeof v) + ")");
-        return {
-          explanations: {}
-        };
-      } else if (angular.isArray(v)) {
-        logFn('Invalid explanations object (type: array)');
-        return {
-          explanations: {}
-        };
-      }
-      result = {};
-      for (key in v) {
-        value = v[key];
-        if (!/^[A-Z\d\-+_]+$/i.exec(key)) {
-          logFn("Invalid explanation key '" + key + "'");
-        } else if (!angular.isString(value)) {
-          logFn("Value of explanation '" + key + "' is not a string");
-        } else if (value.trim().length === 0) {
-          logFn("Value of explanation '" + key + "' is empty");
+      return true;
+    }),
+    relatedLinks: genericIdValueMapper('relatedLinks', function(v, k, logFn) {
+      var i, item, len;
+      if (!angular.isArray(v)) {
+        if (!angular.isString(v)) {
+          logFn("Value of related link '" + k + "' is not an array or string");
+          return false;
         } else {
-          result[key] = value;
+          return true;
         }
       }
-      return {
-        explanations: result
-      };
-    }
+      for (i = 0, len = v.length; i < len; i++) {
+        item = v[i];
+        if (!angular.isString(item)) {
+          logFn("Related link '" + k + "' contains non-string value");
+          return false;
+        }
+      }
+      return true;
+    }, function(v) {
+      if (angular.isArray(v)) {
+        return v;
+      } else {
+        return [v];
+      }
+    })
   };
   return new ((function() {
     function _Class() {}

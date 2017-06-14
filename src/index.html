@@ -51,8 +51,8 @@
 						<div class="collapse navbar-collapse" id="navbar">
 							<ul class="nav navbar-nav pull-right text-right">
 								<li>
-									<button class="btn btn-default navbar-btn" disabled ng-show="updateStatus == 'downloading'">Downloading update&hellip;</button>
-									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="updateStatus == 'updateready'">Enable downloaded updates</button>
+									<button class="btn btn-default navbar-btn" disabled ng-show="appUpdate.status == 'downloading'">Downloading update&hellip;</button>
+									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="appUpdate.status == 'updateready'">Enable downloaded updates</button>
 								</li>
 								<li class="distance"></li>
 								<li><label for="keyboardShortcutsCheckbox" class="btn btn-default navbar-btn" title="Keyboard shortcuts">
@@ -60,7 +60,7 @@
                                     <input type="checkbox" id="keyboardShortcutsCheckbox" ng-model="keyboardShortcutsEnabled" />
                                 </label></li>
 								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><glyphicon icon="adjust"></glyphicon></i></button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><glyphicon icon="adjust"></glyphicon></button></li>
 								<li class="distance"></li>
 								<li><button class="btn btn-default navbar-btn" ng-click="confirmInterruption()" ng-disabled="view.isFirst()">Home screen</button></li>
 							</ul>

@@ -108,6 +108,11 @@
 			});
 		};
 
+		$scope.restart = function () {
+			$scope.reload();
+			$timeout($scope.firstQuestion);
+		};
+
 		$scope.confirmInterruption = function () {
 			var confirmed = $scope.view.isQuestion()
 				? confirm('This will interrupt the test in progress.\nAre you sure?')

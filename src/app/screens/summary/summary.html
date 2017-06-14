@@ -1,4 +1,5 @@
 <div class="page-header">
+    <button class="btn btn-primary pull-right" type="button" ng-click="restart()">Restart</button>
     <h2>The test is over</h2>
 </div>
 <p ng-show="config.timeLimitEnabled">You had {{config.timeLimitSecs | minsSecs}} to answer each question. Your average answer time was {{ questions | averageTime:config.timeLimitSecs | minsSecs }}.</p>
@@ -30,4 +31,5 @@
             <button type="button" class="btn btn-default" ng-show="question.hasExplanations && !question.explain" ng-click="question.explain = true">Explain answers</button>
         </div>
     </div>
+    <button class="btn btn-primary btn-block btn-lg pull-right" type="button" ng-click="restart()">Restart</button>
 </form>

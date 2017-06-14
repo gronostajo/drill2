@@ -1,7 +1,13 @@
 <div class="page-header">
-    <button class="btn btn-default pull-right" type="button" question-string="currentQuestion" title="Show question string">
-        <glyphicon icon="copy"></glyphicon>
-    </button>
+    <div class="pull-right">
+        <button ng-if="currentQuestion.relatedLinks.length" class="btn btn-default" type="button" related-links="currentQuestion" title="Related links">
+            <glyphicon icon="link"></glyphicon>
+            {{currentQuestion.relatedLinks.length}}
+        </button>
+        <button class="btn btn-default" type="button" question-string="currentQuestion" title="Show question string">
+            <glyphicon icon="copy"></glyphicon>
+        </button>
+    </div>
     <h2 title="{{currentQuestion.id != false ? currentQuestion.id : 'No ID'}}">Question {{questionIndex}} out of {{questions.length}}</h2>
 </div>
 <form ng-submit="nextQuestion()" ng-class="{ graded: view.isGraded() }">

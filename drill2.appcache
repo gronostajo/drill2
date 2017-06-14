@@ -1,6 +1,6 @@
 CACHE MANIFEST
-# drill2 v2.4.1
-# built on Tue Jun 13 2017 20:58:36 GMT+0200 (Central European Daylight Time)
+# drill2 v2.4.2
+# built on Wed Jun 14 2017 16:28:41 GMT+0200 (Central European Daylight Time)
 
 
 CACHE:
@@ -38,7 +38,10 @@ app/screens/question/question.html
 app/screens/question/questionString.js
 app/screens/question/questionStringModal.html
 app/screens/question/QuestionStringModalController.js
+app/screens/question/relatedLinks.js
+app/screens/question/relatedLinksModal.html
 app/screens/summary/summary.html
+app/screens/updateAvailableModal.html
 app/stats/stats.html
 app/stats/stats.js
 app/stats/StatsController.js

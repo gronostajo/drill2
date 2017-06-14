@@ -58,6 +58,7 @@
 		<script src="app/screens/home/HomeScreenController.js"></script>
 		<script src="app/screens/question/questionString.js"></script>
 		<script src="app/screens/question/QuestionStringModalController.js"></script>
+		<script src="app/screens/question/relatedLinks.js"></script>
 		<script src="app/screens/home/editor/questionEditor.js"></script>
 		<script src="app/screens/home/editor/QuestionEditorController.js"></script>
 		<script src="app/screens/home/settings/settingsScreen.js"></script>
@@ -89,8 +90,8 @@
 						<div class="collapse navbar-collapse" id="navbar">
 							<ul class="nav navbar-nav pull-right text-right">
 								<li>
-									<button class="btn btn-default navbar-btn" disabled ng-show="updateStatus == 'downloading'">Downloading update&hellip;</button>
-									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="updateStatus == 'updateready'">Enable downloaded updates</button>
+									<button class="btn btn-default navbar-btn" disabled ng-show="appUpdate.status == 'downloading'">Downloading update&hellip;</button>
+									<button class="btn btn-success navbar-btn" ng-click="installUpdate()" ng-show="appUpdate.status == 'updateready'">Enable downloaded updates</button>
 								</li>
 								<li class="distance"></li>
 								<li><label for="keyboardShortcutsCheckbox" class="btn btn-default navbar-btn" title="Keyboard shortcuts">
@@ -98,7 +99,7 @@
                                     <input type="checkbox" id="keyboardShortcutsCheckbox" ng-model="keyboardShortcutsEnabled" />
                                 </label></li>
 								<li class="distance"></li>
-								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><glyphicon icon="adjust"></glyphicon></i></button></li>
+								<li><button class="btn btn-default navbar-btn" ng-click="switchTheme()" title="Switch theme"><glyphicon icon="adjust"></glyphicon></button></li>
 								<li class="distance"></li>
 								<li><button class="btn btn-default navbar-btn" ng-click="confirmInterruption()" ng-disabled="view.isFirst()">Home screen</button></li>
 							</ul>
@@ -123,11 +124,9 @@
 			<div class="row">
 				<div class="col-xs-12 footer text-right">
 					<p>
-						<a href="https://github.com/gronostajo/drill2">Drill 2</a>
+						<span>v2.4.2</span>
 						<span class="separator"></span>
-						<a href="./v2.4.0">Question rendering problems? Use v2.4.0</a>
-						<span class="separator"></span>
-						<a href="https://github.com/gronostajo/drill2/blob/master/LICENSE">license</a>
+						<a href="https://github.com/gronostajo/drill2">github</a>
 						<span class="separator"></span>
 						<a href="https://github.com/gronostajo/drill2/wiki">manual</a>
 						<span class="separator"></span>
@@ -137,16 +136,5 @@
 			</div>
 
 		</div>
-
-		<!-- Analytics -->
-		<script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-            ga('create', 'UA-35145624-2', 'auto');
-            ga('send', 'pageview');
-		</script>
 	</body>
 </html>

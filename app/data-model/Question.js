@@ -8,6 +8,7 @@ angular.module('DrillApp').service('Question', function(Answer) {
       this.id = id1;
       this.grade = bind(this.grade, this);
       this.explanation = false;
+      this.relatedLinks = [];
       this.answers = [];
       this.scoreLog = [];
     }
@@ -71,11 +72,13 @@ angular.module('DrillApp').service('Question', function(Answer) {
       return grade;
     };
 
-    Question.prototype.loadExplanation = function(explanation) {
-      if (explanation[this.id] != null) {
-        this.explanation = explanation[this.id];
-        return this.hasExplanations = true;
-      }
+    Question.prototype.setExplanation = function(explanation) {
+      this.explanation = explanation;
+      return this.hasExplanations = true;
+    };
+
+    Question.prototype.setRelatedLinks = function(links) {
+      return this.relatedLinks = links;
     };
 
     Question.prototype.toString = function(includeAnswers) {

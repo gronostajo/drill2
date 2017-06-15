@@ -1,6 +1,6 @@
 # Drill 2
 
-Browser-based multiple choice test learning assistant.
+Browser-based multiple choice test learning assistant. [Available here](https://gronostajo.github.io/drill2/).
 
 [![Build Status](https://travis-ci.org/gronostajo/drill2.svg?branch=master)](https://travis-ci.org/gronostajo/drill2)
 
@@ -36,7 +36,7 @@ In order to enable using your Drill 2 instance as offline app, you need to serve
 
 Questions are loaded from ordinary text files with human-readable structure. You can load those files from your  device's memory. If your browser doesn't support this, you can manually paste file contents.
 
-Files you select and data you paste never leave your computer. Nothing is uploaded to remote servers. Drill 2 works completely within your browser.
+Files you select and data you paste never leave your computer. Nothing is uploaded to remote servers. Drill 2 works entirely within your browser.
 
 Details of file format are described in the [Documentation](https://github.com/gronostajo/drill2/wiki).
 
@@ -46,11 +46,3 @@ Details of file format are described in the [Documentation](https://github.com/g
 Please report any bugs using the [issue tracker](https://github.com/gronostajo/drill2/issues).
 
 Any contributions, including bug reports, suggestions and bugfixes, are greatly appreciated. Want to help? [Read this first](CONTRIBUTING.md).
-
-
-## Tech stack
-
-- [AngularJS](https://angularjs.org/)
-- [CoffeeScript](http://coffeescript.org/)
-- [Bootstrap](https://getbootstrap.com/)
-- [gulp](http://gulpjs.com/)

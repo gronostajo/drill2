@@ -3,10 +3,10 @@
     <h4 class="modal-title">Update is available</h4>
 </div>
 <div class="modal-body">
-    <p>A new, awesome version of Drill 2 was released!</p>
+    <p>A new, awesome version of Drill 2 is just one refresh away!</p>
+    <p>If you don't feel like refreshing now, you can always do it later.</p>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-default" ng-click="$dismiss()">Not now</button>
-    <button type="button" class="btn btn-default btn-disabled" ng-if="update.status == 'downloading'">Downloading...</button>
-    <button type="button" class="btn btn-primary" ng-if="update.status == 'updateready'" ng-click="installUpdate()">Reload app</button>
+    <button type="button" class="btn btn-primary" ng-click="installUpdate()">Reload app</button>
 </div>

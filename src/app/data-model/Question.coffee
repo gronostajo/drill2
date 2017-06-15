@@ -2,6 +2,7 @@ angular.module('DrillApp').service 'Question', (Answer) ->
   class Question
     constructor: (@body = '', @id) ->
       @explanation = no
+      @relatedLinks = []
       @answers = []
       @scoreLog = []
 
@@ -42,10 +43,12 @@ angular.module('DrillApp').service 'Question', (Answer) ->
 
       grade
 
-    loadExplanation: (explanation) ->
-      if explanation[@id]?
-        @explanation = explanation[@id]
-        @hasExplanations = yes
+    setExplanation: (explanation) ->
+      @explanation = explanation
+      @hasExplanations = yes
+
+    setRelatedLinks: (links) ->
+      @relatedLinks = links
 
     toString: (includeAnswers = yes) ->
       body = if @id? then "[##{@id}] #{@body}" else @body

@@ -21,23 +21,35 @@ angular.module('DrillApp').service 'OptionsBlockUtils', (OptionsBlockProcessor) 
         angular.extend(target, options)
         parts.slice(0, parts.length - 1)
 
-    assignExplanations: (options) ->
+    assignQuestionExtras: (options) ->
       explanations = options.explanations
+      relatedLinks = options.relatedLinks
       (questions, logFn) ->
         if not angular.isArray(questions)
           throw new Error('Expected an array of questions')
         if not angular.isObject(explanations)
           throw new Error('Expected a map of explanations')
+        if not angular.isObject(relatedLinks)
+          throw new Error('Expected a map of related links')
         return questions if questions.length is 0
 
         loadedIds = (id for id of explanations)
-        commonIds = []
+        commonExplanationIds = []
         for question in questions when question.id of explanations
-          question.loadExplanation(explanations)
-          commonIds.push(question.id)
+          question.setExplanation(explanations[question.id])
+          commonExplanationIds.push(question.id)
 
-        if loadedIds.length > commonIds.length
-          logFn("#{loadedIds.length - commonIds.length} explanations couldn't be matched to questions")
+        if loadedIds.length > commonExplanationIds.length
+          logFn("#{loadedIds.length - commonExplanationIds.length} explanations couldn't be matched to questions")
 
-        options.explanationsAvailable = (commonIds.length > 0)
+        loadedIds = (id for id of relatedLinks)
+        commonLinkIds = []
+        for question in questions when question.id of relatedLinks
+          question.setRelatedLinks(relatedLinks[question.id])
+          commonLinkIds.push(question.id)
+
+        if loadedIds.length > commonLinkIds.length
+          logFn("#{loadedIds.length - commonLinkIds.length} related links couldn't be matched to questions")
+
+        options.explanationsAvailable = (commonExplanationIds.length > 0)
         questions

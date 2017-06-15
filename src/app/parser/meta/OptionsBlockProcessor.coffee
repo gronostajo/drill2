@@ -15,6 +15,28 @@ angular.module('DrillApp').service 'OptionsBlockProcessor', (JsonLoader, SafeEva
     else
       return true
 
+  genericIdValueMapper = (blockKey, itemValidator, itemTransformer = (v) -> v) ->
+    (v, m, logFn) ->
+      failureRet = {}
+      failureRet[blockKey] = {}
+      if v is undefined
+        return failureRet
+      if not angular.isObject(v)
+        logFn("Invalid #{blockKey} object (type: #{typeof v})")
+        return failureRet
+      else if angular.isArray(v)
+        logFn("Invalid #{blockKey} object (type: array)")
+        return failureRet
+      result = {}
+      for key, value of v
+        if not /^[A-Z\d\-+_]+$/i.exec(key)
+          logFn("Invalid #{blockKey} key '#{key}'")
+        else if itemValidator(value, key, logFn)
+          result[key] = itemTransformer(value)
+      ret = {}
+      ret[blockKey] = result
+      return ret
+
   v2mappers =
     format: (v) ->
       if not v
@@ -74,25 +96,27 @@ angular.module('DrillApp').service 'OptionsBlockProcessor', (JsonLoader, SafeEva
         explain: 'optional'
         showExplanations: no
 
-    explanations: (v, m, logFn) ->
-      return explanations: {} if v is undefined
-      if not angular.isObject(v)
-        logFn("Invalid explanations object (type: #{typeof v})")
-        return explanations: {}
-      else if angular.isArray(v)
-        logFn('Invalid explanations object (type: array)')
-        return explanations: {}
-      result = {}
-      for key, value of v
-        if not /^[A-Z\d\-+_]+$/i.exec(key)
-          logFn("Invalid explanation key '#{key}'")
-        else if not angular.isString(value)
-          logFn("Value of explanation '#{key}' is not a string")
-        else if value.trim().length is 0
-          logFn("Value of explanation '#{key}' is empty")
-        else
-          result[key] = value
-      explanations: result
+    explanations: genericIdValueMapper 'explanations', (v, k, logFn) ->
+      if not angular.isString(v)
+        logFn("Value of explanation '#{k}' is not a string")
+        return false
+      else if v.trim().length is 0
+        logFn("Value of explanation '#{k}' is empty")
+        return false
+      return true
+
+    relatedLinks: genericIdValueMapper 'relatedLinks', (v, k, logFn) ->
+      if not angular.isArray(v)
+        if not angular.isString(v)
+          logFn("Value of related link '#{k}' is not an array or string")
+          return false
+        else return true
+      for item in v
+        if not angular.isString(item)
+          logFn("Related link '#{k}' contains non-string value")
+          return false
+      return true
+    , (v) -> if angular.isArray(v) then v else [v]
 
   new class
     process: (str, logFn = ->) ->

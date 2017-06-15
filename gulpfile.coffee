@@ -5,6 +5,7 @@ appcacheFiles = require('appcache-files')
 argv = require('yargs').argv
 beep = require('beepbeep')
 bowerFiles = require('main-bower-files')
+childProcess = require('child_process')
 del = require('del')
 fs = require('fs')
 groupArray = require('group-array')
@@ -17,7 +18,22 @@ pkg = require('./package.json')
 
 deployPath = 'build'
 devBuild = not argv.production
-$.util.log 'Project: ' + $.util.colors.blue("#{pkg.name} v#{pkg.version}")
+
+projectVersion = 'v' + pkg.version
+if devBuild and fs.existsSync('.git')
+  sha = childProcess.execSync('git rev-parse --short HEAD').toString().trim()
+  projectVersion += '-' + sha
+
+$.util.log 'Project: ' + $.util.colors.blue("#{pkg.name} #{projectVersion}")
+
+
+appcacheExclusions = [
+  '!**/.ht*'
+  '!**/*.appcache'
+  '!lib/MathJax/**'
+  '!lib/bootstrap/dist/fonts/!(glyphicons-halflings-regular.woff)'  # save some bytes by including only one font
+  '!lib/bootswatch/fonts/!(glyphicons-halflings-regular.woff)'
+]
 
 
 ### Clean ###
@@ -27,14 +43,6 @@ gulp.task 'clean', (done) ->
 
 gulp.task 'clean-tests', (done) ->
   del('test/build', done)
-
-appcacheExclusions = [
-  '!**/.ht*'
-  '!**/*.appcache'
-  '!lib/MathJax/**'
-  '!lib/bootstrap/dist/fonts/!(glyphicons-halflings-regular.woff)'  # save some bytes by including only one font
-  '!lib/bootswatch/fonts/!(glyphicons-halflings-regular.woff)'
-]
 
 
 ### Scripts ###
@@ -61,6 +69,7 @@ gulp.task 'scripts', (done) ->
 
 gulp.task 'html', ->
   gulp.src(['src/*.html', 'src/app/**/*.html', 'src/view/**/*.html'], base: 'src')
+  .pipe($.replace('<!-- drill2ver -->', projectVersion))
   .pipe(gulp.dest deployPath)
 
 gulp.task 'css', ->

@@ -1,0 +1,12 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="$dismiss()">&times;</button>
+    <h4 class="modal-title">Update is available</h4>
+</div>
+<div class="modal-body">
+    <p>A new, awesome version of Drill 2 was released!</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" ng-click="$dismiss()">Not now</button>
+    <button type="button" class="btn btn-default btn-disabled" ng-if="update.status == 'downloading'">Downloading...</button>
+    <button type="button" class="btn btn-primary" ng-if="update.status == 'updateready'" ng-click="installUpdate()">Reload app</button>
+</div>

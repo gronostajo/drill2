@@ -11,7 +11,7 @@
 			$(window.applicationCache).on('checking downloading noupdate cached updateready error', function (event) {
 				$scope.$apply(function () {
 					$scope.appUpdate.status = event.type.toLowerCase();
-					if ($scope.appUpdate.status == 'downloading') {
+					if ($scope.appUpdate.status == 'updateready') {
                         var scope = $rootScope.$new(true);
                         scope.update = $scope.appUpdate;
                         scope.installUpdate = function () { $scope.installUpdate(true); };
@@ -166,7 +166,6 @@
 
 			if ($scope.config.mathjax) {
 				$timeout(function () {
-					$('#questionView').find('.MathJax, .MathJax_Preview, [type="math/tex"]').remove();
 					//noinspection JSUnresolvedVariable,JSUnresolvedFunction
 					MathJax.Hub.Queue(['Typeset', MathJax.Hub, 'questionView']);
 				});

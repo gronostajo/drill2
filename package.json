@@ -10,6 +10,7 @@
     "coffee-script": "1.10.0",
     "coffeelint": "1.15.7",
     "coffeelint-newline-at-eof": "0.4.1",
+    "coffeescript": "^2.7.0",
     "del": "2.2.x",
     "group-array": "^0.3.1",
     "gulp": "3.9.1",
@@ -37,6 +38,9 @@
     "run-sequence": "1.2.2",
     "yargs": "5.0.0"
   },
+  "overrides": {
+    "graceful-fs": "^4.2.11"
+  },  
   "repository": {
     "type": "git",
     "url": "git://github.com/gronostajo/drill2.git"

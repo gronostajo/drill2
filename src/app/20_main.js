@@ -151,6 +151,14 @@
 
 			$scope.currentQuestion = $scope.questions[$scope.questionIndex - 1];
 
+			for (var i = 0; i < $scope.questions.length; i++) {
+				var q = $scope.questions[i];
+				for (var j = 0; j < q.answers.length; j++) {
+					q.answers[j].sortingKey = ($scope.config.shuffleAnswers)
+						? Math.random() : j;
+				}
+			}
+
 			for (var i = 0; i < $scope.currentQuestion.answers.length; i++) {
 				$scope.currentQuestion.answers[i].checked = false;
 			}
@@ -239,14 +247,6 @@
 			}
 			else {
 				$scope.questions = $scope.loadedQuestions.slice(0);	// shallow copy
-			}
-
-			for (var i = 0; i < $scope.questions.length; i++) {
-				var q = $scope.questions[i];
-				for (var j = 0; j < q.answers.length; j++) {
-					q.answers[j].sortingKey = ($scope.config.shuffleAnswers)
-						? Math.random() : j;
-				}
 			}
 		};
 

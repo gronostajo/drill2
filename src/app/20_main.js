@@ -193,6 +193,8 @@
 				}
 			}
 
+			if ($scope.view.isGraded()) return;
+
 			for (i = 0; i < $scope.currentQuestion.answers.length; i++) {
 				sortingKeys.push($scope.currentQuestion.answers[i].sortingKey);
 			}

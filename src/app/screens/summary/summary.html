@@ -10,9 +10,9 @@
         <div class="panel-body">
             <div class="question-body" ng-show="config.markdown" ng-bind-html="question.body | markdown:this"></div>
             <div class="question-body" ng-hide="config.markdown" ng-bind-html="question.body | plaintext"></div>
-            <div class="checkbox answer explained" ng-repeat="answer in question.answers">
+            <div class="{{(config.displayAsRadio && question.totalCorrect() == 1) ? 'radio' : 'checkbox'}} answer explained" ng-repeat="answer in question.answers">
                 <label ng-class="{ correct: answer.checked && answer.correct, incorrect: answer.checked && !answer.correct, missed: !answer.checked && answer.correct }">
-                    <input type="checkbox" disabled ng-checked="answer.checked">
+                    <input type="{{(config.displayAsRadio && question.totalCorrect() == 1) ? 'radio' : 'checkbox'}}" disabled ng-checked="answer.checked">
                     <span class="content">
                         <span class="id">{{answer.id}})&nbsp;</span>
                         <span ng-bind-html="answer.body | plaintext:'span.p'"></span>

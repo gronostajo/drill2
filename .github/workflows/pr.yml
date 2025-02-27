@@ -1,0 +1,14 @@
+name: Build and test a PR
+run-name: "PR: ${{ github.head_ref }} / ${{ github.sha }}"
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+      - name: Build and test
+        run: gulp test

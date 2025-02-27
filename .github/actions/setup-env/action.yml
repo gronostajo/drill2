@@ -1,0 +1,22 @@
+name: Setup build environment
+runs:
+  using: composite
+  steps:
+    - name: Install NodeJS
+      uses: actions/setup-node@v4
+      with:
+        node-version: '10.x'
+    - name: Install OS dependencies
+      shell: sh
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libfontconfig1 jq
+    - name: Install global tooling
+      shell: sh
+      run: ./install-dependencies.sh
+    - name: Install npm dependencies
+      shell: sh
+      run: npm install
+    - name: Install bower dependencies
+      shell: sh
+      run: bower install

@@ -1,25 +1,14 @@
 name: Build and test a PR
 run-name: "PR: ${{ github.head_ref }} / ${{ github.sha }}"
 on: [pull_request]
+
 jobs:
-  gulp-test:
+  test:
     runs-on: ubuntu-20.04
     steps:
-      - name: Install NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: '10.x'
-      - name: Install OS dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libfontconfig1 jq
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Install global tooling
-        run: ./install-dependencies.sh
-      - name: Install npm dependencies
-        run: npm install
-      - name: Install bower dependencies
-        run: bower install
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
       - name: Build and test
         run: gulp test

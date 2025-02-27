@@ -1,0 +1,27 @@
+name: Deploy develop branch
+run-name: "develop head: ${{ github.sha }}"
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Setup environment
+        uses: ./.github/actions/setup-env
+      - name: Build and test
+        run: gulp test
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./build
+          destination_dir: develop

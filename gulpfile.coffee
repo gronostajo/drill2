@@ -39,7 +39,7 @@ appcacheExclusions = [
 ### Clean ###
 
 gulp.task 'clean', (done) ->
-  del(deployPath, done)
+  del("#{deployPath}/*", done)
 
 gulp.task 'clean-tests', (done) ->
   del('test/build', done)

@@ -1,0 +1,17 @@
+services:
+  dev:
+    container_name: drill2-dev
+    build: 
+      dockerfile: ./Dockerfile
+    volumes:
+      - ..:/workspace
+    command: sleep infinity
+    depends_on:
+      - server
+  server:
+    container_name: drill2-server
+    image: nginx
+    volumes:
+      - ../build:/usr/share/nginx/html:ro
+    ports:
+      - 8080:80

@@ -16,8 +16,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup environment
         uses: ./.github/actions/setup-env
-      - name: Build and test
+      - name: Test
         run: gulp test
+      - name: Build
+        run: gulp build --production
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

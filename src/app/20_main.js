@@ -223,8 +223,8 @@
 		};
 
 		$scope.grade = function () {
-			// kind of dirty workaround for grading radio questions but hey it works
-			for (const answer of $scope.currentQuestion.answers) {
+			for (var i = 0; i < $scope.currentQuestion.answers.length; i++) {
+				var answer = $scope.currentQuestion.answers[i];
 				if (answer.id == $scope.currentQuestion.checkedAnswer) answer.checked = true;
 			}
 

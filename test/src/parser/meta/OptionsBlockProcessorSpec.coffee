@@ -16,6 +16,7 @@ describe 'OptionsBlockProcessor', ->
     timeLimitEnabled: no
     timeLimitSecs: 60
     repeatIncorrect: no
+    displayAsRadio: no
     explain: 'optional'
     showExplanations: no
     explanations: {}
@@ -179,6 +180,27 @@ describe 'OptionsBlockProcessor', ->
     expect(@OptionsBlockProcessor.process('{"repeatIncorrect": "no"}', logger)).toHaveMemberValues(expectedFalse)
     expect(@OptionsBlockProcessor.process('{"repeatIncorrect": "0"}', logger)).toHaveMemberValues(expectedFalse)
     expect(@OptionsBlockProcessor.process('{"repeatIncorrect": 0}', logger)).toHaveMemberValues(expectedFalse)
+
+    expect(logger).not.toHaveBeenCalled()
+
+  it 'should recognize display as radio setting option', ->
+    expectedTrue = displayAsRadio: yes
+    expectedFalse = displayAsRadio: no
+    logger = jasmine.createSpy('logger')
+
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": true}', logger)).toHaveMemberValues(expectedTrue)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "true"}', logger)).toHaveMemberValues(expectedTrue)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "enabled"}', logger)).toHaveMemberValues(expectedTrue)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "yes"}', logger)).toHaveMemberValues(expectedTrue)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "1"}', logger)).toHaveMemberValues(expectedTrue)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": 1}', logger)).toHaveMemberValues(expectedTrue)
+
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": false}', logger)).toHaveMemberValues(expectedFalse)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "false"}', logger)).toHaveMemberValues(expectedFalse)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "disabled"}', logger)).toHaveMemberValues(expectedFalse)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "no"}', logger)).toHaveMemberValues(expectedFalse)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": "0"}', logger)).toHaveMemberValues(expectedFalse)
+    expect(@OptionsBlockProcessor.process('{"displayAsRadio": 0}', logger)).toHaveMemberValues(expectedFalse)
 
     expect(logger).not.toHaveBeenCalled()
 

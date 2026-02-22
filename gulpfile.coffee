@@ -1,3 +1,6 @@
+# Node.js <11 polyfill for queueMicrotask (used by streamx/vinyl-fs)
+global.queueMicrotask ?= (fn) -> Promise.resolve().then fn
+
 gulp = require 'gulp'
 
 $ = (require('gulp-load-plugins'))()
@@ -195,6 +198,7 @@ gulp.task 'appcache', ->
 gulp.task 'env-specific', gulp.series(
   ->
     env = if devBuild then 'dev' else 'prod'
+    return Promise.resolve() unless fs.existsSync(env)
     gulp.src(["#{env}/**", "#{env}/**/.*"], base: env)
     .pipe(gulp.dest deployPath)
   ->

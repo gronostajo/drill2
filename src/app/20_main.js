@@ -151,9 +151,20 @@
 
 			$scope.currentQuestion = $scope.questions[$scope.questionIndex - 1];
 
+			$scope.displayAsRadio = $scope.config.displayAsRadio && $scope.currentQuestion.totalCorrect() == 1;
+
+			for (var i = 0; i < $scope.questions.length; i++) {
+				var q = $scope.questions[i];
+				for (var j = 0; j < q.answers.length; j++) {
+					q.answers[j].sortingKey = ($scope.config.shuffleAnswers)
+						? Math.random() : j;
+				}
+			}
+
 			for (var i = 0; i < $scope.currentQuestion.answers.length; i++) {
 				$scope.currentQuestion.answers[i].checked = false;
 			}
+			$scope.currentQuestion.checkedAnswer = undefined; // for radio input questions
 
 			ViewportHelper.scrollToTop(function() {
 				$scope.$apply(function () {
@@ -193,6 +204,8 @@
 				}
 			}
 
+			if ($scope.view.isGraded()) return;
+
 			for (i = 0; i < $scope.currentQuestion.answers.length; i++) {
 				sortingKeys.push($scope.currentQuestion.answers[i].sortingKey);
 			}
@@ -201,12 +214,20 @@
 
 			for (i = 0; i < $scope.currentQuestion.answers.length; i++) {
 				if ($scope.currentQuestion.answers[i].sortingKey === sortingKeys[$event.which - 49]) {
-					$scope.currentQuestion.answers[i].checked = !$scope.currentQuestion.answers[i].checked;
+					if ($scope.displayAsRadio)
+						$scope.currentQuestion.checkedAnswer = $scope.currentQuestion.answers[i].id; // for radio input questions
+					else
+						$scope.currentQuestion.answers[i].checked = !$scope.currentQuestion.answers[i].checked;
 				}
 			}
 		};
 
 		$scope.grade = function () {
+			for (var i = 0; i < $scope.currentQuestion.answers.length; i++) {
+				var answer = $scope.currentQuestion.answers[i];
+				if (answer.id == $scope.currentQuestion.checkedAnswer) answer.checked = true;
+			}
+
 			$scope.stopTimer();
 
 			$scope.view.current = 'graded';
@@ -237,14 +258,6 @@
 			}
 			else {
 				$scope.questions = $scope.loadedQuestions.slice(0);	// shallow copy
-			}
-
-			for (var i = 0; i < $scope.questions.length; i++) {
-				var q = $scope.questions[i];
-				for (var j = 0; j < q.answers.length; j++) {
-					q.answers[j].sortingKey = ($scope.config.shuffleAnswers)
-						? Math.random() : j;
-				}
 			}
 		};
 
@@ -313,6 +326,7 @@
 				for (var i = 0; i < $scope.currentQuestion.answers.length; i++) {
 					$scope.currentQuestion.answers[i].checked = false;
 				}
+				$scope.currentQuestion.checkedAnswer = undefined; // for radio input questions
 				$scope.grade();
 				$scope.stopTimer();
 			}

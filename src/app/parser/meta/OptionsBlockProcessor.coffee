@@ -86,6 +86,8 @@ angular.module('DrillApp').service 'OptionsBlockProcessor', (JsonLoader, SafeEva
 
     repeatIncorrect: parseBool
 
+    displayAsRadio: parseBool
+
     explain: (vOrig, m, logFn) ->
       v = vOrig and vOrig.toLowerCase()
       if v in ['summary', 'optional', 'always']

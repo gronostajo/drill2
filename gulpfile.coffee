@@ -1,6 +1,3 @@
-# Node.js <11 polyfill for queueMicrotask (used by streamx/vinyl-fs)
-global.queueMicrotask ?= (fn) -> Promise.resolve().then fn
-
 gulp = require 'gulp'
 
 $ = (require('gulp-load-plugins'))()

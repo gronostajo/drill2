@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/base:focal
+FROM mcr.microsoft.com/devcontainers/base:noble
 
 RUN apt-get update && \
     apt-get install -y \

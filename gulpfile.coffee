@@ -123,9 +123,8 @@ gulp.task 'build-tests', ->
   .pipe(gulp.dest 'test/build')
 
 gulp.task 'configure-karma', ->
-  bowerFilesToInject = bowerFiles(includeDev: yes).concat [
-    '!bower_components/MathJax/**'
-  ]
+  bowerFilesToInject = bowerFiles(includeDev: yes).filter (f) ->
+    f.indexOf('MathJax') is -1
   dependencies = gulp.src(bowerFilesToInject, read: false)
   .pipe($.ignore.include('**/*.js'))
 

@@ -1,11 +1,9 @@
 angular.module('DrillApp').service('QuestionLoader', function($q, QuestionParser) {
-  return new ((function() {
-    function _Class() {}
-
-    _Class.prototype.loadFromString = function(input) {
-      var bankInfo, e, error, log, options, questions, ref;
+  return new (class {
+    loadFromString(input) {
+      var bankInfo, e, log, options, questions;
       try {
-        ref = QuestionParser.parse(input), questions = ref.questions, options = ref.options, log = ref.log;
+        ({questions, options, log} = QuestionParser.parse(input));
         bankInfo = {
           fileFormat: options.fileFormat,
           explanationsAvailable: options.explanationsAvailable,
@@ -21,9 +19,7 @@ angular.module('DrillApp').service('QuestionLoader', function($q, QuestionParser
         e = error;
         return $q.reject(e);
       }
-    };
+    }
 
-    return _Class;
-
-  })());
+  })();
 });

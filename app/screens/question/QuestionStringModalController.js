@@ -1,6 +1,6 @@
 angular.module('DrillApp').controller('QuestionStringModalController', function($scope) {
-  return new ((function() {
-    function _Class() {
+  return new (class {
+    constructor() {
       $scope.view = {
         showAnswers: false,
         showExplanation: false
@@ -12,7 +12,5 @@ angular.module('DrillApp').controller('QuestionStringModalController', function(
       };
     }
 
-    return _Class;
-
-  })());
+  })();
 });

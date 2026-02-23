@@ -4,10 +4,7 @@ app = angular.module('DrillApp');
 
 app.factory('GraderFactory', function(SafeEvalService) {
   return {
-    createPerQuestionGrader: function(max, radical) {
-      if (radical == null) {
-        radical = true;
-      }
+    createPerQuestionGrader: function(max, radical = true) {
       return function(question) {
         var correct, incorrect, ret;
         ret = {
@@ -22,10 +19,7 @@ app.factory('GraderFactory', function(SafeEvalService) {
         return ret;
       };
     },
-    createPerAnswerGrader: function(radical) {
-      if (radical == null) {
-        radical = true;
-      }
+    createPerAnswerGrader: function(radical = true) {
       return function(question) {
         var correct, incorrect, ret;
         ret = {
@@ -67,8 +61,8 @@ app.factory('GraderFactory', function(SafeEvalService) {
           }
         };
         return {
-          score: SafeEvalService["eval"](oneliner, questionInfo),
-          total: SafeEvalService["eval"](oneliner, fakeInfo)
+          score: SafeEvalService.eval(oneliner, questionInfo),
+          total: SafeEvalService.eval(oneliner, fakeInfo)
         };
       };
     }

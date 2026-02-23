@@ -1,10 +1,7 @@
 angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils, QuestionBuilder, QuestionMerger) {
   var excerpt;
-  excerpt = function(question, limit) {
+  excerpt = function(question, limit = 40) {
     var body;
-    if (limit == null) {
-      limit = 40;
-    }
     body = question.body.trim();
     if (body.length > limit) {
       return body.substring(0, limit) + '...';
@@ -14,10 +11,8 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
       return body;
     }
   };
-  return new ((function() {
-    function _Class() {}
-
-    _Class.prototype.parseQuestion = function(str) {
+  return new (class {
+    parseQuestion(str) {
       var answerMatch, builder, i, identifierMatched, len, line, lines, parsingAnswers;
       lines = ParsingUtils.splitWithNewlines(str);
       builder = new QuestionBuilder();
@@ -45,13 +40,10 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
         }
       }
       return builder.build();
-    };
+    }
 
-    _Class.prototype.mergeBrokenQuestions = function(questions, logFn) {
+    mergeBrokenQuestions(questions, logFn = function() {}) {
       var i, index, mergeNextOne, mergeWithNextOne, mergeWithPreviousOne, merged, msg, processedQuestion, question, questionExcerpt, ref, result, toBeMerged;
-      if (logFn == null) {
-        logFn = function() {};
-      }
       mergeWithPreviousOne = (function() {
         var i, len, results;
         results = [];
@@ -62,7 +54,7 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
         return results;
       })();
       mergeWithNextOne = mergeWithPreviousOne.slice(1);
-      for (index = i = 0, ref = mergeWithNextOne.length; 0 <= ref ? i < ref : i > ref; index = 0 <= ref ? ++i : --i) {
+      for (index = i = 0, ref = mergeWithNextOne.length; (0 <= ref ? i < ref : i > ref); index = 0 <= ref ? ++i : --i) {
         if (questions[index].answers.length === 0) {
           mergeWithNextOne[index] = true;
         }
@@ -84,32 +76,29 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
         if (merged > 1) {
           processedQuestion.merged = merged;
           questionExcerpt = excerpt(processedQuestion);
-          msg = "Merged " + merged + " questions: '" + questionExcerpt + "' (" + processedQuestion.answers.length + " answers total)";
+          msg = `Merged ${merged} questions: '${questionExcerpt}' (${processedQuestion.answers.length} answers total)`;
           logFn(msg);
         }
       }
       return result.concat(questions);
-    };
+    }
 
-    _Class.prototype.removeInvalidQuestions = function(questions, logFn) {
+    removeInvalidQuestions(questions, logFn = function() {}) {
       var i, len, msg, question, validQuestions;
-      if (logFn == null) {
-        logFn = function() {};
-      }
       validQuestions = [];
       for (i = 0, len = questions.length; i < len; i++) {
         question = questions[i];
         if (!question.body.trim().length) {
-          msg = "Skipped question because it has no body (" + question.answers.length + " answers)";
+          msg = `Skipped question because it has no body (${question.answers.length} answers)`;
         } else if (question.answers.length < 2) {
-          msg = "Skipped question because it has less than 2 answers: '" + (excerpt(question)) + "'";
+          msg = `Skipped question because it has less than 2 answers: '${excerpt(question)}'`;
           if (question.merged) {
-            msg += " (merged from " + question.merged + " questions)";
+            msg += ` (merged from ${question.merged} questions)`;
           }
         } else if (!question.totalCorrect()) {
-          msg = "Skipped question because it has no correct answers: '" + (excerpt(question)) + "'";
+          msg = `Skipped question because it has no correct answers: '${excerpt(question)}'`;
           if (question.merged) {
-            msg += " (merged from " + question.merged + " questions)";
+            msg += ` (merged from ${question.merged} questions)`;
           }
         }
         if (msg) {
@@ -120,13 +109,11 @@ angular.module('DrillApp').service('QuestionParsingUtils', function(ParsingUtils
         }
       }
       return validQuestions;
-    };
+    }
 
-    _Class.prototype.matchNonEmptyStrings = function(str) {
+    matchNonEmptyStrings(str) {
       return str.trim().length > 0;
-    };
+    }
 
-    return _Class;
-
-  })());
+  })();
 });

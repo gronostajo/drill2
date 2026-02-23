@@ -1,9 +1,7 @@
-var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
 angular.module('DrillApp').controller('QuestionEditorController', function($scope, $window, $timeout, $parse) {
-  return new ((function() {
-    function _Class() {
-      this.keypress = bind(this.keypress, this);
+  return new (class {
+    constructor() {
+      this.keypress = this.keypress.bind(this);
       $scope.fileApiSupported = $window.File && $window.FileList && $window.FileReader;
       if ($scope.model == null) {
         $scope.model = {
@@ -15,23 +13,19 @@ angular.module('DrillApp').controller('QuestionEditorController', function($scop
       $scope.submit = this.submit;
     }
 
-    _Class.prototype.keypress = function($event) {
+    keypress($event) {
       var enterKey;
       enterKey = ($event.key === '\n') || ($event.keyCode === 10) || ($event.keyCode === 13);
       if ($event.ctrlKey && enterKey) {
-        return $timeout((function(_this) {
-          return function() {
-            return _this.form.triggerHandler('submit');
-          };
-        })(this));
+        return $timeout(() => {
+          return this.form.triggerHandler('submit');
+        });
       }
-    };
+    }
 
-    _Class.prototype.submit = function() {
+    submit() {
       return $parse($scope.submitExpr)($scope.$parent);
-    };
+    }
 
-    return _Class;
-
-  })());
+  })();
 });

@@ -1,22 +1,18 @@
-var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
 angular.module('DrillApp').controller('HomeScreenController', function($scope, $window, $uibModal, QuestionLoader) {
-  return new ((function() {
-    function _Class() {
-      this.loadFromString = bind(this.loadFromString, this);
-      this.loadFromFile = bind(this.loadFromFile, this);
+  return new (class {
+    constructor() {
+      this.loadFromFile = this.loadFromFile.bind(this);
+      this.loadFromString = this.loadFromString.bind(this);
       $scope.fileApiSupported = $window.File && $window.FileList && $window.FileReader;
       $scope.editor = {
         value: '',
         visibility: $scope.fileApiSupported ? 'none' : 'full'
       };
-      $scope.$watch('editor.visibility', (function(_this) {
-        return function(value) {
-          if (value !== 'mini') {
-            return _this.clearLoadedData();
-          }
-        };
-      })(this));
+      $scope.$watch('editor.visibility', (value) => {
+        if (value !== 'mini') {
+          return this.clearLoadedData();
+        }
+      });
       $scope.loadFromFile = this.loadFromFile;
       $scope.loadFromString = this.loadFromString;
       $scope.collapseEditorIfLoaded = this.collapseEditorIfLoaded;
@@ -24,7 +20,7 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
       $scope.showLogModal = this.showLogModal;
     }
 
-    _Class.prototype.loadFromFile = function(file) {
+    loadFromFile(file) {
       var fileReader;
       if ((!file) || (!$scope.fileApiSupported)) {
         return;
@@ -32,15 +28,13 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
       $scope.file = file;
       fileReader = new FileReader();
       fileReader.readAsText(file);
-      return fileReader.onload = (function(_this) {
-        return function(e) {
-          $scope.editor.value = e.target.result;
-          return _this.loadFromString($scope.editor.value, file.name);
-        };
-      })(this);
-    };
+      return fileReader.onload = (e) => {
+        $scope.editor.value = e.target.result;
+        return this.loadFromString($scope.editor.value, file.name);
+      };
+    }
 
-    _Class.prototype.loadFromString = function(input, filename) {
+    loadFromString(input, filename) {
       return QuestionLoader.loadFromString(input).then(function(result) {
         $scope.bank = result.loadedQuestions;
         angular.extend($scope.settings, result.config);
@@ -51,34 +45,32 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
           if (filename == null) {
             filename = 'This input';
           }
-          $window.alert(filename + " doesn't contain any questions.");
+          $window.alert(`${filename} doesn't contain any questions.`);
         }
         return result;
-      })["catch"]((function(_this) {
-        return function() {
-          _this.clearLoadedData();
-          if (filename == null) {
-            filename = 'this';
-          }
-          return $window.alert("Loading failed. Is " + filename + " a valid question bank?");
-        };
-      })(this));
-    };
+      }).catch(() => {
+        this.clearLoadedData();
+        if (filename == null) {
+          filename = 'this';
+        }
+        return $window.alert(`Loading failed. Is ${filename} a valid question bank?`);
+      });
+    }
 
-    _Class.prototype.collapseEditorIfLoaded = function() {
+    collapseEditorIfLoaded() {
       if ($scope.bank.length > 0) {
         return $scope.editor.visibility = 'mini';
       }
-    };
+    }
 
-    _Class.prototype.clearLoadedData = function() {
+    clearLoadedData() {
       $scope.bank = [];
       $scope.info = {};
       $scope.parserLog = [];
       return $scope.file = null;
-    };
+    }
 
-    _Class.prototype.showLogModal = function(log) {
+    showLogModal(log) {
       return $uibModal.open({
         templateUrl: 'app/screens/home/logModal.html',
         size: 'md',
@@ -91,9 +83,7 @@ angular.module('DrillApp').controller('HomeScreenController', function($scope, $
           }
         }
       });
-    };
+    }
 
-    return _Class;
-
-  })());
+  })();
 });

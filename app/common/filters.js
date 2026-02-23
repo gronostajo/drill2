@@ -1,7 +1,7 @@
 angular.module('DrillApp').filter('decPlaces', function() {
   return function(x, dec) {
     var pow;
-    pow = Math.pow(10, dec);
+    pow = 10 ** dec;
     return (Math.round(x * pow)) / pow;
   };
 }).filter('markdown', function($sce) {
@@ -13,10 +13,13 @@ angular.module('DrillApp').filter('decPlaces', function() {
     parser = new commonmark.Parser();
     renderer = new commonmark.HtmlRenderer();
     ast = parser.parse(str);
+    // fixes double newlines
     fix = function(node) {
       var i, j, ref, split, wanted;
       if (node._type === 'CodeBlock') {
+        // fix double newlines
         str = node._literal;
+        // fenced code blocks have additional newlines on ends
         if (node._isFenced) {
           str = str.substring(1, str.length - 1);
         }
@@ -42,6 +45,7 @@ angular.module('DrillApp').filter('decPlaces', function() {
 }).filter('escapeHtmlEntities', function() {
   return function(str) {
     var $e;
+    // https://stackoverflow.com/a/9251169/1937994
     $e = $('<textarea>');
     $e.text(str);
     return $e.html();
@@ -52,8 +56,8 @@ angular.module('DrillApp').filter('decPlaces', function() {
     parts = tag.split('.');
     tagName = parts[0];
     klass = parts.length > 1 ? parts[1] : null;
-    openTag = klass === null ? "<" + tagName + ">" : "<" + tagName + " class=\"" + klass + "\">";
-    closeTag = "</" + tagName + ">";
+    openTag = klass === null ? `<${tagName}>` : `<${tagName} class=\"${klass}\">`;
+    closeTag = `</${tagName}>`;
     return openTag + str + closeTag;
   };
 }).filter('plaintext', function($sce, escapeHtmlEntitiesFilter, wrapWithTagFilter) {
@@ -93,7 +97,7 @@ angular.module('DrillApp').filter('decPlaces', function() {
     while (secs.length < 2) {
       secs = '0' + secs;
     }
-    return mins + ":" + secs;
+    return `${mins}:${secs}`;
   };
 }).filter('minsSecs', function() {
   return function(secs) {
@@ -107,7 +111,7 @@ angular.module('DrillApp').filter('decPlaces', function() {
     var score_, str, total;
     score_ = decPlacesFilter(score.score, 2);
     total = decPlacesFilter(score.total, 2);
-    str = score_ + " / " + total + " pts";
+    str = `${score_} / ${total} pts`;
     if (limitedTime) {
       str += ', ' + minsSecsFilter(timeLimit - score.timeLeft);
     }
@@ -135,7 +139,7 @@ angular.module('DrillApp').filter('decPlaces', function() {
   };
 }).filter('shuffle', function() {
   return function(input) {
-    var arr, pick, pivot, ref;
+    var arr, pick, pivot;
     arr = input.slice(0);
     pivot = arr.length;
     if (pivot <= 1) {
@@ -143,7 +147,7 @@ angular.module('DrillApp').filter('decPlaces', function() {
     }
     while (--pivot) {
       pick = Math.floor(Math.random() * (pivot + 1));
-      ref = [arr[pick], arr[pivot]], arr[pivot] = ref[0], arr[pick] = ref[1];
+      [arr[pivot], arr[pick]] = [arr[pick], arr[pivot]];
     }
     return arr;
   };
@@ -159,6 +163,7 @@ angular.module('DrillApp').filter('decPlaces', function() {
   return function(fraction, total) {
     var delta, epsilon, num, numFloor, rounded, truncatedNum;
     if (total !== 0) {
+      // adapted from http://stackoverflow.com/a/3109234/1937994
       num = fraction * 100 / total;
       truncatedNum = num.toFixed(8);
       numFloor = Math.floor(truncatedNum);

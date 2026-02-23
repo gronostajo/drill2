@@ -1,15 +1,12 @@
 angular.module('DrillApp').service('JsonLoader', function() {
   var JsonLoader;
-  return JsonLoader = (function() {
-    function JsonLoader(mappers) {
+  return JsonLoader = class JsonLoader {
+    constructor(mappers) {
       this.mappers = mappers;
     }
 
-    JsonLoader.prototype.load = function(json, logFn) {
-      var e, error, input, mappedValue, mappingFn, member, output, ref, unknown, value, valueMember;
-      if (logFn == null) {
-        logFn = function() {};
-      }
+    load(json, logFn = function() {}) {
+      var e, input, mappedValue, mappingFn, member, output, ref, unknown, value, valueMember;
       input = JSON.parse(json);
       output = {};
       ref = this.mappers;
@@ -19,7 +16,7 @@ angular.module('DrillApp').service('JsonLoader', function() {
           mappedValue = mappingFn(input[member], member, logFn);
         } catch (error) {
           e = error;
-          logFn("Mapper " + member + " threw an exception");
+          logFn(`Mapper ${member} threw an exception`);
           continue;
         }
         if (!angular.isObject(mappedValue)) {
@@ -28,7 +25,7 @@ angular.module('DrillApp').service('JsonLoader', function() {
           for (valueMember in mappedValue) {
             value = mappedValue[valueMember];
             if (valueMember in output) {
-              throw new Error("Member " + valueMember + " already exists");
+              throw new Error(`Member ${valueMember} already exists`);
             }
             output[valueMember] = value;
           }
@@ -48,9 +45,7 @@ angular.module('DrillApp').service('JsonLoader', function() {
         object: output,
         unknown: unknown
       };
-    };
+    }
 
-    return JsonLoader;
-
-  })();
+  };
 });

@@ -1,29 +1,39 @@
 CACHE MANIFEST
-# drill2 v2.4.3
-# built on Fri Feb 28 2025 12:48:58 GMT+0000 (Coordinated Universal Time)
+# drill2 v2.5.1
+# built on Mon Feb 23 2026 16:00:48 GMT+0000 (Coordinated Universal Time)
 
 
 CACHE:
 
 # inject
+app
 app/20_main.js
+app/common
 app/common/filters.js
 app/common/glyphicon.js
+app/data-model
 app/data-model/Answer.js
 app/data-model/Question.js
 app/GraderFactory.js
 app/modal.js
+app/parser
+app/parser/meta
 app/parser/meta/JsonLoader.js
 app/parser/meta/OptionsBlockProcessor.js
 app/parser/meta/OptionsBlockUtils.js
 app/parser/QuestionLoader.js
 app/parser/QuestionParser.js
+app/parser/questions
 app/parser/questions/QuestionBuilder.js
 app/parser/questions/QuestionMerger.js
 app/parser/questions/QuestionParsingUtils.js
+app/parser/utils
 app/parser/utils/ParsingUtils.js
 app/parser/utils/Pipeline.js
 app/SafeEvalService.js
+app/screens
+app/screens/home
+app/screens/home/editor
 app/screens/home/editor/editor.html
 app/screens/home/editor/questionEditor.js
 app/screens/home/editor/QuestionEditorController.js
@@ -32,16 +42,20 @@ app/screens/home/home.html
 app/screens/home/homeScreen.js
 app/screens/home/HomeScreenController.js
 app/screens/home/logModal.html
+app/screens/home/settings
 app/screens/home/settings/settings.html
 app/screens/home/settings/settingsScreen.js
+app/screens/question
 app/screens/question/question.html
 app/screens/question/questionString.js
 app/screens/question/questionStringModal.html
 app/screens/question/QuestionStringModalController.js
 app/screens/question/relatedLinks.js
 app/screens/question/relatedLinksModal.html
+app/screens/summary
 app/screens/summary/summary.html
 app/screens/updateAvailableModal.html
+app/stats
 app/stats/stats.html
 app/stats/stats.js
 app/stats/StatsController.js
@@ -49,18 +63,38 @@ app/ThemeSwitcher.js
 app/ViewFactory.js
 app/ViewportHelperService.js
 index.html
+lib
+lib/angular
+lib/angular-bootstrap
 lib/angular-bootstrap/ui-bootstrap-tpls.min.js
+lib/angular-cookies
 lib/angular-cookies/angular-cookies.min.js
 lib/angular/angular.min.js
+lib/bootstrap
+lib/bootstrap/dist
+lib/bootstrap/dist/css
 lib/bootstrap/dist/css/bootstrap.min.css
+lib/bootstrap/dist/fonts
 lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff
+lib/bootstrap/dist/js
 lib/bootstrap/dist/js/bootstrap.min.js
+lib/bootswatch
+lib/bootswatch/cyborg
 lib/bootswatch/cyborg/bootstrap.min.css
+lib/bootswatch/fonts
 lib/bootswatch/fonts/glyphicons-halflings-regular.woff
+lib/commonmark
+lib/commonmark/dist
 lib/commonmark/dist/commonmark.min.js
+lib/jquery
+lib/jquery/dist
 lib/jquery/dist/jquery.min.js
+lib/ng-elif
+lib/ng-elif/src
 lib/ng-elif/src/elif.js
+lib/ng-file-upload
 lib/ng-file-upload/ng-file-upload.min.js
+view
 view/style-dark.css
 view/style.css
 # endInject

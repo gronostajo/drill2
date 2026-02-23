@@ -1,17 +1,16 @@
 angular.module('DrillApp').service('ParsingUtils', function() {
-  return new ((function() {
-    function _Class() {}
-
-    _Class.prototype.splitWithNewlines = function(input) {
+  return new (class {
+    splitWithNewlines(input) {
       return input.split(/(?:\r?\n)/);
-    };
+    }
 
-    _Class.prototype.splitWithDoubleLines = function(input) {
+    splitWithDoubleLines(input) {
       return input.split(/(?:\r?\n){2,}/);
-    };
+    }
 
-    _Class.prototype.matchAnswer = function(str) {
+    matchAnswer(str) {
       var match;
+      // dot doesn't match newlines, [\s\S] matches everything (\S === [^\s])
       match = /^\s*(>+)?\s*([A-Z])\)\s*([\s\S]+)$/i.exec(str);
       if (match) {
         return {
@@ -22,9 +21,9 @@ angular.module('DrillApp').service('ParsingUtils', function() {
       } else {
         return false;
       }
-    };
+    }
 
-    _Class.prototype.matchIdentifier = function(str) {
+    matchIdentifier(str) {
       var match;
       match = /^\[#([A-Z\d\-+_]+)]\s*([\s\S]*)$/i.exec(str);
       if (match) {
@@ -35,9 +34,7 @@ angular.module('DrillApp').service('ParsingUtils', function() {
       } else {
         return false;
       }
-    };
+    }
 
-    return _Class;
-
-  })());
+  })();
 });

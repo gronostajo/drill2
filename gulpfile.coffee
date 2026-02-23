@@ -6,13 +6,16 @@ argv = require('yargs').argv
 beep = require('beepbeep')
 bowerFiles = require('main-bower-files')
 childProcess = require('child_process')
+colors = require('ansi-colors')
 del = require('del')
 fs = require('fs')
 groupArray = require('group-array')
 KarmaServer = require('karma').Server
+log = require('fancy-log')
 merge = require('merge2')
 path = require('path')
-runSequence = require('run-sequence')
+sloc = require('sloc')
+through2 = require('through2')
 
 pkg = require('./package.json')
 
@@ -24,7 +27,7 @@ if devBuild and fs.existsSync('.git')
   sha = childProcess.execSync('git rev-parse --short HEAD').toString().trim()
   projectVersion += '-' + sha
 
-$.util.log 'Project: ' + $.util.colors.blue("#{pkg.name} #{projectVersion}")
+log 'Project: ' + colors.blue("#{pkg.name} #{projectVersion}")
 
 
 appcacheExclusions = [
@@ -38,11 +41,11 @@ appcacheExclusions = [
 
 ### Clean ###
 
-gulp.task 'clean', (done) ->
-  del("#{deployPath}/*", done)
+gulp.task 'clean', ->
+  del("#{deployPath}/*")
 
-gulp.task 'clean-tests', (done) ->
-  del('test/build', done)
+gulp.task 'clean-tests', ->
+  del('test/build')
 
 
 ### Scripts ###
@@ -50,7 +53,7 @@ gulp.task 'clean-tests', (done) ->
 gulp.task 'coffee', ->
   coffeeStream = $.coffee(bare: yes)
   coffeeStream.on 'error', (error) ->
-    $.util.log(error)
+    log(error)
     beep()
     coffeeStream.end()
   gulp.src('src/app/**/*.coffee', base: 'src')
@@ -61,8 +64,7 @@ gulp.task 'js', ->
   gulp.src('src/app/**/*.js', base: 'src')
   .pipe(gulp.dest deployPath)
 
-gulp.task 'scripts', (done) ->
-  runSequence('coffee', 'js', done)
+gulp.task 'scripts', gulp.series('coffee', 'js')
 
 
 ### View ###
@@ -76,8 +78,7 @@ gulp.task 'css', ->
   gulp.src('src/view/**/*.css', base: 'src')
   .pipe(gulp.dest deployPath)
 
-gulp.task 'view', (done) ->
-  runSequence('html', 'css', done)
+gulp.task 'view', gulp.series('html', 'css')
 
 
 ### Dependencies ###
@@ -94,7 +95,7 @@ gulp.task 'inject', ->
   ]
 
   gulp.src("#{deployPath}/*.html")
-  .pipe $.inject gulp.src(bowerFilesToInject, read: false),
+  .pipe $.inject gulp.src(bowerFilesToInject, read: false, allowEmpty: true),
     name: 'bower'
     addRootSlash: no
     ignorePath: '/bower_components/'
@@ -106,8 +107,7 @@ gulp.task 'inject', ->
     relative: yes
   .pipe(gulp.dest deployPath)
 
-gulp.task 'dependencies', (done) ->
-  runSequence('bower', 'inject', done)
+gulp.task 'dependencies', gulp.series('bower', 'inject')
 
 
 ### Tests ###
@@ -115,7 +115,7 @@ gulp.task 'dependencies', (done) ->
 gulp.task 'build-tests', ->
   coffeeStream = $.coffee(bare: yes)
   coffeeStream.on 'error', (error) ->
-    $.util.log(error)
+    log(error)
     beep()
     coffeeStream.end()
   gulp.src(['test/src/**/*.coffee'], base: 'test/src')
@@ -123,9 +123,8 @@ gulp.task 'build-tests', ->
   .pipe(gulp.dest 'test/build')
 
 gulp.task 'configure-karma', ->
-  bowerFilesToInject = bowerFiles(includeDev: yes).concat [
-    '!bower_components/MathJax/**'
-  ]
+  bowerFilesToInject = bowerFiles(includeDev: yes).filter (f) ->
+    f.indexOf('MathJax') is -1
   dependencies = gulp.src(bowerFilesToInject, read: false)
   .pipe($.ignore.include('**/*.js'))
 
@@ -166,14 +165,13 @@ gulp.task 'lint-gulpfile', ->
   .pipe($.coffeelint.reporter())
   .pipe($.coffeelint.reporter 'fail')
 
-gulp.task 'lint', (done) ->
-  runSequence 'lint-gulpfile', 'lint-coffee', 'lint-tests', done
+gulp.task 'lint', gulp.series('lint-gulpfile', 'lint-coffee', 'lint-tests')
 
 
 ### Misc ###
 
 gulp.task 'appcache', ->
-  return if devBuild
+  return Promise.resolve() if devBuild
 
   date = new Date()
 
@@ -193,32 +191,42 @@ gulp.task 'appcache', ->
     transform: (path) -> path
   .pipe(gulp.dest deployPath)
 
-gulp.task 'env-specific', (done) ->
-  env = if devBuild then 'dev' else 'prod'
-  gulp.src(["#{env}/**", "#{env}/**/.*"], base: env)
-  .pipe(gulp.dest deployPath)
-  if devBuild
-    del("#{deployPath}/*.appcache", done)
-  else done()
+gulp.task 'env-specific', gulp.series(
+  ->
+    env = if devBuild then 'dev' else 'prod'
+    return Promise.resolve() unless fs.existsSync(env)
+    gulp.src(["#{env}/**", "#{env}/**/.*"], base: env)
+    .pipe(gulp.dest deployPath)
+  ->
+    if devBuild then del("#{deployPath}/*.appcache") else Promise.resolve()
+)
 
 
 ### Reports ###
 
+slocExtensions = sloc.extensions
+
+makeSloc = (pattern, reportFile) ->
+  counters = {total: 0, source: 0, comment: 0, single: 0, block: 0, mixed: 0, empty: 0, file: 0}
+  transform = (file, enc, cb) ->
+    ext = path.extname(file.path).replace(/^\./, '')
+    if ext and slocExtensions.indexOf(ext) >= 0
+      stats = sloc(file.contents.toString('utf8'), ext)
+      Object.keys(stats).forEach (k) -> counters[k] += stats[k]
+      counters.file += 1
+    cb()
+  flush = (cb) ->
+    fs.mkdirSync 'reports', recursive: yes
+    fs.writeFileSync reportFile, JSON.stringify(counters)
+    cb()
+  gulp.src(pattern, nodir: yes)
+  .pipe through2.obj(transform, flush)
+
 gulp.task 'sloc-src', ->
-  gulp.src(['src/**'], nodir: yes)
-  .pipe($.sloc2
-    reportType: 'json'
-    reportFile: 'sloc-src.json'
-  )
-  .pipe(gulp.dest('reports'))
+  makeSloc ['src/**'], 'reports/sloc-src.json'
 
 gulp.task 'sloc-test', ->
-  gulp.src(['test/src/**'], nodir: yes)
-  .pipe($.sloc2
-    reportType: 'json'
-    reportFile: 'sloc-test.json'
-  )
-  .pipe(gulp.dest('reports'))
+  makeSloc ['test/src/**'], 'reports/sloc-test.json'
 
 size = null
 
@@ -227,29 +235,33 @@ gulp.task 'calculate-size', ->
   gulp.src(appcacheExclusions.concat('**'), cwd: deployPath, nodir: yes)
   .pipe(size)
 
-gulp.task 'size', ['calculate-size'], ->
+gulp.task 'size', gulp.series('calculate-size', (done) ->
   out = JSON.stringify
     size: size.size
     prettySize: size.prettySize
-  $.file('size.json', out, src: yes)
-  .pipe(gulp.dest('reports'))
+  fs.mkdirSync 'reports', recursive: yes
+  fs.writeFileSync 'reports/size.json', out
+  done()
+)
 
 loadJson = (relativePath) ->
   JSON.parse(fs.readFileSync(relativePath, 'utf-8'))
 
-gulp.task 'report', ['sloc-src', 'sloc-test', 'size'], ->
-  buildType = if devBuild then $.util.colors.green('development') else $.util.colors.blue('production')
+gulp.task 'report', gulp.series(gulp.parallel('sloc-src', 'sloc-test', 'size'), (done) ->
+  buildType = if devBuild then colors.green('development') else colors.blue('production')
   slocSrc = loadJson('reports/sloc-src.json')
   slocTest = loadJson('reports/sloc-test.json')
   size = loadJson('reports/size.json')
   output = [
     "      Built for: #{buildType}"
-    "    Source SLOC: #{$.util.colors.yellow(slocSrc.source)}"
-    "     Tests SLOC: #{$.util.colors.yellow(slocTest.source)}"
-    "  Appcache size: #{$.util.colors.yellow(size.prettySize)}"
+    "    Source SLOC: #{colors.yellow(slocSrc.source)}"
+    "     Tests SLOC: #{colors.yellow(slocTest.source)}"
+    "  Appcache size: #{colors.yellow(size.prettySize)}"
   ]
   for line in output
-    $.util.log(line)
+    log(line)
+  done()
+)
 
 firstPathPart = (path) ->
   slashIndex = path.replace('\\', '/').indexOf('/')
@@ -272,13 +284,13 @@ gulp.task 'appcache-details', ->
 
 ### Core tasks ###
 
-gulp.task 'assets', (done) ->
-  runSequence('clean', ['view', 'scripts', 'dependencies'], done)
+gulp.task 'assets', gulp.series(
+  'clean'
+  gulp.parallel('view', 'scripts', 'dependencies')
+)
 
-gulp.task 'build', (done) ->
-  runSequence('lint', 'assets', 'appcache', 'env-specific', 'report', done)
+gulp.task 'build', gulp.series('lint', 'assets', 'appcache', 'env-specific', 'report')
 
-gulp.task 'test', (done) ->
-  runSequence('clean-tests', 'build', 'build-tests', 'configure-karma', 'run-tests', done)
+gulp.task 'test', gulp.series('clean-tests', 'build', 'build-tests', 'configure-karma', 'run-tests')
 
-gulp.task 'default', ['build']
+gulp.task 'default', gulp.series('build')

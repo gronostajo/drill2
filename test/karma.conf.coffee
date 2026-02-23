@@ -22,12 +22,17 @@ module.exports = (config) ->
       'jasmine-matchers'
     ]
 
-    browsers: ['PhantomJS']
+    customLaunchers:
+      HeadlessChrome:
+        base: 'ChromeHeadless'
+        flags: ['--no-sandbox']
+
+    browsers: ['HeadlessChrome']
 
     reporters: ['mocha']
 
     plugins: [
-      'karma-phantomjs-launcher'
+      'karma-chrome-launcher'
       'karma-jasmine'
       'karma-mocha-reporter'
       'karma-jasmine-matchers'

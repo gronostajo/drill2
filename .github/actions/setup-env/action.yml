@@ -5,12 +5,14 @@ runs:
     - name: Install NodeJS
       uses: actions/setup-node@v4
       with:
-        node-version: '10.x'
+        node-version: '14.x'
     - name: Install OS dependencies
       shell: sh
       run: |
+        wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor | sudo tee /usr/share/keyrings/google-chrome.gpg > /dev/null
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
         sudo apt-get update
-        sudo apt-get install -y libfontconfig1 jq
+        sudo apt-get install -y libfontconfig1 jq google-chrome-stable
     - name: Install global tooling
       shell: sh
       run: ./install-dependencies.sh

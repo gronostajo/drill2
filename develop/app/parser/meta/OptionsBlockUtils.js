@@ -1,10 +1,8 @@
 angular.module('DrillApp').service('OptionsBlockUtils', function(OptionsBlockProcessor) {
   var optionsBlockRegex;
   optionsBlockRegex = /<options>\s*(\{(?:.|\n|\r)*})\s*/i;
-  return new ((function() {
-    function _Class() {}
-
-    _Class.prototype.loadOptions = function(target) {
+  return new (class {
+    loadOptions(target) {
       return function(parts, logFn) {
         var defaults, lastPart, matched, options, optionsString;
         if (!angular.isArray(parts)) {
@@ -27,9 +25,9 @@ angular.module('DrillApp').service('OptionsBlockUtils', function(OptionsBlockPro
         angular.extend(target, options);
         return parts.slice(0, parts.length - 1);
       };
-    };
+    }
 
-    _Class.prototype.assignQuestionExtras = function(options) {
+    assignQuestionExtras(options) {
       var explanations, relatedLinks;
       explanations = options.explanations;
       relatedLinks = options.relatedLinks;
@@ -65,7 +63,7 @@ angular.module('DrillApp').service('OptionsBlockUtils', function(OptionsBlockPro
           commonExplanationIds.push(question.id);
         }
         if (loadedIds.length > commonExplanationIds.length) {
-          logFn((loadedIds.length - commonExplanationIds.length) + " explanations couldn't be matched to questions");
+          logFn(`${loadedIds.length - commonExplanationIds.length} explanations couldn't be matched to questions`);
         }
         loadedIds = (function() {
           var results;
@@ -85,14 +83,12 @@ angular.module('DrillApp').service('OptionsBlockUtils', function(OptionsBlockPro
           commonLinkIds.push(question.id);
         }
         if (loadedIds.length > commonLinkIds.length) {
-          logFn((loadedIds.length - commonLinkIds.length) + " related links couldn't be matched to questions");
+          logFn(`${loadedIds.length - commonLinkIds.length} related links couldn't be matched to questions`);
         }
         options.explanationsAvailable = commonExplanationIds.length > 0;
         return questions;
       };
-    };
+    }
 
-    return _Class;
-
-  })());
+  })();
 });

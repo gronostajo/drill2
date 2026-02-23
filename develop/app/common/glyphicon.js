@@ -6,10 +6,10 @@ angular.module('DrillApp').directive('glyphicon', function() {
     link: function(scope, element, attr) {
       return attr.$observe('icon', function(newValue, oldValue) {
         if (oldValue) {
-          element.removeClass("glyphicon-" + oldValue);
+          element.removeClass(`glyphicon-${oldValue}`);
         }
         if (newValue) {
-          return element.addClass("glyphicon-" + newValue);
+          return element.addClass(`glyphicon-${newValue}`);
         }
       });
     }

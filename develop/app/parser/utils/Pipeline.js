@@ -1,24 +1,22 @@
-var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
 angular.module('DrillApp').service('Pipeline', function() {
   var Pipeline;
-  return Pipeline = (function() {
-    function Pipeline(data) {
+  return Pipeline = class Pipeline {
+    constructor(data) {
+      this._logAppender = this._logAppender.bind(this);
       this.data = data;
-      this._logAppender = bind(this._logAppender, this);
       this.log = [];
     }
 
-    Pipeline.prototype._logAppender = function(str) {
+    _logAppender(str) {
       return this.log.push(str);
-    };
+    }
 
-    Pipeline.prototype.apply = function(func) {
+    apply(func) {
       this.data = func(this.data, this._logAppender);
       return this;
-    };
+    }
 
-    Pipeline.prototype.map = function(func) {
+    map(func) {
       var item;
       if (!angular.isArray(this.data)) {
         throw new Error('Pipeline content is not an array');
@@ -34,29 +32,25 @@ angular.module('DrillApp').service('Pipeline', function() {
         return results;
       }).call(this);
       return this;
-    };
+    }
 
-    Pipeline.prototype.filter = function(func) {
+    filter(func) {
       if (!angular.isArray(this.data)) {
         throw new Error('Pipeline content is not an array');
       }
-      this.data = this.data.filter((function(_this) {
-        return function(item) {
-          return func(item, _this._logAppender);
-        };
-      })(this));
+      this.data = this.data.filter((item) => {
+        return func(item, this._logAppender);
+      });
       return this;
-    };
+    }
 
-    Pipeline.prototype.get = function() {
+    get() {
       return this.data;
-    };
+    }
 
-    Pipeline.prototype.getLog = function() {
+    getLog() {
       return this.log.slice(0);
-    };
+    }
 
-    return Pipeline;
-
-  })();
+  };
 });

@@ -1,29 +1,28 @@
-var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
 angular.module('DrillApp').service('Question', function(Answer) {
   var Question;
-  return Question = (function() {
-    function Question(body1, id1) {
-      this.body = body1 != null ? body1 : '';
+  return Question = class Question {
+    constructor(body1 = '', id1) {
+      this.grade = this.grade.bind(this);
+      this.body = body1;
       this.id = id1;
-      this.grade = bind(this.grade, this);
       this.explanation = false;
       this.relatedLinks = [];
       this.answers = [];
       this.scoreLog = [];
     }
 
-    Question.prototype.addAnswer = function(body, correct, id) {
+    addAnswer(body, correct, id) {
       var answer;
       answer = new Answer(body, correct, id);
       return this.answers.push(answer);
-    };
+    }
 
-    Question.prototype.appendToLastAnswer = function(line) {
+    // TODO remove this in favor of QuestionBuilder
+    appendToLastAnswer(line) {
       return this.answers[this.answers.length - 1].append(line);
-    };
+    }
 
-    Question.prototype.countAnswers = function(filter) {
+    countAnswers(filter) {
       var answer, count, i, len, ref;
       count = 0;
       ref = this.answers;
@@ -34,33 +33,33 @@ angular.module('DrillApp').service('Question', function(Answer) {
         }
       }
       return count;
-    };
+    }
 
-    Question.prototype.totalCorrect = function() {
+    totalCorrect() {
       return this.countAnswers(function(answer) {
         return answer.correct;
       });
-    };
+    }
 
-    Question.prototype.correct = function() {
+    correct() {
       return this.countAnswers(function(answer) {
         return answer.checked && answer.correct;
       });
-    };
+    }
 
-    Question.prototype.incorrect = function() {
+    incorrect() {
       return this.countAnswers(function(answer) {
         return answer.checked && !answer.correct;
       });
-    };
+    }
 
-    Question.prototype.missed = function() {
+    missed() {
       return this.countAnswers(function(answer) {
         return !answer.checked && answer.correct;
       });
-    };
+    }
 
-    Question.prototype.grade = function(graderFunction) {
+    grade(graderFunction) {
       var grade, time;
       grade = graderFunction(this);
       time = this.timeLeft != null ? this.timeLeft : 0;
@@ -70,23 +69,20 @@ angular.module('DrillApp').service('Question', function(Answer) {
         timeLeft: time
       });
       return grade;
-    };
+    }
 
-    Question.prototype.setExplanation = function(explanation) {
+    setExplanation(explanation) {
       this.explanation = explanation;
       return this.hasExplanations = true;
-    };
+    }
 
-    Question.prototype.setRelatedLinks = function(links) {
+    setRelatedLinks(links) {
       return this.relatedLinks = links;
-    };
+    }
 
-    Question.prototype.toString = function(includeAnswers) {
+    toString(includeAnswers = true) {
       var answer, body, i, len, ref;
-      if (includeAnswers == null) {
-        includeAnswers = true;
-      }
-      body = this.id != null ? "[#" + this.id + "] " + this.body : this.body;
+      body = this.id != null ? `[#${this.id}] ${this.body}` : this.body;
       body = body.replace(/\n\n/g, '\n') + '\n';
       if (includeAnswers) {
         ref = this.answers;
@@ -96,9 +92,7 @@ angular.module('DrillApp').service('Question', function(Answer) {
         }
       }
       return body;
-    };
+    }
 
-    return Question;
-
-  })();
+  };
 });

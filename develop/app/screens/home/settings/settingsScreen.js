@@ -4,7 +4,7 @@ angular.module('DrillApp').directive('settingsScreen', function() {
     scope: {
       model: '=',
       info: '=',
-      "continue": '='
+      continue: '='
     },
     templateUrl: 'app/screens/home/settings/settings.html'
   };

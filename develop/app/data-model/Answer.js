@@ -1,26 +1,24 @@
 angular.module('DrillApp').service('Answer', function() {
   var Answer;
-  return Answer = (function() {
-    function Answer(body, correct, id) {
+  return Answer = class Answer {
+    constructor(body, correct, id) {
       this.id = id;
       this.body = body.trim();
       this.correct = !!correct;
       this.checked = false;
     }
 
-    Answer.prototype.append = function(line) {
+    append(line) { // TODO is this used anywhere?
       return this.body += '\n\n' + line.trim();
-    };
+    }
 
-    Answer.prototype.toString = function() {
+    toString() {
       if (this.correct) {
-        return "> " + this.id + ") " + this.body + "\n";
+        return `> ${this.id}) ${this.body}\n`;
       } else {
-        return "  " + this.id + ") " + this.body + "\n";
+        return `  ${this.id}) ${this.body}\n`;
       }
-    };
+    }
 
-    return Answer;
-
-  })();
+  };
 });

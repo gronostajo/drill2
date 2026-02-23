@@ -9,6 +9,7 @@ angular.module('DrillApp').directive('questionEditor', function() {
     templateUrl: 'app/screens/home/editor/editor.html',
     controller: 'QuestionEditorController'
   };
+// TODO use ngForm
 }).directive('questionEditorTextarea', function() {
   return {
     restrict: 'A',

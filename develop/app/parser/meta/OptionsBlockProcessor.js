@@ -1,13 +1,13 @@
 angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader, SafeEvalService) {
   var genericIdValueMapper, parseBool, testGrader, v2mappers;
   testGrader = function(grader) {
-    return SafeEvalService["eval"](grader, function(id) {
+    return SafeEvalService.eval(grader, function(id) {
       if (id === 'total') {
         return 3;
       } else if (id === 'correct' || id === 'incorrect' || id === 'missed') {
         return 1;
       } else {
-        throw new Error("Unknown variable " + id);
+        throw new Error(`Unknown variable ${id}`);
       }
     });
   };
@@ -21,12 +21,9 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
       return true;
     }
   };
-  genericIdValueMapper = function(blockKey, itemValidator, itemTransformer) {
-    if (itemTransformer == null) {
-      itemTransformer = function(v) {
-        return v;
-      };
-    }
+  genericIdValueMapper = function(blockKey, itemValidator, itemTransformer = function(v) {
+      return v;
+    }) {
     return function(v, m, logFn) {
       var failureRet, key, result, ret, value;
       failureRet = {};
@@ -35,17 +32,17 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
         return failureRet;
       }
       if (!angular.isObject(v)) {
-        logFn("Invalid " + blockKey + " object (type: " + (typeof v) + ")");
+        logFn(`Invalid ${blockKey} object (type: ${typeof v})`);
         return failureRet;
       } else if (angular.isArray(v)) {
-        logFn("Invalid " + blockKey + " object (type: array)");
+        logFn(`Invalid ${blockKey} object (type: array)`);
         return failureRet;
       }
       result = {};
       for (key in v) {
         value = v[key];
         if (!/^[A-Z\d\-+_]+$/i.exec(key)) {
-          logFn("Invalid " + blockKey + " key '" + key + "'");
+          logFn(`Invalid ${blockKey} key '${key}'`);
         } else if (itemValidator(value, key, logFn)) {
           result[key] = itemTransformer(value);
         }
@@ -80,7 +77,7 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
       };
     },
     grading: function(v, m, logFn) {
-      var e, error, matched;
+      var e, matched;
       if (v === 'perQuestion' || v === 'perAnswer') {
         return {
           gradingMethod: v
@@ -146,7 +143,7 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
         };
       } else {
         if (vOrig) {
-          logFn("Unsupported explanations mode '" + vOrig + "', falling back to 'optional'");
+          logFn(`Unsupported explanations mode '${vOrig}', falling back to 'optional'`);
         }
         return {
           explain: 'optional',
@@ -156,10 +153,10 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
     },
     explanations: genericIdValueMapper('explanations', function(v, k, logFn) {
       if (!angular.isString(v)) {
-        logFn("Value of explanation '" + k + "' is not a string");
+        logFn(`Value of explanation '${k}' is not a string`);
         return false;
       } else if (v.trim().length === 0) {
-        logFn("Value of explanation '" + k + "' is empty");
+        logFn(`Value of explanation '${k}' is empty`);
         return false;
       }
       return true;
@@ -168,7 +165,7 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
       var i, item, len;
       if (!angular.isArray(v)) {
         if (!angular.isString(v)) {
-          logFn("Value of related link '" + k + "' is not an array or string");
+          logFn(`Value of related link '${k}' is not an array or string`);
           return false;
         } else {
           return true;
@@ -177,7 +174,7 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
       for (i = 0, len = v.length; i < len; i++) {
         item = v[i];
         if (!angular.isString(item)) {
-          logFn("Related link '" + k + "' contains non-string value");
+          logFn(`Related link '${k}' contains non-string value`);
           return false;
         }
       }
@@ -190,20 +187,15 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
       }
     })
   };
-  return new ((function() {
-    function _Class() {}
-
-    _Class.prototype.process = function(str, logFn) {
-      var e, error, errorType, i, len, matched, property, ref, result;
-      if (logFn == null) {
-        logFn = function() {};
-      }
+  return new (class {
+    process(str, logFn = function() {}) {
+      var e, errorType, i, len, matched, property, ref, result;
       try {
         result = new JsonLoader(v2mappers).load(str, logFn);
         ref = result.unknown;
         for (i = 0, len = ref.length; i < len; i++) {
           property = ref[i];
-          logFn("Unknown option " + property);
+          logFn(`Unknown option ${property}`);
         }
         return result.object;
       } catch (error) {
@@ -213,15 +205,13 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
         if (errorType === 'SyntaxError') {
           logFn('Syntax error in <options> block - parsing failed');
         } else if (errorType) {
-          logFn("Parsing <options> block failed - " + errorType);
+          logFn(`Parsing <options> block failed - ${errorType}`);
         } else {
           logFn('Parsing <options> block failed');
         }
         return new JsonLoader(v2mappers).load('{}').object;
       }
-    };
+    }
 
-    return _Class;
-
-  })());
+  })();
 });

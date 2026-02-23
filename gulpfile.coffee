@@ -84,7 +84,7 @@ gulp.task 'view', gulp.series('html', 'css')
 ### Dependencies ###
 
 gulp.task 'bower', ->
-  gulp.src(bowerFiles(), base: 'bower_components')
+  gulp.src(bowerFiles(), base: 'bower_components', encoding: false)
   .pipe(gulp.dest("#{deployPath}/lib"))
 
 gulp.task 'inject', ->

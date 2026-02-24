@@ -17,11 +17,6 @@ angular.module('DrillApp').service('Question', function(Answer) {
       return this.answers.push(answer);
     }
 
-    // TODO remove this in favor of QuestionBuilder
-    appendToLastAnswer(line) {
-      return this.answers[this.answers.length - 1].append(line);
-    }
-
     countAnswers(filter) {
       var answer, count, i, len, ref;
       count = 0;

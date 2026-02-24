@@ -91,7 +91,7 @@ angular.module('DrillApp').filter('decPlaces', function() {
     if (!secs) {
       return '';
     }
-    secs = parseInt(secs);
+    secs = parseInt(secs, 10);
     mins = Math.floor(secs / 60);
     secs = (secs % 60).toString();
     while (secs.length < 2) {

@@ -115,11 +115,11 @@ angular.module('DrillApp').service('OptionsBlockProcessor', function(JsonLoader,
       }
     },
     gradingPPQ: function(v) {
-      return parseInt(v) || 1;
+      return parseInt(v, 10) || 1;
     },
     timeLimit: function(v) {
       var secs;
-      if (v && (secs = (parseInt(v) / 5) * 5)) {
+      if (v && (secs = (parseInt(v, 10) / 5) * 5)) {
         return {
           timeLimitEnabled: true,
           timeLimitSecs: secs

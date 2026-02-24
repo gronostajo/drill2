@@ -8,10 +8,6 @@ angular.module('DrillApp').service('Answer', function() {
       this.checked = false;
     }
 
-    append(line) { // TODO is this used anywhere?
-      return this.body += '\n\n' + line.trim();
-    }
-
     toString() {
       if (this.correct) {
         return `> ${this.id}) ${this.body}\n`;

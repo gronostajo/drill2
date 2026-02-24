@@ -1,0 +1,46 @@
+<div class="page-header">
+    <h2>
+        Load questions
+        <small>
+            <a href="#" data-toggle="modal" modal="app/screens/home/helpModal.html">
+                <glyphicon icon="question-sign"></glyphicon>
+            </a>
+        </small>
+    </h2>
+</div>
+
+<div ng-if="fileApiSupported && (editor.visibility == 'none')" class="form-group">
+    <span class="btn btn-primary btn-file" ng-class="{ 'btn-large-padding': file == null }">
+        <glyphicon icon="open"></glyphicon>
+        Select file
+        <input type="file" ngf-select ngf-change="loadFromFile($files[0])" accept="text/plain"/>
+    </span>
+    <span ng-if="file">{{ file.name }}</span>
+    <div class="pull-right">
+        <span ng-else>or</span>
+        <button type="button" class="btn btn-default" ng-click="clearLoadedData(); editor.visibility = 'full'">
+            <glyphicon icon="edit"></glyphicon>
+            Use editor
+        </button>
+    </div>
+</div>
+<div ng-else class="form-group">
+    <question-editor model="editor" submit="loadFromString(editor.value).then(collapseEditorIfLoaded)" cancel="editor.enabled = false">
+        <button type="button" class="btn btn-default" ng-click="clearLoadedData(); editor.visibility = 'none'" ng-if="fileApiSupported">
+            <glyphicon icon="remove"></glyphicon>
+            Use file selector
+        </button>
+    </question-editor>
+</div>
+
+<div uib-alert ng-if="parserLog.length" class="alert-danger">
+    <p style="font-weight: bold">There were some problems while loading questions:</p>
+    <ul>
+        <li ng-repeat="message in parserLog | limitTo: 3 track by $index">{{ message }}</li>
+        <li ng-if="parserLog.length > 3">
+            <a ng-click="showLogModal(parserLog)">{{ parserLog.length - 3 }} more</a>
+        </li>
+    </ul>
+</div>
+
+<settings-screen ng-if="bank.length" model="settings" info="info" continue="start"></settings-screen>

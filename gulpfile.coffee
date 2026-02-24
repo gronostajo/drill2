@@ -220,6 +220,10 @@ gulp.task 'appcache', ->
   date = new Date()
 
   cachedFiles = gulp.src(appcacheExclusions.concat('**'), read: no, cwd: deployPath, nodir: yes)
+  .pipe through2.obj (file, enc, cb) ->
+    fs.stat file.path, (err, stat) ->
+      return cb() if err or stat.isDirectory()
+      cb(null, file)
   .pipe($.sort())
 
   gulp.src('src/*.appcache', base: 'src')

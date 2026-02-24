@@ -128,19 +128,20 @@ gulp.task 'configure-karma', ->
   dependencies = gulp.src(bowerFilesToInject, read: false)
   .pipe($.ignore.include('**/*.js'))
 
-  require('child_process').execSync("git update-index --assume-unchanged \"#{__dirname}/test/karma.conf.coffee\"")
-
   gulp.src('test/karma.conf.coffee')
   .pipe $.inject dependencies,
     addRootSlash: no
     starttag: '# bower:{{ext}}'
     endtag: '# endBower'
     transform: (filepath) -> "'#{filepath}'"
+  .pipe through2.obj (file, enc, cb) ->
+    file.path = path.join(path.dirname(file.path), 'karma.conf.generated.coffee')
+    cb(null, file)
   .pipe(gulp.dest('test'))
 
 gulp.task 'run-tests', (done) ->
   new KarmaServer(
-    configFile: __dirname + '/test/karma.conf.coffee'
+    configFile: __dirname + '/test/karma.conf.generated.coffee'
     singleRun: yes
   , done).start()
 

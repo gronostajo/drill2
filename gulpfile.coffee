@@ -4,7 +4,6 @@ $ = (require('gulp-load-plugins'))()
 appcacheFiles = require('appcache-files')
 argv = require('yargs').argv
 beep = require('beepbeep')
-bowerFiles = require('main-bower-files')
 childProcess = require('child_process')
 colors = require('ansi-colors')
 del = require('del')
@@ -83,22 +82,69 @@ gulp.task 'view', gulp.series('html', 'css')
 
 ### Dependencies ###
 
-gulp.task 'bower', ->
-  gulp.src(bowerFiles(), base: 'bower_components', encoding: false)
+# Files copied to build/lib/ (preserving sub-paths relative to node_modules/)
+npmLibFiles = [
+  'node_modules/angular/angular.min.js'
+  'node_modules/angular-cookies/angular-cookies.min.js'
+  'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
+  'node_modules/bootstrap/dist/css/bootstrap.min.css'
+  'node_modules/bootstrap/dist/js/bootstrap.min.js'
+  'node_modules/bootstrap/dist/fonts/*'
+  'node_modules/bootswatch/cyborg/bootstrap.min.css'
+  'node_modules/bootswatch/fonts/*'
+  'node_modules/commonmark/dist/commonmark.min.js'
+  'node_modules/jquery/dist/jquery.min.js'
+  'node_modules/ng-elif/src/elif.js'
+  'node_modules/ng-file-upload/dist/ng-file-upload.min.js'
+]
+
+# MathJax files (copied separately to preserve lib/MathJax/ capitalisation)
+mathjaxFiles = [
+  'node_modules/mathjax/MathJax.js'
+  'node_modules/mathjax/config/Safe.js'
+  'node_modules/mathjax/config/TeX-AMS-MML_HTMLorMML.js'
+  'node_modules/mathjax/extensions/**'
+  'node_modules/mathjax/fonts/HTML-CSS/TeX/woff/**'
+  'node_modules/mathjax/jax/input/MathML/**'
+  'node_modules/mathjax/jax/input/TeX/**'
+  'node_modules/mathjax/jax/output/HTML-CSS/**'
+  'node_modules/mathjax/jax/output/NativeMML/**'
+  'node_modules/mathjax/jax/output/PreviewHTML/**'
+]
+
+# JS files injected into index.html (no CSS, no MathJax)
+npmJsToInject = [
+  'node_modules/angular/angular.min.js'
+  'node_modules/jquery/dist/jquery.min.js'
+  'node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js'
+  'node_modules/commonmark/dist/commonmark.min.js'
+  'node_modules/ng-file-upload/dist/ng-file-upload.min.js'
+  'node_modules/angular-cookies/angular-cookies.min.js'
+  'node_modules/ng-elif/src/elif.js'
+  'node_modules/bootstrap/dist/js/bootstrap.min.js'
+]
+
+# JS files for karma (same as above + angular-mocks)
+karmaJsFiles = npmJsToInject.concat [
+  'node_modules/angular-mocks/angular-mocks.js'
+]
+
+gulp.task 'deps-lib', ->
+  gulp.src(npmLibFiles, base: 'node_modules', encoding: false)
   .pipe(gulp.dest("#{deployPath}/lib"))
 
-gulp.task 'inject', ->
-  bowerFilesToInject = bowerFiles().concat [
-    '!bower_components/MathJax/**'            # MathJax requires crazy inclusion args, we're doing that manually.
-    '!bower_components/bootstrap/**/*.css'    # Included manually for theme switcher
-    '!bower_components/bootswatch/**/*.css'   # Included manually for theme switcher
-  ]
+gulp.task 'deps-mathjax', ->
+  gulp.src(mathjaxFiles, base: 'node_modules/mathjax', encoding: false)
+  .pipe(gulp.dest("#{deployPath}/lib/MathJax"))
 
+gulp.task 'deps', gulp.parallel('deps-lib', 'deps-mathjax')
+
+gulp.task 'inject', ->
   gulp.src("#{deployPath}/*.html")
-  .pipe $.inject gulp.src(bowerFilesToInject, read: false, allowEmpty: true),
-    name: 'bower'
+  .pipe $.inject gulp.src(npmJsToInject, read: false, allowEmpty: true),
+    name: 'lib'
     addRootSlash: no
-    ignorePath: '/bower_components/'
+    ignorePath: '/node_modules/'
     addPrefix: 'lib'
   .pipe $.inject gulp.src([
     "#{deployPath}/**/*.js",
@@ -107,7 +153,7 @@ gulp.task 'inject', ->
     relative: yes
   .pipe(gulp.dest deployPath)
 
-gulp.task 'dependencies', gulp.series('bower', 'inject')
+gulp.task 'dependencies', gulp.series('deps', 'inject')
 
 
 ### Tests ###
@@ -123,24 +169,22 @@ gulp.task 'build-tests', ->
   .pipe(gulp.dest 'test/build')
 
 gulp.task 'configure-karma', ->
-  bowerFilesToInject = bowerFiles(includeDev: yes).filter (f) ->
-    f.indexOf('MathJax') is -1
-  dependencies = gulp.src(bowerFilesToInject, read: false)
-  .pipe($.ignore.include('**/*.js'))
-
-  require('child_process').execSync("git update-index --assume-unchanged \"#{__dirname}/test/karma.conf.coffee\"")
+  dependencies = gulp.src(karmaJsFiles, read: false)
 
   gulp.src('test/karma.conf.coffee')
   .pipe $.inject dependencies,
     addRootSlash: no
-    starttag: '# bower:{{ext}}'
-    endtag: '# endBower'
+    starttag: '# lib:{{ext}}'
+    endtag: '# endLib'
     transform: (filepath) -> "'#{filepath}'"
+  .pipe through2.obj (file, enc, cb) ->
+    file.path = path.join(path.dirname(file.path), 'karma.conf.generated.coffee')
+    cb(null, file)
   .pipe(gulp.dest('test'))
 
 gulp.task 'run-tests', (done) ->
   new KarmaServer(
-    configFile: __dirname + '/test/karma.conf.coffee'
+    configFile: __dirname + '/test/karma.conf.generated.coffee'
     singleRun: yes
   , done).start()
 

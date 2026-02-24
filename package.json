@@ -1,15 +1,26 @@
 {
   "name": "drill2",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Browser-based multiple choice test learning assistant",
-  "dependencies": {},
+  "dependencies": {
+    "angular": "1.4.14",
+    "angular-cookies": "1.4.14",
+    "angular-ui-bootstrap": "2.0.2",
+    "bootstrap": "3.3.7",
+    "bootswatch": "3.3.7",
+    "commonmark": "0.24.0",
+    "jquery": "2.2.4",
+    "mathjax": "2.6.1",
+    "ng-elif": "0.1.4",
+    "ng-file-upload": "12.2.13"
+  },
   "engines": {
     "node": ">=14.0.0"
   },
   "devDependencies": {
     "appcache-files": "git+https://github.com/gronostajo/appcache-files.git",
     "beepbeep": "1.2.0",
-    "bower": "1.7.9",
+    "angular-mocks": "1.4.14",
     "coffeescript": "^2.7.0",
     "coffeelint": "1.15.7",
     "coffeelint-newline-at-eof": "0.4.1",
@@ -32,7 +43,6 @@
     "karma-jasmine-matchers": "2.0.2",
     "karma-mocha-reporter": "2.1.0",
     "karma-chrome-launcher": "^3.2.0",
-    "main-bower-files": "2.13.1",
     "merge2": "^1.0.2",
     "sloc": "~0.1.11",
     "through2": "~2.0.5",

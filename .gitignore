@@ -1,5 +1,5 @@
 .idea
-bower_components
 build
 node_modules
 reports
+test/karma.conf.generated.coffee

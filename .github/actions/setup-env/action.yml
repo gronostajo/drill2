@@ -19,6 +19,3 @@ runs:
     - name: Install npm dependencies
       shell: sh
       run: npm install
-    - name: Install bower dependencies
-      shell: sh
-      run: bower install

@@ -6,8 +6,8 @@ module.exports = (config) ->
     basePath: '../'
 
     files: [
-      # bower:js
-      # endBower
+      # lib:js
+      # endLib
       'build/app/**/*.js'
       'test/build/**/*.js'
     ]

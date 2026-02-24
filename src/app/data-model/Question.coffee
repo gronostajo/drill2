@@ -10,10 +10,6 @@ angular.module('DrillApp').service 'Question', (Answer) ->
       answer = new Answer(body, correct, id)
       @answers.push(answer)
 
-    # TODO remove this in favor of QuestionBuilder
-    appendToLastAnswer: (line) ->
-      @answers[@answers.length - 1].append(line)
-
     countAnswers: (filter) ->
       count = 0
       for answer in @answers

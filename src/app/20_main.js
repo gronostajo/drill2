@@ -287,8 +287,8 @@
 		};
 
 		$scope.loadGrader = function () {
-			var radical = !!parseInt($scope.config.gradingRadical);
-			var ppq = Math.max(parseInt($scope.config.gradingPPQ), 1);
+			var radical = !!parseInt($scope.config.gradingRadical, 10);
+			var ppq = Math.max(parseInt($scope.config.gradingPPQ, 10), 1);
 
 			switch ($scope.config.gradingMethod.toLowerCase()) {
 				case 'peranswer':

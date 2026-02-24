@@ -5,9 +5,6 @@ angular.module('DrillApp').service 'Answer', ->
       @correct = !!correct
       @checked = false
 
-    append: (line) ->  # TODO is this used anywhere?
-      @body += '\n\n' + line.trim()
-
     toString: ->
       if @correct
         "> #{@id}) #{@body}\n"

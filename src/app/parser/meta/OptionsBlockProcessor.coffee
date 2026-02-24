@@ -74,10 +74,10 @@ angular.module('DrillApp').service 'OptionsBlockProcessor', (JsonLoader, SafeEva
       if parseBool(v) then '1' else '0'
 
     gradingPPQ: (v) ->
-      parseInt(v) or 1
+      parseInt(v, 10) or 1
 
     timeLimit: (v) ->
-      if v and (secs = (parseInt(v) / 5) * 5)
+      if v and (secs = (parseInt(v, 10) / 5) * 5)
         timeLimitEnabled: yes
         timeLimitSecs: secs
       else

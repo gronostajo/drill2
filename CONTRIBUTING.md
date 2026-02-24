@@ -25,26 +25,19 @@ You can [fork Drill 2](https://github.com/gronostajo/drill2/fork) and create a p
 
 This project uses a vintage tech stack which isn't relevant anymore. If you're brave enough to modernize it, [check out issue #39](https://github.com/gronostajo/drill2/issues/39).
 
-Drill 2 uses *bower* and *gulp*.
+[Gulp](http://gulpjs.com/) is used for build orchestration.
 
-- [bower](http://bower.io) is a package manager for web apps
-- [gulp](http://gulpjs.com/) is a build automation tool
+### Quick start
 
-Quick start:
-
-Honestly, don't bother with trying to make it work on modern platforms. Use Visual Studio Code's dev containers feature. The repo comes with a dev container where everything should just work.
+**Recommended:** Use Visual Studio Code's dev containers feature. The repo comes with a dev container where everything should just work.
 
 1. Clone your fork:
 
-        git clone git@github.com:YourUserName/drill2.git
+       git clone git@github.com:YourUserName/drill2.git
 
-0. Install build tools:
+0. Install dependencies:
 
-        npm install
-
-0. Install project dependencies:
-
-        bower install
+       npm install
 
 Then use following commands each time you want to build the app:
 
@@ -53,7 +46,7 @@ Then use following commands each time you want to build the app:
 
 Output files are created in the `build` folder.
 
-Tips:
+### Tips
 
-- Don't add new files to the `index.html` header, appcache manifest or Karma configuration - they are automatically updated by `gulp` when building app.
-- If you're getting weird error messages, you may have to install new packages. Just run `npm install && bower install` and have a tea.
+- Don't add new files to the `index.html` header, appcache manifest or Karma configuration - update `gulpfile.coffee` instead.
+- If you're getting weird error messages, you may have to install new packages. Just run `npm install` and have a tea.

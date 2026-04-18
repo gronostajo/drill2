@@ -7,7 +7,7 @@
 	"service": "dev",
 	"features": {
 		"ghcr.io/devcontainers/features/node:1": {
-			"version": "14"
+			"version": "20"
 		}
 	},
 	"customizations": {

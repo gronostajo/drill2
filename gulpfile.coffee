@@ -9,7 +9,9 @@ colors = require('ansi-colors')
 del = require('del')
 fs = require('fs')
 groupArray = require('group-array')
-KarmaServer = require('karma').Server
+karma = require('karma')
+KarmaServer = karma.Server
+parseKarmaConfig = karma.config.parseConfig
 log = require('fancy-log')
 merge = require('merge2')
 path = require('path')
@@ -182,11 +184,19 @@ gulp.task 'configure-karma', ->
     cb(null, file)
   .pipe(gulp.dest('test'))
 
-gulp.task 'run-tests', (done) ->
-  new KarmaServer(
-    configFile: __dirname + '/test/karma.conf.generated.coffee'
-    singleRun: yes
-  , done).start()
+gulp.task 'run-tests', ->
+  parseKarmaConfig(
+    __dirname + '/test/karma.conf.generated.coffee'
+    {singleRun: yes}
+    {promiseConfig: yes, throwErrors: yes}
+  ).then (karmaConfig) ->
+    new Promise (resolve, reject) ->
+      server = new KarmaServer karmaConfig, (exitCode) ->
+        if exitCode isnt 0
+          reject(new Error("Karma exited with code #{exitCode}"))
+        else
+          resolve()
+      server.start()
 
 
 ### Linter ###

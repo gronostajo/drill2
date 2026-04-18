@@ -15,7 +15,7 @@
     "ng-file-upload": "12.2.13"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
     "appcache-files": "git+https://github.com/gronostajo/appcache-files.git",

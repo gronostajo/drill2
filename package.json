@@ -44,7 +44,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-chrome-launcher": "^3.2.0",
     "merge2": "^1.0.2",
-    "sloc": "~0.1.11",
+    "sloc": "^0.3.2",
     "through2": "~2.0.5",
     "yargs": "5.0.0"
   },
